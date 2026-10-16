@@ -83,14 +83,14 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 
 <section id="home">
  <button class="bigbtn" onclick="goMenu()">🎲 今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
- <div class="card" id="charCard"></div>
- <div class="card" id="celebCard"></div>
  <div class="card">
   <div class="calh"><button class="sm" onclick="mv(-1)">◀</button><b id="calM"></b><button class="sm" onclick="mv(1)">▶</button></div>
   <div class="cal" id="cal"></div>
   <div class="mut" style="font-size:11px;color:var(--mut);margin-top:8px" id="legend"></div>
  </div>
  <div class="card"><h3 id="dayT"></h3><div id="dayList"></div><button class="btn" onclick="addOn()">＋ この日に記録を追加</button></div>
+ <div class="card" id="charCard"></div>
+ <div class="card" id="celebCard"></div>
 </section>
 
 <section id="train" class="hidden">
