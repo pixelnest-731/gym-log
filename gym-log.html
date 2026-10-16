@@ -1,0 +1,404 @@
+<title>MY GYM LOG</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f2f4f8;--card:#fff;--fg:#151a24;--mut:#6b7280;--ac:#2563eb;--ac2:#38bdf8;--bd:#e6e8ee;--sh:0 4px 18px rgba(20,30,60,.08);--chip:#f1f3f7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1015;--card:#181b23;--fg:#eceef3;--mut:#9aa1ad;--bd:#272b36;--sh:0 4px 18px rgba(0,0,0,.4);--chip:#222632;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1015;--card:#181b23;--fg:#eceef3;--mut:#9aa1ad;--bd:#272b36;--sh:0 4px 18px rgba(0,0,0,.4);--chip:#222632;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;padding-bottom:84px}
+header{background:linear-gradient(135deg,#1e40af,#2563eb 55%,#38bdf8);color:#fff;padding:22px 16px 56px;position:relative;overflow:hidden}
+header::after{content:"🏋️";position:absolute;right:-10px;top:-10px;font-size:120px;opacity:.15}
+header h1{margin:0;font-size:22px;letter-spacing:.05em}
+header p{margin:4px 0 0;opacity:.9;font-size:13px}
+main{max-width:920px;margin:-40px auto 0;padding:0 16px;position:relative}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--card);border-radius:14px;padding:12px;box-shadow:var(--sh);text-align:center}
+.stat .v{font-size:22px;font-weight:800;color:var(--ac)}
+.stat .l{font-size:11px;color:var(--mut)}
+@media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+.card{background:var(--card);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:var(--sh)}
+.card h3{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+.card h3::before{content:"";width:4px;height:18px;border-radius:2px;background:linear-gradient(var(--ac),var(--ac2))}
+label{display:block;font-size:12px;color:var(--mut);margin:10px 0 4px;font-weight:600}
+input,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--fg);font-size:15px}
+input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.btn{margin-top:14px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border:0;padding:12px 20px;border-radius:12px;cursor:pointer;font-size:15px;font-weight:700;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.btn.gray{background:#8a8f99;box-shadow:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:0;background:var(--chip);color:var(--fg);padding:8px 12px;border-radius:999px;cursor:pointer;font-size:13px}
+.chip.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-weight:700}
+.exgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;max-height:300px;overflow:auto;margin-top:10px;padding:2px}
+.ex{border:1px solid var(--bd);background:var(--bg);border-radius:12px;padding:10px;cursor:pointer;text-align:left;color:var(--fg);font-size:13px}
+.ex small{display:block;color:var(--mut);font-size:11px;margin-top:2px}
+.ex.on{border-color:var(--ac);background:rgba(37,99,235,.08);font-weight:700}
+.sel{margin-top:10px;padding:10px;border-radius:10px;background:var(--chip);font-size:14px}
+.log{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--bd)}
+.log:last-child{border:0}
+.ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none;background:var(--chip)}
+.log .t{flex:1;min-width:0}.log .t b{display:block;font-size:14px}.log .t span{font-size:12px;color:var(--mut)}
+.sm{padding:6px 10px;font-size:12px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg);cursor:pointer}
+.dh{font-size:12px;font-weight:700;color:var(--ac);margin-top:14px}
+.big{font-size:40px;font-weight:800}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff}
+.adv li{list-style:none;margin:8px 0;padding:12px 14px;border-radius:12px;background:var(--chip);line-height:1.6;font-size:14px}
+.adv{padding:0;margin:0}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);display:flex;box-shadow:0 -2px 12px rgba(0,0,0,.08);z-index:9}
+.tabbar button{flex:1;border:0;background:none;color:var(--mut);padding:10px 0 calc(14px + env(safe-area-inset-bottom,0px));font-size:11px;cursor:pointer}
+.tabbar button i{display:block;font-style:normal;font-size:22px}
+.tabbar button.on{color:var(--ac);font-weight:700}
+.hidden{display:none}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;z-index:30;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:grid;place-items:center;z-index:40;padding:16px}
+.modal>div{background:var(--card);color:var(--fg);border-radius:16px;padding:20px;max-width:340px;width:100%;text-align:center}
+.modal .btn{margin:14px 4px 0}
+.modal.hidden{display:none}
+.homebtn{position:absolute;right:14px;top:16px;z-index:2;border:0;background:rgba(255,255,255,.22);color:#fff;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer}
+.bigbtn{width:100%;border:0;border-radius:16px;padding:18px;margin-bottom:16px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#1e40af,#2563eb,#38bdf8);box-shadow:0 6px 18px rgba(37,99,235,.35)}
+.bigbtn small{display:block;font-weight:400;font-size:12px;opacity:.9;margin-top:4px}
+.calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:17px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .w{text-align:center;font-size:11px;color:var(--mut);padding:4px 0}
+.cal .d{min-height:58px;border-radius:10px;background:var(--bg);padding:4px;cursor:pointer;font-size:12px;border:2px solid transparent;overflow:hidden}
+.cal .d.o{opacity:.35}.cal .d.t .n{background:var(--ac);color:#fff;border-radius:50%;display:inline-block;width:20px;text-align:center}
+.cal .d.s{border-color:var(--ac)}.cal .d.has{background:rgba(37,99,235,.1)}
+.cal .ic{font-size:11px;line-height:1.1;word-break:break-all}
+.chr{display:flex;gap:14px;align-items:center}
+.chr .face{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:linear-gradient(135deg,#dbeafe,#93c5fd);flex:none}
+.chr .nm{font-size:20px;font-weight:800}.sub{font-size:12px;color:var(--mut)}
+.pbar{height:10px;border-radius:5px;background:var(--chip);overflow:hidden;margin:8px 0 4px}.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.win{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.win span{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12px}
+.w.sun{color:#ef4444}.w.sat{color:#2563eb}
+.empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
+</style>
+<header><button class="homebtn" onclick="goHome()">🏠 ホーム</button><h1 onclick="goHome()" style="cursor:pointer">MY GYM LOG</h1><p id="hello">今日もナイスバルク！💪</p></header>
+<main>
+<div class="stats">
+ <div class="stat"><div class="v" id="sDays">0</div><div class="l">総トレ日数</div></div>
+ <div class="stat"><div class="v" id="sWeek">0</div><div class="l">今週の日数</div></div>
+ <div class="stat"><div class="v" id="sVol">0</div><div class="l">今週ボリューム(t)</div></div>
+ <div class="stat"><div class="v" id="sBmi">-</div><div class="l">最新BMI</div></div>
+</div>
+
+<section id="home">
+ <button class="bigbtn" onclick="goMenu()">🎲 今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
+ <div class="card" id="charCard"></div>
+ <div class="card" id="celebCard"></div>
+ <div class="card">
+  <div class="calh"><button class="sm" onclick="mv(-1)">◀</button><b id="calM"></b><button class="sm" onclick="mv(1)">▶</button></div>
+  <div class="cal" id="cal"></div>
+  <div class="mut" style="font-size:11px;color:var(--mut);margin-top:8px" id="legend"></div>
+ </div>
+ <div class="card"><h3 id="dayT"></h3><div id="dayList"></div><button class="btn" onclick="addOn()">＋ この日に記録を追加</button></div>
+</section>
+
+<section id="train" class="hidden">
+ <div class="card">
+  <h3 id="tTitle">トレーニングを記録</h3>
+  <label>部位</label><div class="chips" id="parts"></div>
+  <label>器具</label><div class="chips" id="eqs"></div>
+  <input id="q" placeholder="🔍 種目を検索" style="margin-top:10px">
+  <div class="exgrid" id="exs"></div>
+  <div class="sel" id="selEx">種目を選んでください</div>
+  <div class="row">
+   <div><label>日付</label><input type="date" id="tDate"></div>
+   <div class="st"><label>重量(kg)</label><input type="number" id="tW" step="0.5"></div>
+   <div class="st"><label>回数</label><input type="number" id="tR"></div>
+   <div class="st"><label>セット数</label><input type="number" id="tS" value="3"></div>
+   <div class="cd hidden"><label>時間(分)</label><input type="number" id="tMin"></div>
+   <div class="cd hidden"><label>距離(km)</label><input type="number" id="tKm" step="0.1"></div>
+   <div class="st"><label>推定1RM(kg)・自動計算</label><input id="tRm" readonly placeholder="重量と回数から計算" style="font-weight:700;color:var(--ac)"></div>
+  </div>
+  <label>メモ（マシン番号・シート位置など）</label><input id="tMemo">
+  <button class="btn" id="tSave">💾 保存する</button> <button class="btn gray hidden" id="tCancel">キャンセル</button>
+ </div>
+ <div class="card"><h3>履歴</h3><div id="tList"></div></div>
+</section>
+
+<section id="body" class="hidden">
+ <div class="card" style="text-align:center"><div style="font-size:12px;color:var(--mut)">最新BMI</div><div class="big" id="bmi">-</div><span class="badge" id="bmiJ"></span></div>
+ <div class="card">
+  <h3 id="bTitle">体の記録</h3>
+  <div class="row">
+   <div><label>日付</label><input type="date" id="bDate"></div>
+   <div><label>身長(cm)</label><input type="number" id="bH" step="0.1"></div>
+   <div><label>体重(kg)</label><input type="number" id="bWt" step="0.1"></div>
+   <div><label>体脂肪率(%)</label><input type="number" id="bF" step="0.1"></div>
+   <div><label>腕周囲 右(cm)</label><input type="number" id="bAR" step="0.1"></div>
+   <div><label>腕周囲 左(cm)</label><input type="number" id="bAL" step="0.1"></div>
+  </div>
+  <button class="btn" id="bSave">💾 保存する</button> <button class="btn gray hidden" id="bCancel">キャンセル</button>
+ </div>
+ <div class="card"><h3>履歴</h3><div id="bList"></div></div>
+</section>
+
+<section id="graph" class="hidden">
+ <div class="card"><h3>種目別 最大重量・推定1RM</h3><select id="gEx"></select><canvas id="c1"></canvas></div>
+ <div class="card"><h3>部位別 総ボリューム</h3><canvas id="c2"></canvas></div>
+ <div class="card"><h3>日別ボリューム</h3><canvas id="c6"></canvas></div>
+ <div class="card"><h3>体重・体脂肪率</h3><canvas id="c3"></canvas></div>
+ <div class="card"><h3>BMI</h3><canvas id="c4"></canvas></div>
+ <div class="card"><h3>腕周囲</h3><canvas id="c5"></canvas></div>
+</section>
+
+<section id="advice" class="hidden">
+ <div class="card"><h3>今日のおすすめメニュー</h3>
+  <div class="chips" id="mMode"><button class="chip on" data-m="auto">おまかせ</button><button class="chip" data-m="full">全身</button><button class="chip" data-m="short">時短30分</button></div>
+  <div id="menu" style="margin-top:10px"></div>
+  <button class="btn" id="mGen">🎲 メニューを組む</button>
+ </div>
+ <div class="card"><h3>コーチからのアドバイス</h3><ul class="adv" id="adv"></ul></div>
+</section>
+</main>
+
+<nav class="tabbar">
+ <button data-t="home" class="on"><i>🏠</i>ホーム</button>
+ <button data-t="train"><i>🏋️</i>記録</button>
+ <button data-t="body"><i>📏</i>体</button>
+ <button data-t="graph"><i>📊</i>グラフ</button>
+ <button data-t="advice"><i>💡</i>アドバイス</button>
+</nav>
+
+<div class="toast" id="toast"></div>
+<div class="modal hidden" id="modal"><div><div id="mMsg"></div><button class="btn gray" id="mNo">キャンセル</button><button class="btn" id="mYes">OK</button></div></div>
+<script>
+function alert(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2200)}
+function ask(m,fn){const md=document.getElementById("modal");document.getElementById("mMsg").textContent=m;md.classList.remove("hidden");
+ document.getElementById("mYes").onclick=()=>{md.classList.add("hidden");fn()};document.getElementById("mNo").onclick=()=>md.classList.add("hidden")}
+// [名前, 部位, 器具]
+const PI={"胸":"🫁","背中":"🦅","脚":"🦵","肩":"🎯","腕":"💪","腹":"🔥","有酸素":"🏃"};
+const EX=[
+["ベンチプレス","胸","バーベル"],["インクラインベンチプレス","胸","バーベル"],["デクラインベンチプレス","胸","バーベル"],
+["ダンベルプレス","胸","ダンベル"],["インクラインダンベルプレス","胸","ダンベル"],["ダンベルフライ","胸","ダンベル"],["ダンベルプルオーバー","胸","ダンベル"],
+["チェストプレス","胸","マシン"],["インクラインチェストプレス","胸","マシン"],["ペックフライ(バタフライ)","胸","マシン"],["スミスマシン ベンチプレス","胸","スミスマシン"],["スミス インクラインプレス","胸","スミスマシン"],
+["ケーブルクロスオーバー","胸","ケーブル"],["ケーブルフライ(ロー→ハイ)","胸","ケーブル"],["腕立て伏せ","胸","自重"],["ディップス","胸","自重"],
+["デッドリフト","背中","バーベル"],["ルーマニアンデッドリフト","背中","バーベル"],["ベントオーバーロウ","背中","バーベル"],["Tバーロウ","背中","バーベル"],
+["ワンハンドロウ","背中","ダンベル"],["ダンベルシュラッグ","背中","ダンベル"],
+["ラットプルダウン","背中","マシン"],["シーテッドロウ","背中","マシン"],["ローロウ","背中","マシン"],["バックエクステンション","背中","マシン"],["アシスト懸垂(チンニング)","背中","マシン"],
+["ケーブルロウ","背中","ケーブル"],["ストレートアームプルダウン","背中","ケーブル"],["フェイスプル","背中","ケーブル"],["スミス ロウ","背中","スミスマシン"],["懸垂","背中","自重"],
+["スクワット","脚","バーベル"],["フロントスクワット","脚","バーベル"],["ヒップスラスト","脚","バーベル"],
+["ブルガリアンスクワット","脚","ダンベル"],["ダンベルランジ","脚","ダンベル"],["ゴブレットスクワット","脚","ダンベル"],
+["レッグプレス","脚","マシン"],["レッグエクステンション","脚","マシン"],["レッグカール(シーテッド)","脚","マシン"],["レッグカール(ライイング)","脚","マシン"],
+["アダクション(内もも)","脚","マシン"],["アブダクション(外もも)","脚","マシン"],["カーフレイズ","脚","マシン"],["ハックスクワット","脚","マシン"],
+["スミス スクワット","脚","スミスマシン"],["スミス ランジ","脚","スミスマシン"],["ケーブルキックバック(臀部)","脚","ケーブル"],
+["ショルダープレス(バーベル)","肩","バーベル"],["アップライトロウ","肩","バーベル"],
+["ダンベルショルダープレス","肩","ダンベル"],["サイドレイズ","肩","ダンベル"],["フロントレイズ","肩","ダンベル"],["リアレイズ","肩","ダンベル"],["アーノルドプレス","肩","ダンベル"],
+["ショルダープレス(マシン)","肩","マシン"],["リアデルト(マシン)","肩","マシン"],["ラテラルレイズ(マシン)","肩","マシン"],
+["ケーブルサイドレイズ","肩","ケーブル"],["スミス ショルダープレス","肩","スミスマシン"],
+["バーベルカール","腕","バーベル"],["EZバーカール","腕","バーベル"],["ナローベンチプレス","腕","バーベル"],["ライイングトライセプスEX","腕","バーベル"],
+["ダンベルカール","腕","ダンベル"],["ハンマーカール","腕","ダンベル"],["インクラインカール","腕","ダンベル"],["コンセントレーションカール","腕","ダンベル"],["フレンチプレス","腕","ダンベル"],["キックバック","腕","ダンベル"],
+["アームカール(マシン)","腕","マシン"],["トライセプスEX(マシン)","腕","マシン"],["プリーチャーカール","腕","マシン"],
+["ケーブルカール","腕","ケーブル"],["トライセプスプッシュダウン","腕","ケーブル"],["オーバーヘッドケーブルEX","腕","ケーブル"],["リストカール","腕","ダンベル"],
+["クランチ","腹","自重"],["レッグレイズ","腹","自重"],["プランク(秒)","腹","自重"],["アブローラー","腹","自重"],["ハンギングレッグレイズ","腹","自重"],["ロシアンツイスト","腹","ダンベル"],
+["アブドミナル(マシン)","腹","マシン"],["ロータリートルソー","腹","マシン"],["ケーブルクランチ","腹","ケーブル"],["サイドベント","腹","ダンベル"],
+["トレッドミル","有酸素","有酸素"],["エアロバイク","有酸素","有酸素"],["クロストレーナー","有酸素","有酸素"],["ステアクライマー","有酸素","有酸素"],["ローイングマシン","有酸素","有酸素"]];
+const PARTS=Object.keys(PI),EQS=["すべて","バーベル","ダンベル","マシン","スミスマシン","ケーブル","自重","有酸素"];
+const $=id=>document.getElementById(id);
+const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+let T=ld("gym_t"),B=ld("gym_b"),tEdit=null,bEdit=null,charts=[],part="胸",eq="すべて",cur=null;
+const today=()=>new Date().toISOString().slice(0,10);
+$("tDate").value=$("bDate").value=today();
+const isCardio=n=>(EX.find(e=>e[0]===n)||[])[1]==="有酸素";
+
+function renderPicker(){
+ $("parts").innerHTML=PARTS.map(p=>`<button class="chip ${p===part?"on":""}" data-p="${p}">${PI[p]} ${p}</button>`).join("");
+ $("eqs").innerHTML=EQS.map(e=>`<button class="chip ${e===eq?"on":""}" data-e="${e}">${e}</button>`).join("");
+ const q=$("q").value.trim();
+ const list=EX.filter(e=>q?e[0].includes(q):e[1]===part&&(eq==="すべて"||e[2]===eq));
+ $("exs").innerHTML=list.length?list.map(e=>`<button class="ex ${cur===e[0]?"on":""}" data-x="${e[0]}">${e[0]}<small>${e[2]}・${e[1]}</small></button>`).join(""):'<div class="empty">該当なし</div>';
+ $("selEx").innerHTML=cur?`選択中：<b>${cur}</b>`+last(cur):"種目を選んでください";
+ const c=cur&&isCardio(cur);document.querySelectorAll(".st").forEach(x=>x.classList.toggle("hidden",c));document.querySelectorAll(".cd").forEach(x=>x.classList.toggle("hidden",!c));
+}
+function last(n){const r=T.filter(x=>x.ex===n).sort((a,b)=>a.d<b.d?1:-1)[0];return r?`　<span style="color:var(--mut)">前回 ${r.d}：${fmt(r)}</span>`:""}
+$("parts").onclick=e=>{const b=e.target.closest("[data-p]");if(b){part=b.dataset.p;$("q").value="";renderPicker()}};
+$("eqs").onclick=e=>{const b=e.target.closest("[data-e]");if(b){eq=b.dataset.e;renderPicker()}};
+$("exs").onclick=e=>{const b=e.target.closest("[data-x]");if(b){cur=b.dataset.x;renderPicker()}};
+$("q").oninput=renderPicker;
+
+document.querySelectorAll(".tabbar button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll(".tabbar button").forEach(x=>x.classList.toggle("on",x===b));
+ document.querySelectorAll("main section").forEach(s=>s.classList.toggle("hidden",s.id!==b.dataset.t));
+ scrollTo(0,0);if(b.dataset.t==="graph")drawAll();if(b.dataset.t==="advice"){advise();if(!MENU.length)genMenu()}if(b.dataset.t==="home")renderCal();});
+const tab=t=>document.querySelector(`.tabbar [data-t="${t}"]`).click();
+window.goHome=()=>tab("home");
+window.goMenu=()=>{tab("advice");genMenu();};
+// calendar
+let calD=new Date(),selD=today();
+window.mv=n=>{calD=new Date(calD.getFullYear(),calD.getMonth()+n,1);renderCal()};
+const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+function renderCal(){renderChar();renderCeleb();const y=calD.getFullYear(),m=calD.getMonth();$("calM").textContent=`${y}年${m+1}月`;
+ const st=new Date(y,m,1-new Date(y,m,1).getDay());let h=["日","月","火","水","木","金","土"].map((w,i)=>`<div class="w ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
+ for(let i=0;i<42;i++){const d=new Date(st.getFullYear(),st.getMonth(),st.getDate()+i),k=ymd(d),rs=T.filter(r=>r.d===k),ps=[...new Set(rs.map(r=>r.p))];
+  h+=`<div class="d ${d.getMonth()!==m?"o":""} ${k===today()?"t":""} ${k===selD?"s":""} ${rs.length?"has":""}" onclick="selDay('${k}')"><span class="n">${d.getDate()}</span><div class="ic">${ps.map(p=>PI[p]).join("")}</div></div>`;}
+ $("cal").innerHTML=h;$("legend").textContent=Object.entries(PI).map(([p,i])=>i+p).join("　");
+ const rs=T.map((r,i)=>[r,i]).filter(([r])=>r.d===selD),v=rs.reduce((s,[r])=>s+vol(r),0);
+ $("dayT").textContent=`📅 ${selD} の記録`+(rs.length?`（${rs.length}種目・${v}kg）`:"");
+ $("dayList").innerHTML=rs.map(([r,i])=>`<div class="log"><div class="ico">${PI[r.p]||"🏋️"}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
+  <button class="sm" onclick="editT(${i});tab('train')">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`).join("")||'<div class="empty">この日の記録はありません</div>';}
+// manga character level (BIG3 推定1RM合計)
+const CH=[[0, "🐣", "野比のび太", "ドラえもん", "筋トレの第一歩！"], [7, "🐣", "磯野カツオ", "サザエさん", "筋トレの第一歩！"], [14, "🐣", "野原しんのすけ", "クレヨンしんちゃん", "筋トレの第一歩！"], [21, "🐣", "江戸川コナン", "名探偵コナン", "筋トレの第一歩！"], [28, "🐣", "碇シンジ", "エヴァンゲリオン", "筋トレの第一歩！"], [35, "🐣", "剛田武(ジャイアン)", "ドラえもん", "筋トレの第一歩！"], [42, "🐣", "ウソップ", "ONE PIECE", "筋トレの第一歩！"], [49, "🐣", "ナミ", "ONE PIECE", "筋トレの第一歩！"], [56, "🐣", "トニートニー・チョッパー", "ONE PIECE", "筋トレの第一歩！"], [63, "🐣", "日向翔陽", "ハイキュー!!", "筋トレの第一歩！"], [70, "🐥", "影山飛雄", "ハイキュー!!", "基礎体力がついてきた"], [77, "🐥", "黒子テツヤ", "黒子のバスケ", "基礎体力がついてきた"], [84, "🐥", "火神大我", "黒子のバスケ", "基礎体力がついてきた"], [91, "🐥", "流川楓", "SLAM DUNK", "基礎体力がついてきた"], [98, "🐥", "桜木花道", "SLAM DUNK", "基礎体力がついてきた"], [105, "🐥", "赤木剛憲", "SLAM DUNK", "基礎体力がついてきた"], [112, "🐥", "ヤムチャ", "ドラゴンボール", "基礎体力がついてきた"], [119, "🐥", "天津飯", "ドラゴンボール", "基礎体力がついてきた"], [126, "🐥", "クリリン", "ドラゴンボール", "基礎体力がついてきた"], [133, "🐥", "我妻善逸", "鬼滅の刃", "基礎体力がついてきた"], [140, "🌱", "胡蝶しのぶ", "鬼滅の刃", "一般人を超えてきた"], [147, "🌱", "嘴平伊之助", "鬼滅の刃", "一般人を超えてきた"], [154, "🌱", "竈門炭治郎", "鬼滅の刃", "一般人を超えてきた"], [161, "🌱", "竈門禰豆子", "鬼滅の刃", "一般人を超えてきた"], [168, "🌱", "冨岡義勇", "鬼滅の刃", "一般人を超えてきた"], [175, "🌱", "宇髄天元", "鬼滅の刃", "一般人を超えてきた"], [182, "🌱", "煉獄杏寿郎", "鬼滅の刃", "一般人を超えてきた"], [189, "🌱", "悲鳴嶼行冥", "鬼滅の刃", "一般人を超えてきた"], [196, "🌱", "釘崎野薔薇", "呪術廻戦", "一般人を超えてきた"], [203, "🌱", "伏黒恵", "呪術廻戦", "一般人を超えてきた"], [210, "🏃", "虎杖悠仁", "呪術廻戦", "体つきが変わり始めた"], [217, "🏃", "七海建人", "呪術廻戦", "体つきが変わり始めた"], [224, "🏃", "禪院真希", "呪術廻戦", "体つきが変わり始めた"], [231, "🏃", "東堂葵", "呪術廻戦", "体つきが変わり始めた"], [238, "🏃", "五条悟", "呪術廻戦", "体つきが変わり始めた"], [245, "🏃", "両面宿儺", "呪術廻戦", "体つきが変わり始めた"], [252, "🏃", "エレン・イェーガー", "進撃の巨人", "体つきが変わり始めた"], [259, "🏃", "ミカサ・アッカーマン", "進撃の巨人", "体つきが変わり始めた"], [266, "🏃", "ライナー・ブラウン", "進撃の巨人", "体つきが変わり始めた"], [273, "🏃", "リヴァイ", "進撃の巨人", "体つきが変わり始めた"], [280, "🥋", "緑谷出久", "僕のヒーローアカデミア", "ジムの常連レベル"], [287, "🥋", "爆豪勝己", "僕のヒーローアカデミア", "ジムの常連レベル"], [294, "🥋", "切島鋭児郎", "僕のヒーローアカデミア", "ジムの常連レベル"], [301, "🥋", "オールマイト", "僕のヒーローアカデミア", "ジムの常連レベル"], [308, "🥋", "ゴン=フリークス", "HUNTER×HUNTER", "ジムの常連レベル"], [315, "🥋", "キルア=ゾルディック", "HUNTER×HUNTER", "ジムの常連レベル"], [322, "🥋", "ウボォーギン", "HUNTER×HUNTER", "ジムの常連レベル"], [329, "🥋", "アイザック=ネテロ", "HUNTER×HUNTER", "ジムの常連レベル"], [336, "🥋", "春野サクラ", "NARUTO", "ジムの常連レベル"], [343, "🥋", "うずまきナルト", "NARUTO", "ジムの常連レベル"], [350, "⚔️", "うちはサスケ", "NARUTO", "戦える肉体"], [357, "⚔️", "ロック・リー", "NARUTO", "戦える肉体"], [364, "⚔️", "マイト・ガイ", "NARUTO", "戦える肉体"], [371, "⚔️", "黒崎一護", "BLEACH", "戦える肉体"], [378, "⚔️", "更木剣八", "BLEACH", "戦える肉体"], [385, "⚔️", "サンジ", "ONE PIECE", "戦える肉体"], [392, "⚔️", "ロロノア・ゾロ", "ONE PIECE", "戦える肉体"], [399, "⚔️", "フランキー", "ONE PIECE", "戦える肉体"], [406, "⚔️", "モンキー・D・ルフィ", "ONE PIECE", "戦える肉体"], [413, "⚔️", "ジンベエ", "ONE PIECE", "戦える肉体"], [420, "🔥", "白ひげ", "ONE PIECE", "ガチ勢の仲間入り"], [427, "🔥", "カイドウ", "ONE PIECE", "ガチ勢の仲間入り"], [434, "🔥", "孫悟飯", "ドラゴンボール", "ガチ勢の仲間入り"], [441, "🔥", "ピッコロ", "ドラゴンボール", "ガチ勢の仲間入り"], [448, "🔥", "ベジータ", "ドラゴンボール", "ガチ勢の仲間入り"], [455, "🔥", "孫悟空", "ドラゴンボール", "ガチ勢の仲間入り"], [462, "🔥", "ブロリー", "ドラゴンボール", "ガチ勢の仲間入り"], [469, "🔥", "ケンシロウ", "北斗の拳", "ガチ勢の仲間入り"], [476, "🔥", "ラオウ", "北斗の拳", "ガチ勢の仲間入り"], [483, "🔥", "空条承太郎", "ジョジョの奇妙な冒険", "ガチ勢の仲間入り"], [490, "💥", "ジョナサン・ジョースター", "ジョジョの奇妙な冒険", "怪物クラスのパワー"], [497, "💥", "DIO", "ジョジョの奇妙な冒険", "怪物クラスのパワー"], [504, "💥", "幕之内一歩", "はじめの一歩", "怪物クラスのパワー"], [511, "💥", "鷹村守", "はじめの一歩", "怪物クラスのパワー"], [518, "💥", "矢吹丈", "あしたのジョー", "怪物クラスのパワー"], [525, "💥", "力石徹", "あしたのジョー", "怪物クラスのパワー"], [532, "💥", "両津勘吉", "こちら葛飾区亀有公園前派出所", "怪物クラスのパワー"], [539, "💥", "ガッツ", "ベルセルク", "怪物クラスのパワー"], [546, "💥", "ジェノス", "ワンパンマン", "怪物クラスのパワー"], [553, "💥", "サイタマ", "ワンパンマン", "怪物クラスのパワー"], [560, "🦁", "キン肉マン", "キン肉マン", "規格外の強さ"], [567, "🦁", "神楽", "銀魂", "規格外の強さ"], [574, "🦁", "坂田銀時", "銀魂", "規格外の強さ"], [581, "🦁", "緋村剣心", "るろうに剣心", "規格外の強さ"], [588, "🦁", "志々雄真実", "るろうに剣心", "規格外の強さ"], [595, "🦁", "範馬刃牙", "グラップラー刃牙", "規格外の強さ"], [602, "🦁", "愚地独歩", "グラップラー刃牙", "規格外の強さ"], [609, "🦁", "花山薫", "グラップラー刃牙", "規格外の強さ"], [616, "🦁", "ビスケット・オリバ", "グラップラー刃牙", "規格外の強さ"], [623, "🦁", "ジャック・ハンマー", "グラップラー刃牙", "規格外の強さ"], [630, "👹", "宮本武蔵", "刃牙道", "伝説の領域"], [637, "👹", "ピクル", "範馬刃牙", "伝説の領域"], [644, "👹", "十鬼蛇王馬", "ケンガンアシュラ", "伝説の領域"], [651, "👹", "加納アギト", "ケンガンアシュラ", "伝説の領域"], [658, "👹", "黒木玄斎", "ケンガンアシュラ", "伝説の領域"], [665, "👹", "ビルス", "ドラゴンボール超", "伝説の領域"], [672, "👹", "ゴール・D・ロジャー", "ONE PIECE", "伝説の領域"], [679, "👹", "ジレン", "ドラゴンボール超", "伝説の領域"], [686, "👹", "全王", "ドラゴンボール超", "伝説の領域"], [693, "👹", "範馬勇次郎", "グラップラー刃牙", "伝説の領域"]];
+const BIG3=[["ベンチプレス"],["スクワット"],["デッドリフト"]];
+function renderChar(){const best=n=>Math.max(0,...T.filter(r=>r.ex===n).map(rm));
+ const parts=BIG3.map(([n])=>[n,best(n)]),tot=parts.reduce((s,x)=>s+x[1],0);
+ let i=CH.findLastIndex(c=>tot>=c[0]);const c=CH[i],nx=CH[i+1];
+ const pct=nx?Math.round((tot-c[0])/(nx[0]-c[0])*100):100,wins=CH.slice(0,i);
+ $("charCard").innerHTML=`<h3>漫画キャラでいうと今のあなたは…</h3>
+ <div class="chr"><div class="face">${c[1]}</div><div><div class="nm">${c[2]}</div><div class="sub">${c[3]}　「${c[4]}」　Lv.${i+1}/100</div>
+ <div class="sub">BIG3 推定1RM合計 <b>${tot}kg</b>（${parts.map(([n,v])=>n.replace("プレス","")+" "+v).join(" / ")}）</div></div></div>
+ ${nx?`<div class="pbar"><i style="width:${pct}%"></i></div><div class="sub">次は <b>${nx[1]} ${nx[2]}</b> まであと <b>${nx[0]-tot}kg</b></div>`:'<div class="sub" style="margin-top:8px">🏆 最強に到達！</div>'}
+ <div style="margin-top:10px;font-size:13px;font-weight:700">⚔️ 勝てるキャラ</div>
+ <div class="win">${wins.length?(wins.length>12?`<span>ほか${wins.length-12}人</span>`:"")+wins.slice(-12).reverse().map(w=>`<span>${w[1]} ${w[2]}</span>`).join(""):'<span>まだいません…ベンチ・スクワット・デッドリフトを記録しよう！</span>'}</div>
+ <div class="sub" style="margin-top:6px">※ベンチプレス・スクワット・デッドリフトの推定1RM合計で判定するお遊び機能です</div>`;}
+// 有名人の体型（公表されている身長・体重の目安）
+const CELEB=[["井上尚弥","ボクシング",165,55,"m"],["那須川天心","ボクシング",165,57,"m"],["井岡一翔","ボクシング",165,52,"m"],["中谷潤人","ボクシング",173,53,"m"],["村田諒太","ボクシング",183,75,"m"],["朝倉未来","格闘技",177,70,"m"],["朝倉海","格闘技",173,61,"m"],["堀口恭司","格闘技",165,61,"m"],["武尊","格闘技",168,60,"m"],["平本蓮","格闘技",176,66,"m"],["羽生結弦","フィギュア",172,57,"m"],["宇野昌磨","フィギュア",159,52,"m"],["鍵山優真","フィギュア",160,53,"m"],["高橋大輔","フィギュア",165,60,"m"],["内村航平","体操",162,52,"m"],["橋本大輝","体操",166,58,"m"],["萩野公介","水泳",177,71,"m"],["北島康介","水泳",178,72,"m"],["瀬戸大也","水泳",174,72,"m"],["入江陵介","水泳",178,65,"m"],["桐生祥秀","陸上",176,70,"m"],["サニブラウン","陸上",190,83,"m"],["大迫傑","陸上",170,53,"m"],["室伏広治","ハンマー投",187,99,"m"],["錦織圭","テニス",178,75,"m"],["西岡良仁","テニス",170,64,"m"],["石川遼","ゴルフ",175,70,"m"],["松山英樹","ゴルフ",181,90,"m"],["水谷隼","卓球",172,64,"m"],["張本智和","卓球",175,68,"m"],["石川祐希","バレー",191,84,"m"],["髙橋藍","バレー",188,74,"m"],["西田有志","バレー",186,87,"m"],["柳田将洋","バレー",186,80,"m"],["八村塁","バスケ",203,104,"m"],["渡邊雄太","バスケ",206,98,"m"],["河村勇輝","バスケ",172,68,"m"],["富樫勇樹","バスケ",167,65,"m"],["比江島慎","バスケ",191,88,"m"],["久保建英","サッカー",173,67,"m"],["三笘薫","サッカー",178,71,"m"],["本田圭佑","サッカー",182,76,"m"],["香川真司","サッカー",172,63,"m"],["長友佑都","サッカー",170,68,"m"],["吉田麻也","サッカー",189,87,"m"],["冨安健洋","サッカー",188,84,"m"],["南野拓実","サッカー",174,67,"m"],["遠藤航","サッカー",178,75,"m"],["堂安律","サッカー",172,70,"m"],["伊東純也","サッカー",176,68,"m"],["鎌田大地","サッカー",180,72,"m"],["中田英寿","サッカー",175,72,"m"],["三浦知良","サッカー",177,72,"m"],["川島永嗣","サッカー",185,82,"m"],["大谷翔平","野球",193,95,"m"],["ダルビッシュ有","野球",196,100,"m"],["佐々木朗希","野球",192,85,"m"],["村上宗隆","野球",188,97,"m"],["山本由伸","野球",178,80,"m"],["鈴木誠也","野球",181,90,"m"],["吉田正尚","野球",173,85,"m"],["千賀滉大","野球",186,91,"m"],["今永昇太","野球",178,80,"m"],["菊池雄星","野球",183,95,"m"],["イチロー","野球",180,77,"m"],["松井秀喜","野球",188,95,"m"],["田中将大","野球",188,97,"m"],["坂本勇人","野球",186,86,"m"],["柳田悠岐","野球",187,92,"m"],["山田哲人","野球",180,76,"m"],["岡本和真","野球",186,100,"m"],["近藤健介","野球",173,85,"m"],["宮城大弥","野球",171,80,"m"],["周東佑京","野球",180,68,"m"],["五郎丸歩","ラグビー",185,100,"m"],["リーチ マイケル","ラグビー",189,113,"m"],["稲垣啓太","ラグビー",186,116,"m"],["福岡堅樹","ラグビー",175,83,"m"],["松島幸太朗","ラグビー",178,88,"m"],["田村優","ラグビー",181,92,"m"],["姫野和樹","ラグビー",187,108,"m"],["堀江翔太","ラグビー",180,104,"m"],["流大","ラグビー",166,71,"m"],["具智元","ラグビー",183,122,"m"],["照ノ富士","相撲",192,180,"m"],["大の里","相撲",192,185,"m"],["豊昇龍","相撲",188,148,"m"],["霧島","相撲",186,145,"m"],["白鵬","相撲",192,155,"m"],["朝青龍","相撲",184,148,"m"],["遠藤","相撲",183,150,"m"],["宇良","相撲",174,140,"m"],["阿部一二三","柔道",168,66,"m"],["大野将平","柔道",170,73,"m"],["ウルフ・アロン","柔道",181,100,"m"],["斉藤立","柔道",191,165,"m"],["永瀬貴規","柔道",181,81,"m"],["高藤直寿","柔道",160,60,"m"],["文田健一郎","レスリング",168,60,"m"],["樋口黎","レスリング",163,57,"m"],["堀米雄斗","スケボー",169,57,"m"],["平野歩夢","スノーボード",165,60,"m"],["小林陵侑","スキージャンプ",173,60,"m"],["大坂なおみ","テニス",180,69,"f"],["伊達公子","テニス",163,53,"f"],["石川佳純","卓球",158,50,"f"],["伊藤美誠","卓球",152,50,"f"],["平野美宇","卓球",160,51,"f"],["早田ひな","卓球",166,58,"f"],["福原愛","卓球",155,45,"f"],["浅田真央","フィギュア",163,47,"f"],["坂本花織","フィギュア",159,52,"f"],["紀平梨花","フィギュア",154,44,"f"],["宮原知子","フィギュア",152,42,"f"],["安藤美姫","フィギュア",164,52,"f"],["荒川静香","フィギュア",166,54,"f"],["本田真凜","フィギュア",163,46,"f"],["高梨沙羅","スキージャンプ",152,45,"f"],["小平奈緒","スケート",165,60,"f"],["高木美帆","スケート",164,59,"f"],["高木菜那","スケート",155,48,"f"],["池江璃花子","水泳",171,57,"f"],["大橋悠依","水泳",174,53,"f"],["寺川綾","水泳",171,63,"f"],["鈴木聡美","水泳",173,58,"f"],["北口榛花","やり投",179,86,"f"],["田中希実","陸上",153,40,"f"],["福士加代子","陸上",161,45,"f"],["高橋尚子","マラソン",163,46,"f"],["野口みずき","マラソン",150,40,"f"],["福島千里","陸上",155,47,"f"],["寺田明日香","陸上",165,55,"f"],["新谷仁美","陸上",166,48,"f"],["吉田沙保里","レスリング",157,55,"f"],["伊調馨","レスリング",166,63,"f"],["登坂絵莉","レスリング",153,48,"f"],["須崎優衣","レスリング",152,50,"f"],["藤波朱理","レスリング",164,53,"f"],["阿部詩","柔道",158,52,"f"],["角田夏実","柔道",162,48,"f"],["素根輝","柔道",162,125,"f"],["谷亮子","柔道",146,48,"f"],["松本薫","柔道",160,57,"f"],["古賀紗理那","バレー",180,67,"f"],["石川真佑","バレー",174,63,"f"],["木村沙織","バレー",185,65,"f"],["荒木絵里香","バレー",186,70,"f"],["宮下遥","バレー",177,63,"f"],["関菜々巳","バレー",171,61,"f"],["町田瑠唯","バスケ",162,58,"f"],["渡嘉敷来夢","バスケ",193,85,"f"],["林咲希","バスケ",173,64,"f"],["宮崎早織","バスケ",167,58,"f"],["山本麻衣","バスケ",163,57,"f"],["髙田真希","バスケ",185,78,"f"],["澤穂希","サッカー",165,55,"f"],["川澄奈穂美","サッカー",157,52,"f"],["長谷川唯","サッカー",157,48,"f"],["熊谷紗希","サッカー",172,63,"f"],["岩渕真奈","サッカー",155,51,"f"],["宮間あや","サッカー",157,53,"f"],["大儀見優季","サッカー",168,58,"f"],["上野由岐子","ソフトボール",174,72,"f"],["渋野日向子","ゴルフ",167,62,"f"],["畑岡奈紗","ゴルフ",158,57,"f"],["宮里藍","ゴルフ",155,52,"f"],["古江彩佳","ゴルフ",153,52,"f"],["稲見萌寧","ゴルフ",166,60,"f"],["笹生優花","ゴルフ",166,68,"f"],["村上茉愛","体操",148,47,"f"],["寺本明日香","体操",147,40,"f"],["杉原愛子","体操",149,40,"f"],["宮田笙子","体操",153,48,"f"],["西矢椛","スケボー",150,40,"f"],["四十住さくら","スケボー",158,45,"f"],["中山楓奈","スケボー",149,40,"f"],["開心那","スケボー",145,35,"f"],["村瀬心椛","スノーボード",155,50,"f"],["岩渕麗楽","スノーボード",152,47,"f"],["竹内智香","スノーボード",170,62,"f"],["藤澤五月","カーリング",156,52,"f"],["吉田知那美","カーリング",166,55,"f"],["入江聖奈","ボクシング",160,57,"f"],["並木月海","ボクシング",152,51,"f"],["RENA","格闘技",160,52,"f"],["浅倉カンナ","格闘技",157,52,"f"],["山本美憂","格闘技",157,52,"f"],["野中生萌","クライミング",162,52,"f"],["森秋彩","クライミング",154,43,"f"],["伊藤ふたば","クライミング",162,50,"f"],["三宅宏実","重量挙げ",147,48,"f"],["安藤美希子","重量挙げ",157,59,"f"],["八木かなえ","重量挙げ",151,53,"f"],["清水希容","空手",163,58,"f"],["植草歩","空手",165,68,"f"],["鈴木亜由子","陸上",154,38,"f"],["一山麻緒","マラソン",157,40,"f"],["廣中璃梨佳","陸上",160,45,"f"],["伊藤華英","水泳",174,60,"f"],["鈴木明子","フィギュア",160,48,"f"],["樋口新葉","フィギュア",152,46,"f"],["三原舞依","フィギュア",159,45,"f"],["狩野舞子","バレー",185,64,"f"]];
+let sex=(()=>{try{return localStorage.getItem("gym_sex")||"a"}catch{return"a"}})();
+window.setSex=v=>{sex=v;try{localStorage.setItem("gym_sex",v)}catch{};renderCeleb()};
+function renderCeleb(){const l=[...B].reverse().find(r=>r.w),h=lastH();
+ const sw=`<div class="chips" style="margin-bottom:10px">${[["a","すべて"],["m","男性"],["f","女性"]].map(([k,n])=>`<button class="chip ${sex===k?"on":""}" onclick="setSex('${k}')">${n}</button>`).join("")}</div>`;
+ if(!l||!h){$("celebCard").innerHTML='<h3>有名人でいうと今の体型は…</h3>'+sw+'<div class="empty">「体」タブで身長と体重を入れると表示されます</div>';return}
+ const me=l.w/((h/100)**2),list=CELEB.filter(c=>sex==="a"||c[4]===sex).map(c=>({c,b:c[3]/((c[2]/100)**2)})).sort((x,y)=>Math.abs(x.b-me)+Math.abs(x.c[2]-h)/40-(Math.abs(y.b-me)+Math.abs(y.c[2]-h)/40));
+ const t=list[0];
+ $("celebCard").innerHTML=`<h3>有名人でいうと今の体型は…</h3>${sw}
+ <div class="chr"><div class="face">⭐</div><div><div class="nm">${t.c[0]}</div><div class="sub">${t.c[1]}　${t.c[2]}cm / ${t.c[3]}kg　BMI ${t.b.toFixed(1)}</div>
+ <div class="sub">あなた：${h}cm / ${l.w}kg　BMI <b>${me.toFixed(1)}</b></div></div></div>
+ <div style="margin-top:10px;font-size:13px;font-weight:700">ほかに近い人</div>
+ <div class="win">${list.slice(1,4).map(x=>`<span>${x.c[0]}（${x.c[1]}・BMI ${x.b.toFixed(1)}）</span>`).join("")}</div>
+ <div class="sub" style="margin-top:6px">※公表されている身長・体重の目安から計算。時期によって変わります</div>`;}
+window.selDay=k=>{selD=k;renderCal()};
+window.addOn=()=>{resetT();tab("train");$("tDate").value=selD;};
+
+const bmiOf=r=>r.h&&r.w?r.w/((r.h/100)**2):null;
+const lastH=()=>{for(let i=B.length-1;i>=0;i--)if(B[i].h)return B[i].h};
+const fmt=r=>r.p==="有酸素"?`${r.min||0}分${r.km?" / "+r.km+"km":""}`:`${r.w}kg × ${r.r}回 × ${r.s}セット`+(rm(r)?` ・1RM ${rm(r)}kg`:"");
+const rm=r=>r.w&&r.r&&r.p!=="有酸素"?Math.round(r.r===1?r.w:r.w*(1+r.r/30)):0;
+const vol=r=>r.p==="有酸素"?0:(r.w||0)*r.r*r.s;
+const dAgo=d=>(new Date(today())-new Date(d))/864e5;
+
+function stats(){
+ const days=new Set(T.map(r=>r.d));$("sDays").textContent=days.size;
+ const wk=T.filter(r=>dAgo(r.d)<7);$("sWeek").textContent=new Set(wk.map(r=>r.d)).size;
+ $("sVol").textContent=(wk.reduce((s,r)=>s+vol(r),0)/1000).toFixed(1);
+ const l=B[B.length-1],b=l&&bmiOf({h:l.h||lastH(),w:l.w});$("sBmi").textContent=b?b.toFixed(1):"-";
+}
+
+// training
+function renderT(){T.sort((a,b)=>a.d<b.d?1:-1);let h="",pd="";
+ T.forEach((r,i)=>{if(r.d!==pd){h+=`<div class="dh">📅 ${r.d}</div>`;pd=r.d}
+  h+=`<div class="log"><div class="ico">${PI[r.p]||"🏋️"}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
+  <button class="sm" onclick="editT(${i})">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`});
+ $("tList").innerHTML=h||'<div class="empty">まだ記録がありません</div>';stats();}
+$("tSave").onclick=()=>{if(!cur)return alert("種目を選んでください");
+ const e=EX.find(x=>x[0]===cur)||[cur,part,""],c=e[1]==="有酸素";
+ const r={d:$("tDate").value,p:e[1],eq:e[2],ex:cur,w:+$("tW").value||0,r:+$("tR").value||0,s:+$("tS").value||1,min:+$("tMin").value||0,km:+$("tKm").value||0,m:$("tMemo").value};
+ if(!c&&!r.r)return alert("回数を入力してください");if(c&&!r.min)return alert("時間を入力してください");
+ tEdit!==null?T[tEdit]=r:T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();};
+window.editT=i=>{const r=T[i];tEdit=i;cur=r.ex;part=r.p;eq="すべて";$("tDate").value=r.d;$("tW").value=r.w||"";$("tR").value=r.r||"";$("tS").value=r.s||"";$("tMin").value=r.min||"";$("tKm").value=r.km||"";upRm();$("tMemo").value=r.m||"";
+ $("tTitle").textContent="✏️ 記録を修正";$("tCancel").classList.remove("hidden");renderPicker();scrollTo(0,0)};
+window.delT=i=>ask("この記録を削除しますか？",()=>{T.splice(i,1);sv("gym_t",T);renderT();renderCal()});
+function resetT(){tEdit=null;["tW","tR","tMin","tKm","tRm","tMemo"].forEach(k=>$(k).value="");$("tTitle").textContent="トレーニングを記録";$("tCancel").classList.add("hidden")}
+$("tCancel").onclick=()=>{resetT();renderPicker()};
+
+// body
+const BF=[["h","bH","身長","cm"],["w","bWt","体重","kg"],["f","bF","体脂肪","%"],["ar","bAR","腕右","cm"],["al","bAL","腕左","cm"]];
+function bmiJ(v){return v<18.5?["低体重","#3b82f6"]:v<25?["普通体重","#10b981"]:v<30?["肥満(1度)","#f59e0b"]:["肥満(2度以上)","#ef4444"]}
+function renderB(){B.sort((a,b)=>a.d<b.d?-1:1);
+ const l=B[B.length-1],v=l&&bmiOf({h:l.h||lastH(),w:l.w});
+ $("bmi").textContent=v?v.toFixed(1):"-";
+ if(v){const[j,c]=bmiJ(v);$("bmiJ").textContent=j;$("bmiJ").style.background=c}else $("bmiJ").textContent="";
+ $("bList").innerHTML=B.map((r,i)=>[r,i]).reverse().map(([r,i])=>{const b=bmiOf({h:r.h||lastH(),w:r.w});
+  return `<div class="log"><div class="ico">📏</div><div class="t"><b>${r.d}${b?"　BMI "+b.toFixed(1):""}</b><span>${BF.filter(f=>r[f[0]]).map(f=>f[2]+" "+r[f[0]]+f[3]).join(" ・ ")}</span></div>
+  <button class="sm" onclick="editB(${i})">修正</button><button class="sm" onclick="delB(${i})">削除</button></div>`}).join("")||'<div class="empty">まだ記録がありません</div>';stats();}
+$("bSave").onclick=()=>{const r={d:$("bDate").value};BF.forEach(f=>r[f[0]]=+$(f[1]).value||null);
+ bEdit!==null?B[bEdit]=r:B.push(r);sv("gym_b",B);resetB();renderB();};
+window.editB=i=>{const r=B[i];bEdit=i;$("bDate").value=r.d;BF.forEach(f=>$(f[1]).value=r[f[0]]||"");
+ $("bTitle").textContent="✏️ 記録を修正";$("bCancel").classList.remove("hidden");scrollTo(0,0)};
+window.delB=i=>ask("この記録を削除しますか？",()=>{B.splice(i,1);sv("gym_b",B);renderB()});
+function resetB(){bEdit=null;BF.slice(1).forEach(f=>$(f[1]).value="");$("bTitle").textContent="体の記録";$("bCancel").classList.add("hidden")}
+$("bCancel").onclick=resetB;
+
+// graphs
+const COL=["#2563eb","#38bdf8","#10b981","#3b82f6","#8b5cf6","#ec4899","#14b8a6"];
+function bar(id,labels,sets){charts.push(new Chart($(id),{type:"bar",data:{labels,datasets:sets.map(s=>({borderRadius:6,...s}))},options:{responsive:true,plugins:{legend:{labels:{boxWidth:12}}}}}))}
+function drawAll(){charts.forEach(c=>c.destroy());charts=[];
+ const exs=[...new Set(T.filter(r=>r.p!=="有酸素").map(r=>r.ex))],c=$("gEx").value;
+ $("gEx").innerHTML=exs.map(e=>`<option>${e}</option>`).join("");if(exs.includes(c))$("gEx").value=c;
+ const ex=$("gEx").value,days={};T.filter(r=>r.ex===ex).forEach(r=>days[r.d]=Math.max(days[r.d]||0,r.w));
+ const dk=Object.keys(days).sort();const rmd={};T.filter(r=>r.ex===ex).forEach(r=>rmd[r.d]=Math.max(rmd[r.d]||0,rm(r)));
+ bar("c1",dk,[{label:ex+" 最大重量(kg)",data:dk.map(d=>days[d]),backgroundColor:COL[0]},{label:"推定1RM(kg)",data:dk.map(d=>rmd[d]),backgroundColor:COL[1]}]);
+ const ps=PARTS.filter(p=>p!=="有酸素"),pv={};T.forEach(r=>pv[r.p]=(pv[r.p]||0)+vol(r));
+ bar("c2",ps,[{label:"総ボリューム(kg)",data:ps.map(p=>pv[p]||0),backgroundColor:ps.map((_,i)=>COL[i])}]);
+ const dv={};T.forEach(r=>dv[r.d]=(dv[r.d]||0)+vol(r));const dd=Object.keys(dv).sort().slice(-30);
+ bar("c6",dd,[{label:"ボリューム(kg)",data:dd.map(d=>dv[d]),backgroundColor:COL[1]}]);
+ const bd=B.map(r=>r.d);
+ bar("c3",bd,[{label:"体重(kg)",data:B.map(r=>r.w),backgroundColor:COL[0]},{label:"体脂肪率(%)",data:B.map(r=>r.f),backgroundColor:COL[1]}]);
+ bar("c4",bd,[{label:"BMI",data:B.map(r=>{const b=bmiOf({h:r.h||lastH(),w:r.w});return b&&+b.toFixed(1)}),backgroundColor:COL[2]}]);
+ bar("c5",bd,[{label:"右腕(cm)",data:B.map(r=>r.ar),backgroundColor:COL[3]},{label:"左腕(cm)",data:B.map(r=>r.al),backgroundColor:COL[4]}]);}
+$("gEx").onchange=drawAll;
+
+// advice
+function advise(){const a=[];
+ if(!T.length)a.push("🔰 まだ記録がありません。まずはマシン（チェストプレス・ラットプルダウン・レッグプレス）で全身を週2回から始めましょう。");
+ else{
+  const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.d});
+  const days=new Set(T.filter(r=>dAgo(r.d)<7).map(r=>r.d)).size;
+  a.push(`📅 直近7日のトレーニング：<b>${days}日</b>。`+(days<2?"週2〜3回を目標にしましょう。":days>5?"休養日も成長に必要。週1〜2日は休みましょう。":"良いペースです！"));
+  const todo=["胸","背中","脚","肩","腕"].map(p=>[p,lp[p]?dAgo(lp[p]):999]).sort((x,y)=>y[1]-x[1]);
+  const [p,g]=todo[0],sug=EX.filter(e=>e[1]===p);
+  a.push(`🎯 <b>次のおすすめ：${PI[p]} ${p}</b>（${g>=999?"まだ未実施":Math.floor(g)+"日空いています"}）<br>例：${[sug[0],sug.find(e=>e[2]==="マシン"),sug.find(e=>e[2]==="ケーブル"||e[2]==="ダンベル")].filter(Boolean).map(e=>e[0]).join(" → ")}`);
+  todo.filter(([,g])=>g<2).forEach(([p])=>a.push(`😴 ${p}は48時間以内に鍛えています。回復のため今日は避けましょう。`));
+  const sets={};T.filter(r=>dAgo(r.d)<14).forEach(r=>sets[r.p]=(sets[r.p]||0)+r.s);
+  const up=(sets["胸"]||0)+(sets["肩"]||0)+(sets["腕"]||0),lo=sets["脚"]||0;
+  if(up>lo*2&&up>6)a.push("⚖️ 上半身に偏っています。レッグプレスやスクワットで脚も鍛えると代謝が上がります。");
+  if((sets["胸"]||0)>(sets["背中"]||0)*1.5&&sets["胸"]>4)a.push("⚖️ 胸に比べて背中が少なめ。ラットプルダウン・シーテッドロウで姿勢改善を。");
+  if(!T.some(r=>r.p==="有酸素"&&dAgo(r.d)<14))a.push("🏃 2週間有酸素運動がありません。トレ後にトレッドミルやバイク15〜20分がおすすめ。");
+  [...new Set(T.filter(r=>r.p!=="有酸素").map(r=>r.ex))].forEach(ex=>{const rs=T.filter(r=>r.ex===ex).sort((x,y)=>x.d<y.d?-1:1),l=rs[rs.length-1];
+   if(l.w&&l.r>=12)a.push(`📈 ${ex}：${l.w}kgで${l.r}回達成！次回は<b>${l.w+2.5}kg</b>で8〜10回を目指しましょう。`);
+   else if(rs.length>=3&&rs.slice(-3).every(r=>r.w===l.w&&r.r<=l.r)&&l.w)a.push(`🧱 ${ex}：3回連続停滞中。重量を10%下げてフォーム確認、または器具を変えて刺激を変えましょう。`);
+   const best=Math.max(...rs.map(rm));if(best)a.push(`🏆 ${ex}：推定1RM <b>${best}kg</b>。筋肥大なら${Math.round(best*.75)}kg×8〜10回、筋力アップなら${Math.round(best*.85)}kg×5回が目安。`);});
+ }
+ const l=B[B.length-1];
+ if(l){const b=bmiOf({h:l.h||lastH(),w:l.w});
+  if(b>=25)a.push(`🔥 BMI ${b.toFixed(1)}：脚・背中の大筋群＋有酸素20〜30分で脂肪燃焼を狙いましょう。`);
+  if(b&&b<18.5)a.push(`🍚 BMI ${b.toFixed(1)}：たんぱく質（体重×1.6〜2g/日）と総カロリーを増やしましょう。`);
+  if(l.ar&&l.al&&Math.abs(l.ar-l.al)>=1)a.push("💪 左右の腕周囲に1cm以上の差。ダンベル種目で弱い側から始めましょう。");
+  if(B.length>=2){const p=B[B.length-2];if(l.f&&p.f)a.push(`📉 体脂肪率は前回比 <b>${(l.f-p.f>=0?"+":"")+(l.f-p.f).toFixed(1)}%</b>。`);}
+ }else a.push("📏 「体」タブで身長・体重を入れると、より具体的なアドバイスが出ます。");
+ $("adv").innerHTML=a.map(x=>`<li>${x}</li>`).join("");}
+
+// daily menu generator
+let mode="auto",MENU=[];
+$("mMode").onclick=e=>{const b=e.target.closest("[data-m]");if(b){mode=b.dataset.m;document.querySelectorAll("#mMode .chip").forEach(x=>x.classList.toggle("on",x===b));genMenu()}};
+const pick=(arr,n)=>[...arr].sort(()=>Math.random()-.5).slice(0,n);
+function suggest(ex){const rs=T.filter(r=>r.ex===ex).sort((a,b)=>a.d<b.d?1:-1),l=rs[0];
+ if(!l)return{w:0,r:10,s:3,note:"初回：軽めの重量で10回×3セット"};
+ if(l.r>=12)return{w:l.w+2.5,r:8,s:l.s,note:"前回12回以上 → 重量アップ"};
+ return{w:l.w,r:Math.min(l.r+1,12),s:l.s,note:"前回より+1回を目標"};}
+function genMenu(){const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.d});
+ const rest=["胸","背中","脚","肩","腕"].map(p=>[p,lp[p]?dAgo(lp[p]):999]).sort((x,y)=>y[1]-x[1]+Math.random()*.5-.25).filter(([,g])=>g>=2).map(x=>x[0]);
+ let plan=[];// [part,count]
+ if(mode==="full"||!T.length)plan=[["胸",1],["背中",1],["脚",1],["肩",1],["腹",1]];
+ else if(mode==="short")plan=[[rest[0]||"脚",3]];
+ else{const a=rest[0]||"脚",pair={胸:"腕",背中:"腕",脚:"腹",肩:"腕",腕:"肩"};plan=[[a,3],[rest.find(p=>p!==a&&p===pair[a])||pair[a],2]];}
+ const used=new Set();MENU=[];
+ plan.forEach(([p,n])=>{const pool=EX.filter(e=>e[1]===p);const fb=pool.filter(e=>e[2]==="バーベル"||e[2]==="マシン");
+  const first=pick(fb.length?fb:pool,1);const rest2=pick(pool.filter(e=>!first.includes(e)),n-1);
+  [...first,...rest2].forEach(e=>{if(!used.has(e[0])){used.add(e[0]);MENU.push({e,...suggest(e[0])})}})});
+ if(mode!=="short")MENU.push({e:pick(EX.filter(e=>e[1]==="有酸素"),1)[0],cardio:true});
+ $("menu").innerHTML=MENU.map((m,i)=>`<div class="log"><div class="ico">${PI[m.e[1]]}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
+  <span>${m.cardio?"20分（会話できる強度で）":`${m.w?m.w+"kg":"重量は様子見"} × ${m.r}回 × ${m.s}セット ・ ${m.note}`}</span></div>
+  <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn" onclick="logAll()">✅ 全部この内容で記録</button>`;}
+window.useMenu=i=>{const m=MENU[i];resetT();cur=m.e[0];part=m.e[1];eq="すべて";
+ if(m.cardio)$("tMin").value=20;else{$("tW").value=m.w||"";$("tR").value=m.r;$("tS").value=m.s}
+ renderPicker();document.querySelector('.tabbar [data-t="train"]').click();};
+window.logAll=()=>ask("メニュー通りに今日の記録として保存しますか？（後から修正できます）",()=>{
+ MENU.forEach(m=>T.push(m.cardio?{d:today(),p:"有酸素",eq:"有酸素",ex:m.e[0],min:20,km:0,w:0,r:0,s:1}:{d:today(),p:m.e[1],eq:m.e[2],ex:m.e[0],w:m.w,r:m.r,s:m.s,m:"おまかせメニュー"}));
+ sv("gym_t",T);renderT();alert("保存しました！");});
+$("mGen").onclick=genMenu;
+
+const h=new Date().getHours();$("hello").textContent=(h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"！今日もナイスバルク💪";
+renderPicker();renderT();renderB();renderCal();
+function upRm(){const v=rm({w:+$("tW").value,r:+$("tR").value,p:""});$("tRm").value=v?v+" kg":""}
+$("tW").oninput=$("tR").oninput=upRm;
+</script>
