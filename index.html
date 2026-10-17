@@ -563,7 +563,8 @@ renderPicker();renderT();renderB();renderCal();
 if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="<b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://yuji2069807165433243-tech.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
 // ---- Googleアカウント同期（Firebase） ----
 // Firebaseコンソールの「ウェブアプリの設定」の値をここに入れる
-const FIREBASE_CONFIG=null;
+const FIREBASE_CONFIG={apiKey:"AIzaSyDwO1SrbcYk3kz_ccvrFErd03temuOrDLs",authDomain:"musculars-414b5.firebaseapp.com",projectId:"musculars-414b5",
+ storageBucket:"musculars-414b5.firebasestorage.app",messagingSenderId:"433719541963",appId:"1:433719541963:web:a76bd97735ba050b7cdb4e"};
 let fbUser=null,fdb=null,saveT=null;
 function syncUI(msg,btn,fn){$("syncMsg").innerHTML=msg;const b=$("syncBtn");b.hidden=!btn;if(btn){b.textContent=btn;b.onclick=fn}}
 function cloudSave(){if(!fbUser||!fdb)return;clearTimeout(saveT);saveT=setTimeout(()=>{
