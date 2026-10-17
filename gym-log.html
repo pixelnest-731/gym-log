@@ -591,14 +591,14 @@ const WC={"SLAM DUNK":["#e4002b","#fff"],"鬼滅の刃":["#2e8b57","#fff"],"ONE 
 "鋼の錬金術師":["#b8860b","#fff"],"呪術廻戦":["#3b0a8f","#fff"],"東京リベンジャーズ":["#111","#fff"],"キングダム":["#a0522d","#fff"]};
 function showQuote(){const [q,c,w]=allQ()[qi],col=WC[w]||["#d4a017","#111"],h=$("hello");
  h.style.setProperty("--qc",col[0]);h.style.setProperty("--qt",col[1]);
- h.innerHTML=`<span class="q ${q.length>28?"long":""}">${q}</span><span class="qs"><span class="wk">${w||"MY QUOTE"}</span>${c||""}<span class="qnav"><button data-q="-1" aria-label="前の名言">◀ 戻る</button>${qp!==qToday?`<button data-q="t">今日</button>`:""}<button data-q="1" aria-label="次の名言">次へ ▶</button></span></span>`;
+ h.innerHTML=`<span class="q ${q.length>28?"long":""}">${q}</span><span class="qs"><span class="wk">${w||"MY QUOTE"}</span>${c||""}<span class="qnav"><button data-q="-1" aria-label="前の名言">◀ 戻る</button>${qp!==qToday?`<button data-q="t">今日</button>`:""}<button data-q="1" aria-label="次の名言">次へ ▶</button><button data-q="add" aria-label="名言を追加">＋追加</button></span></span>`;
  h.style.animation="none";void h.offsetWidth;h.style.animation=""}
 function renderMyQ(){$("qCount").textContent=allQ().length;$("qMine").innerHTML=myQ.map((x,i)=>`<div class="log"><div class="t"><b>「${x[0]}」</b><span>${x[1]}（${x[2]}）</span></div><button class="sm" onclick="delQ(${i})">削除</button></div>`).join("")}
 $("qAdd").onclick=()=>{const q=[$("qText").value.trim(),$("qChar").value.trim(),$("qWork").value.trim()];if(!q[0])return alert("名言を入力してください");
  myQ.push(q);try{localStorage.setItem("gym_q",JSON.stringify(myQ))}catch{};["qText","qChar","qWork"].forEach(k=>$(k).value="");QO=qOrder();renderMyQ();alert("名言を追加しました ")};
 window.delQ=i=>ask("この名言を削除しますか？",()=>{myQ.splice(i,1);try{localStorage.setItem("gym_q",JSON.stringify(myQ))}catch{};QO=qOrder();qp%=QO.length;qi=QO[qp];renderMyQ();showQuote()});
 renderMyQ();
-$("hello").onclick=e=>{const b=e.target.closest("[data-q]");if(!b)return qMove(1);e.stopPropagation();const v=b.dataset.q;v==="t"?(qp=qToday,qi=QO[qp],showQuote()):qMove(+v)};showQuote();
+$("hello").onclick=e=>{const b=e.target.closest("[data-q]");if(!b)return qMove(1);e.stopPropagation();const v=b.dataset.q;if(v==="add"){tab("advice");setTimeout(()=>{$("qText").scrollIntoView({block:"center"});$("qText").focus()},50);return}v==="t"?(qp=qToday,qi=QO[qp],showQuote()):qMove(+v)};showQuote();
 renderPicker();renderT();renderB();renderCal();
 
 // ---- お気に入りセット ----
