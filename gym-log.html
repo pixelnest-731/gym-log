@@ -1,12 +1,12 @@
 <title>MUSCULARS</title>
 <meta name="apple-mobile-web-app-title" content="MUSCULARS">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;700;900&display=swap">
 <style>
-:root{--bg:#f2f4f8;--card:#fff;--fg:#151a24;--mut:#6b7280;--ac:#2563eb;--ac2:#38bdf8;--bd:#e6e8ee;--sh:0 4px 18px rgba(20,30,60,.08);--chip:#f1f3f7}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1015;--card:#181b23;--fg:#eceef3;--mut:#9aa1ad;--bd:#272b36;--sh:0 4px 18px rgba(0,0,0,.4);--chip:#222632;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0e1015;--card:#181b23;--fg:#eceef3;--mut:#9aa1ad;--bd:#272b36;--sh:0 4px 18px rgba(0,0,0,.4);--chip:#222632;color-scheme:dark}
+:root{--bg:#0b0d10;--card:#15181d;--fg:#f1f3f6;--mut:#8b93a1;--ac:#2f7bff;--ac2:#00d4ff;--bd:#262b33;--sh:0 6px 24px rgba(0,0,0,.45);--chip:#1f242c;--steel:#c9d1dc;color-scheme:dark;
+ --disp:"Bebas Neue","Oswald",Impact,"Arial Narrow",sans-serif;--body:"Noto Sans JP",system-ui,-apple-system,"Hiragino Sans",sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;padding-bottom:84px}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);padding-bottom:84px}
 header{background:linear-gradient(135deg,#1e40af,#2563eb 55%,#38bdf8);color:#fff;padding:22px 16px 56px;position:relative;overflow:hidden}
 header::after{content:"🏋️";position:absolute;right:-10px;top:-10px;font-size:120px;opacity:.15}
 header h1{margin:0;font-size:22px;letter-spacing:.05em}
@@ -86,8 +86,54 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .evrow{margin-top:12px}.evh{display:flex;justify-content:space-between;font-size:13px}.evh span{color:var(--mut);font-variant-numeric:tabular-nums}.evrow .pbar{margin:4px 0}
 .w.sun{color:#ef4444}.w.sat{color:#2563eb}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
+
+/* ===== MUSCULARS theme ===== */
+[hidden]{display:none!important}
+body{background:radial-gradient(1200px 500px at 80% -10%,rgba(47,123,255,.18),transparent 60%),var(--bg)}
+header{background:linear-gradient(160deg,#0a1a3a 0%,#0d2c6b 45%,#1650d8 100%);padding:26px 16px 110px;border-bottom:3px solid var(--ac2)}
+header::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.04) 0 10px,transparent 10px 20px);pointer-events:none}
+header::after{content:none}
+header h1{font-family:var(--disp);font-size:46px;font-weight:400;letter-spacing:.06em;line-height:1;position:relative;text-shadow:0 3px 0 rgba(0,0,0,.35)}
+header h1 span{color:var(--ac2)}
+header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(100% - 130px)}
+.hero-art{position:absolute;right:10px;top:62px;width:170px;height:150px;opacity:.95;pointer-events:none}
+@media(max-width:420px){.hero-art{width:120px;height:106px;top:70px}}
+.homebtn{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.25)}
+.stat{background:linear-gradient(180deg,#1a1f27,#13161b);border:1px solid var(--bd);text-align:left;padding:12px 14px}
+.stat .v{font-family:var(--disp);font-size:34px;font-weight:400;color:#fff;line-height:1}
+.stat .l{letter-spacing:.06em;font-weight:700}
+.card{border:1px solid var(--bd);border-radius:14px}
+.card h3{font-family:var(--body);font-weight:900;letter-spacing:.04em;font-size:15px}
+.card h3::before{width:6px;height:20px;border-radius:1px;background:var(--ac2);transform:skewX(-15deg)}
+.btn,.chip.on{background:linear-gradient(135deg,#1650d8,var(--ac));box-shadow:0 4px 16px rgba(47,123,255,.35);letter-spacing:.04em}
+.btn{border-radius:10px;text-transform:uppercase}
+.btn.gray{background:#2a2f38}
+.bigbtn{position:relative;overflow:hidden;text-align:left;padding:20px 20px 20px 92px;border-radius:14px;background:linear-gradient(120deg,#1650d8,#2f7bff 60%,#00b4ff);font-family:var(--body);font-weight:900;letter-spacing:.03em}
+.bigbtn::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.07) 0 8px,transparent 8px 16px)}
+.bigbtn svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:62px;height:62px}
+.ex.on{background:rgba(47,123,255,.15)}
+.cal .d{background:#12151a}.cal .d.has{background:rgba(47,123,255,.18);border-color:rgba(47,123,255,.35)}
+.cal .d.t .n{background:var(--ac2);color:#001}
+.calh b{font-family:var(--disp);font-size:28px;font-weight:400;letter-spacing:.06em}
+.rank{font-family:var(--disp);font-size:44px;font-weight:400;border-radius:12px;transform:skewX(-6deg)}
+.score{font-family:var(--disp);font-size:52px;font-weight:400;line-height:1}
+.tabbar{background:#0f1216;border-top:1px solid var(--bd)}
+.tabbar button.on{color:var(--ac2)}
+.pbar i{background:linear-gradient(90deg,#1650d8,var(--ac2))}
+.coach{border-left:4px solid var(--ac2)}
+.ico{background:#1f242c}
+.foot-art{display:block;margin:8px auto 0;width:100%;max-width:520px;opacity:.5}
 </style>
-<header><button class="homebtn" onclick="goHome()">🏠 ホーム</button><h1 onclick="goHome()" style="cursor:pointer">MUSCULARS</h1><p id="hello">今日もナイスバルク！💪</p></header>
+<header><button class="homebtn" onclick="goHome()">🏠 ホーム</button><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello">今日もナイスバルク！💪</p><svg class="hero-art" viewBox="0 0 170 150" aria-hidden="true">
+ <g fill="none" stroke="#9fc3ff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+  <line x1="12" y1="28" x2="158" y2="28" stroke="#e8eef8" stroke-width="5"/>
+  <path d="M60 28 L68 58 L85 66 L102 58 L110 28"/>
+  <path d="M85 66 L85 102"/>
+  <path d="M85 102 L66 122 L62 146 M85 102 L104 122 L108 146"/>
+ </g>
+ <circle cx="85" cy="50" r="10" fill="#9fc3ff"/>
+ <g fill="#00d4ff"><rect x="10" y="10" width="12" height="36" rx="3"/><rect x="24" y="15" width="8" height="26" rx="2"/><rect x="148" y="10" width="12" height="36" rx="3"/><rect x="138" y="15" width="8" height="26" rx="2"/></g>
+</svg></header>
 <main>
 <div class="stats">
  <div class="stat"><div class="v" id="sDays">0</div><div class="l">総トレ日数</div></div>
@@ -98,7 +144,7 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 
 <section id="home">
  <div class="card sync" id="syncCard"><div class="sub" id="syncMsg">☁️ 読み込み中…</div><button class="sm" id="syncBtn" hidden></button></div>
- <button class="bigbtn" onclick="goMenu()">🎲 今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
+ <button class="bigbtn" onclick="goMenu()"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><rect x="4" y="22" width="8" height="20" rx="2"/><rect x="13" y="16" width="8" height="32" rx="2"/><rect x="43" y="16" width="8" height="32" rx="2"/><rect x="52" y="22" width="8" height="20" rx="2"/><rect x="21" y="29" width="22" height="6" rx="2"/></g></svg>🎲 今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
  <div class="card">
   <div class="calh"><button class="sm" onclick="mv(-1)">◀</button><b id="calM"></b><button class="sm" onclick="mv(1)">▶</button></div>
   <div class="cal" id="cal"></div>
@@ -362,6 +408,7 @@ $("bCancel").onclick=resetB;
 
 // graphs
 const COL=["#2563eb","#38bdf8","#10b981","#3b82f6","#8b5cf6","#ec4899","#14b8a6"];
+try{Chart.defaults.color="#8b93a1";Chart.defaults.borderColor="#262b33";Chart.defaults.font.family="Noto Sans JP, sans-serif"}catch{}
 function bar(id,labels,sets){charts.push(new Chart($(id),{type:"bar",data:{labels,datasets:sets.map(s=>({borderRadius:6,...s}))},options:{responsive:true,plugins:{legend:{labels:{boxWidth:12}}}}}))}
 function drawAll(){charts.forEach(c=>c.destroy());charts=[];
  const exs=[...new Set(T.filter(r=>r.p!=="有酸素").map(r=>r.ex))],c=$("gEx").value;
