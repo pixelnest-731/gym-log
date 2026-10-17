@@ -92,6 +92,12 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.grip{flex:none;width:22px;height:40px;display:flex;flex-direction:column;justify-content:center;gap:4px;cursor:grab;touch-action:none;padding:0 3px}
+.grip i{display:block;height:2px;border-radius:2px;background:var(--mut)}
+.fitem .grip{height:30px}
+.dragging{position:fixed;z-index:60;pointer-events:none;background:var(--card);border:1px solid var(--ac)!important;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.6);transform:scale(1.03);padding-left:6px;padding-right:6px}
+.ghost{opacity:.25;border:1px dashed var(--ac)!important;border-radius:12px}
+
 .mv{display:flex;flex-direction:column;gap:2px}.mv button{border:1px solid var(--bd);background:var(--chip);color:var(--fg);width:30px;height:20px;border-radius:6px;font-size:9px;line-height:1;cursor:pointer;padding:0}
 .mv button:active{background:var(--ac);color:#111}
 .favs{display:flex;flex-wrap:wrap;gap:8px}
@@ -380,8 +386,8 @@ function renderCal(){const y=calD.getFullYear(),m=calD.getMonth();$("calM").text
  $("cal").innerHTML=h;$("legend").innerHTML=Object.keys(PI).map(p=>`<span class="lg"><i class="dot" style="background:${PCOL[p]}"></i>${p}</span>`).join("");
  const rs=T.map((r,i)=>[r,i]).filter(([r])=>r.d===selD),v=rs.reduce((s,[r])=>s+vol(r),0);
  renderEval();$("dayT").textContent=`${selD} の記録`+(rs.length?`（${rs.length}種目・${v}kg）`:"");
- $("dayList").innerHTML=rs.map(([r,i])=>`<div class="log"><div class="ico">${pb(r.p)}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
-  <span class="mv"><button onclick="mvRec(${i},-1)" aria-label="上へ">▲</button><button onclick="mvRec(${i},1)" aria-label="下へ">▼</button></span><button class="sm" onclick="editT(${i});tab('train')">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`).join("")||'<div class="empty">この日の記録はありません</div>';
+ $("dayList").innerHTML=rs.map(([r,i])=>`<div class="log" data-k="${i}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(r.p)}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
+  <button class="sm" onclick="editT(${i});tab('train')">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`).join("")||'<div class="empty">この日の記録はありません</div>';
  $("copyDay").hidden=!(rs.length&&selD!==today());}
 // その日の評価（トレーナーコメント）
 function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="有酸素"),cardio=rs.filter(r=>r.p==="有酸素");
@@ -562,9 +568,9 @@ function genMenu(){const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.
   [...first,...rest2].forEach(e=>{if(!used.has(e[0])){used.add(e[0]);MENU.push({e,...suggest(e[0])})}})});
  if(mode!=="short")MENU.push({e:pick(EX.filter(e=>e[1]==="有酸素"),1)[0],cardio:true});
  renderMenu();}
-function renderMenu(){ $("menu").innerHTML=MENU.map((m,i)=>`<div class="log"><div class="ico">${pb(m.e[1])}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
+function renderMenu(){ $("menu").innerHTML=MENU.map((m,i)=>`<div class="log" data-k="${i}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(m.e[1])}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
   <span>${m.cardio?"20分（会話できる強度で）":`${m.w?m.w+"kg":"重量は様子見"} × ${m.r}回 × ${m.s}セット ・ ${m.note}`}</span></div>
-  <span class="mv"><button onclick="mvMenu(${i},-1)" aria-label="上へ">▲</button><button onclick="mvMenu(${i},1)" aria-label="下へ">▼</button></span><button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn gray" onclick="saveMenuAsFav()">このメニューをお気に入りに保存</button> <button class="btn" onclick="logAll()">全部この内容で記録</button>`;}
+  <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn gray" onclick="saveMenuAsFav()">このメニューをお気に入りに保存</button> <button class="btn" onclick="logAll()">全部この内容で記録</button>`;}
 window.mvMenu=(i,d)=>{const j=i+d;if(j<0||j>=MENU.length)return;[MENU[i],MENU[j]]=[MENU[j],MENU[i]];renderMenu()};
 window.useMenu=i=>{const m=MENU[i];resetT();cur=m.e[0];part=m.e[1];eq="すべて";
  if(m.cardio)$("tMin").value=20;else{SETS=Array.from({length:m.s},()=>({w:m.w||"",r:m.r,m:""}));renderSets()}
@@ -616,7 +622,7 @@ function renderFav(){
  if(favSel==null||!R[favSel]){$("favPlan").innerHTML=R.length?"":'<div class="sub" style="margin-top:8px">よくやるメニューをセットにして名前をつけておくと、ボタン1つで今日のプランになります。</div>';return}
  const r=R[favSel];
  $("favPlan").innerHTML=`<div class="plan"><div class="planh"><b>今日のセット：${r.name}</b><button class="sm" onclick="editFav(${favSel})">編集</button><button class="sm" onclick="delFav(${favSel})">削除</button></div>`+
-  PLAN.map((it,k)=>`<div class="log"><div class="ico">${pb(exInfo(it.ex)[1])}</div><div class="t"><b>${k+1}. ${it.ex}</b><span>${setsTxt(it)}</span></div><span class="mv"><button onclick="mvPlan(${k},-1)" aria-label="上へ">▲</button><button onclick="mvPlan(${k},1)" aria-label="下へ">▼</button></span><button class="sm" onclick="favUse(${k})">記録へ</button></div>`).join("")+(JSON.stringify(PLAN.map(x=>x.ex))!==JSON.stringify(r.items.map(x=>x.ex))?`<button class="btn gray" onclick="savePlanOrder()">この順番をセットに保存</button> `:"")+
+  PLAN.map((it,k)=>`<div class="log" data-k="${k}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(exInfo(it.ex)[1])}</div><div class="t"><b>${k+1}. ${it.ex}</b><span>${setsTxt(it)}</span></div><button class="sm" onclick="favUse(${k})">記録へ</button></div>`).join("")+(JSON.stringify(PLAN.map(x=>x.ex))!==JSON.stringify(r.items.map(x=>x.ex))?`<button class="btn gray" onclick="savePlanOrder()">この順番をセットに保存</button> `:"")+
   `<button class="btn" onclick="favLogAll()">全部この内容で今日に記録</button></div>`}
 window.pickFav=i=>{favSel=favSel===i?null:i;if(favSel!=null)PLAN=JSON.parse(JSON.stringify(R[favSel].items));renderFav()};
 window.mvPlan=(k,d)=>{const j=k+d;if(j<0||j>=PLAN.length)return;[PLAN[k],PLAN[j]]=[PLAN[j],PLAN[k]];renderFav()};
@@ -633,7 +639,7 @@ window.delFav=i=>ask(`「${R[i].name}」を削除しますか？`,()=>{R.splice(
 // 編集
 $("favAddEx").innerHTML='<option value="">＋ 種目を選んで追加</option>'+PARTS.map(p=>`<optgroup label="${p}">${EX.filter(e=>e[1]===p).map(e=>`<option>${e[0]}</option>`).join("")}</optgroup>`).join("");
 function renderFED(){$("favItems").innerHTML=FED.items.map((it,k)=>{const c=exInfo(it.ex)[1]==="有酸素";
- return `<div class="fitem"><div class="fh">${pb(exInfo(it.ex)[1])}<b>${it.ex}</b><button class="sm" onclick="fedMove(${k},-1)">↑</button><button class="sm" onclick="fedDel(${k})">削除</button></div>`+
+ return `<div class="fitem" data-k="${k}"><div class="fh"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span>${pb(exInfo(it.ex)[1])}<b>${it.ex}</b><button class="sm" onclick="fedDel(${k})">削除</button></div>`+
  (c?`<div class="fset"><span>分</span><input type="number" value="${it.min||20}" data-k="${k}" data-f="min"></div>`:
   it.sets.map((x,j)=>`<div class="fset"><span>${j+1}</span><input type="number" step="0.5" placeholder="kg" value="${x.w}" data-k="${k}" data-j="${j}" data-f="w"><input type="number" placeholder="回数" value="${x.r}" data-k="${k}" data-j="${j}" data-f="r"><button class="x" onclick="fedDelSet(${k},${j})">×</button></div>`).join("")+
   `<div class="setbtns"><button class="sm" onclick="fedAddSet(${k})">＋ セット</button></div>`)+`</div>`}).join("")||'<div class="sub" style="margin-top:10px">下のリストから種目を追加してください。</div>'}
@@ -655,6 +661,24 @@ $("favSave").onclick=()=>{const name=$("favName").value.trim();if(!name)return a
  FED.name=name;if(favEditIdx==null){R.push(FED);favSel=R.length-1}else{R[favEditIdx]=FED;favSel=favEditIdx}
  PLAN=JSON.parse(JSON.stringify(R[favSel].items));sv("gym_r",R);$("favSheet").classList.add("hidden");renderFav();tab("home");alert("セットを保存しました")};
 renderFav();
+
+// ---- ドラッグで並べ替え（つまみを長押しせずにそのまま上下にドラッグ） ----
+function sortable(box,sel,done){box.addEventListener("pointerdown",e=>{const g=e.target.closest(".grip");if(!g||!box.contains(g))return;
+ const it=g.closest(sel);if(!it)return;e.preventDefault();const ph=it.cloneNode(true);ph.classList.add("ghost");
+ const r=it.getBoundingClientRect(),off=e.clientY-r.top;it.classList.add("dragging");it.style.width=r.width+"px";it.style.top=r.top+"px";it.style.left=r.left+"px";
+ it.parentNode.insertBefore(ph,it);document.body.appendChild(it);
+ const mv=ev=>{it.style.top=(ev.clientY-off)+"px";const sib=[...ph.parentNode.querySelectorAll(":scope>"+sel)].filter(x=>x!==ph);
+  let before=null;for(const x of sib){const b=x.getBoundingClientRect();if(ev.clientY<b.top+b.height/2){before=x;break}}
+  before?ph.parentNode.insertBefore(ph,before):ph.parentNode.insertBefore(ph,sib.length?sib[sib.length-1].nextSibling:null);
+  if(ev.clientY<60)scrollBy(0,-8);if(ev.clientY>innerHeight-110)scrollBy(0,8)};
+ const up=()=>{removeEventListener("pointermove",mv);removeEventListener("pointerup",up);removeEventListener("pointercancel",up);
+  ph.replaceWith(it);it.classList.remove("dragging");it.style.cssText="";
+  const order=[...box.querySelectorAll(sel)].map(x=>+x.dataset.k);done(order)};
+ addEventListener("pointermove",mv);addEventListener("pointerup",up);addEventListener("pointercancel",up)})}
+sortable($("dayList"),".log",o=>{const slots=[...o].sort((a,b)=>a-b),old=o.map(k=>T[k]);slots.forEach((k,n)=>T[k]=old[n]);sv("gym_t",T);renderT();renderCal()});
+sortable($("menu"),".log",o=>{MENU=o.map(k=>MENU[k]);renderMenu()});
+sortable($("favPlan"),".log",o=>{PLAN=o.map(k=>PLAN[k]);renderFav()});
+sortable($("favItems"),".fitem",o=>{FED.items=o.map(k=>FED.items[k]);renderFED()});
 if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="<b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://pixelnest-731.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
 // ---- Googleアカウント同期（Firebase） ----
 // Firebaseコンソールの「ウェブアプリの設定」の値をここに入れる
