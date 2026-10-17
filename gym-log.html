@@ -69,6 +69,16 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .chr .nm{font-size:20px;font-weight:800}.sub{font-size:12px;color:var(--mut)}
 .pbar{height:10px;border-radius:5px;background:var(--chip);overflow:hidden;margin:8px 0 4px}.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2))}
 .win{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.win span{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12px}
+.sync{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}.sync .sub{margin:0}
+.timer{display:flex;align-items:center;gap:8px;margin:14px 0 6px;padding:10px 12px;border:2px solid var(--ac);border-radius:999px;font-size:13px}
+.timer input{width:64px;padding:6px;text-align:center}.timer b{margin-left:auto;font-size:18px;color:var(--ac);font-variant-numeric:tabular-nums}
+.sethead,.setrow{display:grid;grid-template-columns:34px 1fr 1fr 64px 30px;gap:8px;align-items:center}
+.sethead{font-size:11px;color:var(--mut);margin-top:8px;padding:0 4px}
+.setrow{padding:8px 4px;border-bottom:1px solid var(--bd)}.setrow .no{font-size:18px;font-weight:700;text-align:center}
+.setrow input{padding:8px;text-align:right;font-size:16px;font-weight:700}.setrow .rmv{font-size:13px;color:var(--mut);text-align:right;font-variant-numeric:tabular-nums}
+.setrow .memo{grid-column:2/5;padding:6px 8px;font-size:13px;font-weight:400;text-align:left}
+.setrow .x{border:0;background:var(--chip);color:var(--mut);border-radius:50%;width:26px;height:26px;cursor:pointer}
+.setbtns{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .w.sun{color:#ef4444}.w.sat{color:#2563eb}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 </style>
@@ -82,6 +92,7 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 </div>
 
 <section id="home">
+ <div class="card sync" id="syncCard"><div class="sub" id="syncMsg">☁️ 読み込み中…</div><button class="sm" id="syncBtn" hidden></button></div>
  <button class="bigbtn" onclick="goMenu()">🎲 今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
  <div class="card">
   <div class="calh"><button class="sm" onclick="mv(-1)">◀</button><b id="calM"></b><button class="sm" onclick="mv(1)">▶</button></div>
@@ -103,14 +114,16 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
   <div class="sel" id="selEx">種目を選んでください</div>
   <div class="row">
    <div><label>日付</label><input type="date" id="tDate"></div>
-   <div class="st"><label>重量(kg)</label><input type="number" id="tW" step="0.5"></div>
-   <div class="st"><label>回数</label><input type="number" id="tR"></div>
-   <div class="st"><label>セット数</label><input type="number" id="tS" value="3"></div>
    <div class="cd hidden"><label>時間(分)</label><input type="number" id="tMin"></div>
    <div class="cd hidden"><label>距離(km)</label><input type="number" id="tKm" step="0.1"></div>
-   <div class="st"><label>推定1RM(kg)・自動計算</label><input id="tRm" readonly placeholder="重量と回数から計算" style="font-weight:700;color:var(--ac)"></div>
   </div>
-  <label>メモ（マシン番号・シート位置など）</label><input id="tMemo">
+  <div class="st">
+   <div class="timer"><span>⏱ インターバル</span><input type="number" id="tmSec" value="60" min="5" step="5"><span>秒</span><b id="tmLeft"></b><button class="sm" id="tmBtn">START</button></div>
+   <div class="sethead"><span>セット</span><span>重さ(kg)</span><span>回数</span><span>RM</span><span></span></div>
+   <div id="sets"></div>
+   <div class="setbtns"><button class="sm" id="addSet">＋ セットを追加</button><button class="sm" id="copyLast">📋 前回の記録をコピー</button></div>
+  </div>
+  <label>種目のメモ（マシン番号・シート位置など）</label><input id="tMemo">
   <button class="btn" id="tSave">💾 保存する</button> <button class="btn gray hidden" id="tCancel">キャンセル</button>
  </div>
  <div class="card"><h3>履歴</h3><div id="tList"></div></div>
@@ -195,8 +208,9 @@ const EX=[
 ["トレッドミル","有酸素","有酸素"],["エアロバイク","有酸素","有酸素"],["クロストレーナー","有酸素","有酸素"],["ステアクライマー","有酸素","有酸素"],["ローイングマシン","有酸素","有酸素"]];
 const PARTS=Object.keys(PI),EQS=["すべて","バーベル","ダンベル","マシン","スミスマシン","ケーブル","自重","有酸素"];
 const $=id=>document.getElementById(id);
+const okStore=(()=>{try{localStorage.setItem("_t","1");return localStorage.getItem("_t")==="1"}catch{return false}})();
 const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}};
-const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{};cloudSave()};
 let T=ld("gym_t"),B=ld("gym_b"),tEdit=null,bEdit=null,charts=[],part="胸",eq="すべて",cur=null;
 const today=()=>new Date().toISOString().slice(0,10);
 $("tDate").value=$("bDate").value=today();
@@ -271,9 +285,28 @@ window.addOn=()=>{resetT();tab("train");$("tDate").value=selD;};
 
 const bmiOf=r=>r.h&&r.w?r.w/((r.h/100)**2):null;
 const lastH=()=>{for(let i=B.length-1;i>=0;i--)if(B[i].h)return B[i].h};
-const fmt=r=>r.p==="有酸素"?`${r.min||0}分${r.km?" / "+r.km+"km":""}`:`${r.w}kg × ${r.r}回 × ${r.s}セット`+(rm(r)?` ・1RM ${rm(r)}kg`:"");
-const rm=r=>r.w&&r.r&&r.p!=="有酸素"?Math.round(r.r===1?r.w:r.w*(1+r.r/30)):0;
-const vol=r=>r.p==="有酸素"?0:(r.w||0)*r.r*r.s;
+const getSets=r=>r.sets&&r.sets.length?r.sets:Array.from({length:r.s||1},()=>({w:r.w||0,r:r.r||0}));
+const rm1=(w,n)=>w&&n?Math.round(n===1?w:w*(1+n/30)):0;
+const rm=r=>r.p==="有酸素"?0:Math.max(0,...getSets(r).map(x=>rm1(+x.w,+x.r)));
+const vol=r=>r.p==="有酸素"?0:getSets(r).reduce((a,x)=>a+(+x.w||0)*(+x.r||0),0);
+const fmt=r=>r.p==="有酸素"?`${r.min||0}分${r.km?" / "+r.km+"km":""}`:getSets(r).map(x=>`${x.w}kg×${x.r}`).join(" / ")+(rm(r)?` ・1RM ${rm(r)}kg`:"");
+// セット入力
+let SETS=[{w:"",r:"",m:""}];
+function renderSets(){$("sets").innerHTML=SETS.map((x,i)=>`<div class="setrow"><div class="no">${i+1}</div>
+ <input type="number" step="0.5" inputmode="decimal" value="${x.w}" data-i="${i}" data-k="w" placeholder="kg">
+ <input type="number" inputmode="numeric" value="${x.r}" data-i="${i}" data-k="r" placeholder="回数">
+ <div class="rmv" id="rm${i}">${rm1(+x.w,+x.r)?rm1(+x.w,+x.r)+" kg":"-"}</div>
+ <button class="x" onclick="delSet(${i})" aria-label="セット削除">×</button>
+ <div></div><input class="memo" value="${(x.m||"").replace(/"/g,"&quot;")}" data-i="${i}" data-k="m" placeholder="メモ（補助ありなど）"></div>`).join("")}
+$("sets").oninput=e=>{const t=e.target,i=t.dataset.i;if(i==null)return;SETS[i][t.dataset.k]=t.value;const v=rm1(+SETS[i].w,+SETS[i].r);$("rm"+i).textContent=v?v+" kg":"-"};
+window.delSet=i=>{SETS.splice(i,1);if(!SETS.length)SETS=[{w:"",r:"",m:""}];renderSets()};
+$("addSet").onclick=()=>{const l=SETS[SETS.length-1];SETS.push({w:l.w,r:l.r,m:""});renderSets()};
+$("copyLast").onclick=()=>{if(!cur)return alert("種目を選んでください");const r=T.filter(x=>x.ex===cur).sort((a,b)=>a.d<b.d?1:-1)[0];
+ if(!r)return alert("この種目の前回の記録はありません");SETS=getSets(r).map(x=>({w:x.w,r:x.r,m:""}));renderSets()};
+// インターバルタイマー
+let tmI=null;$("tmBtn").onclick=()=>{if(tmI){clearInterval(tmI);tmI=null;$("tmBtn").textContent="START";$("tmLeft").textContent="";return}
+ let left=+$("tmSec").value||60;$("tmBtn").textContent="STOP";$("tmLeft").textContent=left+"秒";
+ tmI=setInterval(()=>{left--;$("tmLeft").textContent=left+"秒";if(left<=0){clearInterval(tmI);tmI=null;$("tmBtn").textContent="START";$("tmLeft").textContent="GO!";try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch{}}},1000)};
 const dAgo=d=>(new Date(today())-new Date(d))/864e5;
 
 function stats(){
@@ -291,13 +324,15 @@ function renderT(){T.sort((a,b)=>a.d<b.d?1:-1);let h="",pd="";
  $("tList").innerHTML=h||'<div class="empty">まだ記録がありません</div>';stats();}
 $("tSave").onclick=()=>{if(!cur)return alert("種目を選んでください");
  const e=EX.find(x=>x[0]===cur)||[cur,part,""],c=e[1]==="有酸素";
- const r={d:$("tDate").value,p:e[1],eq:e[2],ex:cur,w:+$("tW").value||0,r:+$("tR").value||0,s:+$("tS").value||1,min:+$("tMin").value||0,km:+$("tKm").value||0,m:$("tMemo").value};
- if(!c&&!r.r)return alert("回数を入力してください");if(c&&!r.min)return alert("時間を入力してください");
- tEdit!==null?T[tEdit]=r:T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();};
-window.editT=i=>{const r=T[i];tEdit=i;cur=r.ex;part=r.p;eq="すべて";$("tDate").value=r.d;$("tW").value=r.w||"";$("tR").value=r.r||"";$("tS").value=r.s||"";$("tMin").value=r.min||"";$("tKm").value=r.km||"";upRm();$("tMemo").value=r.m||"";
+ const ss=SETS.filter(x=>+x.r).map(x=>({w:+x.w||0,r:+x.r,m:x.m||""}));
+ const top=ss.reduce((a,x)=>x.w>a.w?x:a,ss[0]||{w:0,r:0});
+ const r={d:$("tDate").value,p:e[1],eq:e[2],ex:cur,sets:c?[]:ss,w:top.w,r:top.r,s:ss.length||1,min:+$("tMin").value||0,km:+$("tKm").value||0,m:$("tMemo").value};
+ if(!c&&!ss.length)return alert("回数を入力してください");if(c&&!r.min)return alert("時間を入力してください");
+ tEdit!==null?T[tEdit]=r:T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();renderCal();alert(okStore?"保存しました ✅":"⚠️ この画面では端末に保存できません");};
+window.editT=i=>{const r=T[i];tEdit=i;cur=r.ex;part=r.p;eq="すべて";$("tDate").value=r.d;SETS=getSets(r).map(x=>({w:x.w,r:x.r,m:x.m||""}));renderSets();$("tMin").value=r.min||"";$("tKm").value=r.km||"";$("tMemo").value=r.m||"";
  $("tTitle").textContent="✏️ 記録を修正";$("tCancel").classList.remove("hidden");renderPicker();scrollTo(0,0)};
 window.delT=i=>ask("この記録を削除しますか？",()=>{T.splice(i,1);sv("gym_t",T);renderT();renderCal()});
-function resetT(){tEdit=null;["tW","tR","tMin","tKm","tRm","tMemo"].forEach(k=>$(k).value="");$("tTitle").textContent="トレーニングを記録";$("tCancel").classList.add("hidden")}
+function resetT(){tEdit=null;SETS=[{w:"",r:"",m:""}];renderSets();["tMin","tKm","tMemo"].forEach(k=>$(k).value="");$("tTitle").textContent="トレーニングを記録";$("tCancel").classList.add("hidden")}
 $("tCancel").onclick=()=>{resetT();renderPicker()};
 
 // body
@@ -311,7 +346,7 @@ function renderB(){B.sort((a,b)=>a.d<b.d?-1:1);
   return `<div class="log"><div class="ico">📏</div><div class="t"><b>${r.d}${b?"　BMI "+b.toFixed(1):""}</b><span>${BF.filter(f=>r[f[0]]).map(f=>f[2]+" "+r[f[0]]+f[3]).join(" ・ ")}</span></div>
   <button class="sm" onclick="editB(${i})">修正</button><button class="sm" onclick="delB(${i})">削除</button></div>`}).join("")||'<div class="empty">まだ記録がありません</div>';stats();}
 $("bSave").onclick=()=>{const r={d:$("bDate").value};BF.forEach(f=>r[f[0]]=+$(f[1]).value||null);
- bEdit!==null?B[bEdit]=r:B.push(r);sv("gym_b",B);resetB();renderB();};
+ bEdit!==null?B[bEdit]=r:B.push(r);sv("gym_b",B);resetB();renderB();alert(okStore?"保存しました ✅":"⚠️ この画面では端末に保存できません");};
 window.editB=i=>{const r=B[i];bEdit=i;$("bDate").value=r.d;BF.forEach(f=>$(f[1]).value=r[f[0]]||"");
  $("bTitle").textContent="✏️ 記録を修正";$("bCancel").classList.remove("hidden");scrollTo(0,0)};
 window.delB=i=>ask("この記録を削除しますか？",()=>{B.splice(i,1);sv("gym_b",B);renderB()});
@@ -390,15 +425,40 @@ function genMenu(){const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.
   <span>${m.cardio?"20分（会話できる強度で）":`${m.w?m.w+"kg":"重量は様子見"} × ${m.r}回 × ${m.s}セット ・ ${m.note}`}</span></div>
   <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn" onclick="logAll()">✅ 全部この内容で記録</button>`;}
 window.useMenu=i=>{const m=MENU[i];resetT();cur=m.e[0];part=m.e[1];eq="すべて";
- if(m.cardio)$("tMin").value=20;else{$("tW").value=m.w||"";$("tR").value=m.r;$("tS").value=m.s}
+ if(m.cardio)$("tMin").value=20;else{SETS=Array.from({length:m.s},()=>({w:m.w||"",r:m.r,m:""}));renderSets()}
  renderPicker();document.querySelector('.tabbar [data-t="train"]').click();};
 window.logAll=()=>ask("メニュー通りに今日の記録として保存しますか？（後から修正できます）",()=>{
- MENU.forEach(m=>T.push(m.cardio?{d:today(),p:"有酸素",eq:"有酸素",ex:m.e[0],min:20,km:0,w:0,r:0,s:1}:{d:today(),p:m.e[1],eq:m.e[2],ex:m.e[0],w:m.w,r:m.r,s:m.s,m:"おまかせメニュー"}));
+ MENU.forEach(m=>T.push(m.cardio?{d:today(),p:"有酸素",eq:"有酸素",ex:m.e[0],min:20,km:0,w:0,r:0,s:1}:{d:today(),p:m.e[1],eq:m.e[2],ex:m.e[0],w:m.w,r:m.r,s:m.s,sets:Array.from({length:m.s},()=>({w:m.w,r:m.r,m:""})),m:"おまかせメニュー"}));
  sv("gym_t",T);renderT();alert("保存しました！");});
 $("mGen").onclick=genMenu;
 
 const h=new Date().getHours();$("hello").textContent=(h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"！今日もナイスバルク💪";
 renderPicker();renderT();renderB();renderCal();
-function upRm(){const v=rm({w:+$("tW").value,r:+$("tR").value,p:""});$("tRm").value=v?v+" kg":""}
-$("tW").oninput=$("tR").oninput=upRm;
+if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="⚠️ <b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://yuji2069807165433243-tech.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
+// ---- Googleアカウント同期（Firebase） ----
+// Firebaseコンソールの「ウェブアプリの設定」の値をここに入れる
+const FIREBASE_CONFIG=null;
+let fbUser=null,fdb=null,saveT=null;
+function syncUI(msg,btn,fn){$("syncMsg").innerHTML=msg;const b=$("syncBtn");b.hidden=!btn;if(btn){b.textContent=btn;b.onclick=fn}}
+function cloudSave(){if(!fbUser||!fdb)return;clearTimeout(saveT);saveT=setTimeout(()=>{
+ fdb.collection("users").doc(fbUser.uid).set({t:T,b:B,updated:Date.now()}).then(()=>syncUI(`☁️ <b>${fbUser.displayName||"Google"}</b> で同期中・保存しました`,"ログアウト",logout)).catch(e=>syncUI("⚠️ 保存に失敗："+e.code,"再試行",cloudSave))},800)}
+function mergeArr(a,b){const m=new Map();[...a,...b].forEach(r=>m.set(JSON.stringify(r),r));return[...m.values()]}
+async function onLogin(u){fbUser=u;syncUI("☁️ クラウドから読み込み中…");
+ try{const d=await fdb.collection("users").doc(u.uid).get();
+  if(d.exists){const c=d.data();T=mergeArr(c.t||[],T);B=mergeArr(c.b||[],B);
+   try{localStorage.setItem("gym_t",JSON.stringify(T));localStorage.setItem("gym_b",JSON.stringify(B))}catch{}}
+  renderT();renderB();renderCal();cloudSave();
+  syncUI(`☁️ <b>${u.displayName||"Google"}</b> で同期中`,"ログアウト",logout);
+ }catch(e){syncUI("⚠️ 読み込みに失敗："+e.code,"再試行",()=>onLogin(u))}}
+function login(){const pr=new firebase.auth.GoogleAuthProvider();firebase.auth().signInWithPopup(pr).catch(e=>{
+ if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment")firebase.auth().signInWithRedirect(pr);else alert("ログインできませんでした："+e.code)})}
+function logout(){firebase.auth().signOut()}
+function loadJs(u){return new Promise((ok,ng)=>{const x=document.createElement("script");x.src=u;x.onload=ok;x.onerror=ng;document.head.appendChild(x)})}
+(async()=>{if(!FIREBASE_CONFIG){$("syncCard").hidden=true;return}
+ try{const v="https://www.gstatic.com/firebasejs/10.12.2/";
+  await loadJs(v+"firebase-app-compat.js");await Promise.all([loadJs(v+"firebase-auth-compat.js"),loadJs(v+"firebase-firestore-compat.js")]);
+  firebase.initializeApp(FIREBASE_CONFIG);fdb=firebase.firestore();
+  firebase.auth().onAuthStateChanged(u=>{if(u)onLogin(u);else{fbUser=null;syncUI("☁️ Googleでログインすると、記録を別の端末に引き継げます","Googleでログイン",login)}});
+ }catch(e){syncUI("☁️ この画面では同期を使えません（GitHub版で利用できます）")}})();
+renderSets();
 </script>
