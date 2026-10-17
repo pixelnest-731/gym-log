@@ -87,6 +87,12 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.subh{margin:16px 0 8px;font-size:12px;font-weight:900;color:var(--mut);letter-spacing:.08em}
+.pasts{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}
+.past{flex:none;scroll-snap-align:start;min-width:112px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px}
+.past b{font-family:var(--disp);font-size:22px;font-weight:400;letter-spacing:.04em}.past b small{font-family:var(--body);font-size:11px;color:var(--mut);margin-left:2px}
+.past span{font-size:11px;line-height:1.5}.past>small{font-size:11px;color:var(--mut)}
+.past.on{border-color:var(--ac);background:rgba(212,160,23,.15)}
 .grip{flex:none;width:22px;height:40px;display:flex;flex-direction:column;justify-content:center;gap:4px;cursor:grab;touch-action:none;padding:0 3px}
 .grip i{display:block;height:2px;border-radius:2px;background:var(--mut)}
 .fitem .grip{height:30px}
@@ -206,6 +212,8 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
  <button class="bigbtn" onclick="goMenu()"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><rect x="4" y="22" width="8" height="20" rx="2"/><rect x="13" y="16" width="8" height="32" rx="2"/><rect x="43" y="16" width="8" height="32" rx="2"/><rect x="52" y="22" width="8" height="20" rx="2"/><rect x="21" y="29" width="22" height="6" rx="2"/></g></svg>今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
  <div class="card" id="favCard"><h3>お気に入りセット</h3>
   <div class="favs" id="favList"></div>
+  <div class="subh">過去にやったセット</div>
+  <div class="pasts" id="pastList"></div>
   <div id="favPlan"></div>
  </div>
  <div class="card">
@@ -374,7 +382,7 @@ window.goMenu=()=>{tab("advice");genMenu();};
 let calD=new Date(),selD=today();
 window.mv=n=>{calD=new Date(calD.getFullYear(),calD.getMonth()+n,1);renderCal()};
 const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-function renderCal(){const y=calD.getFullYear(),m=calD.getMonth();$("calM").textContent=`${y}年${m+1}月`;
+function renderCal(){try{renderFav()}catch{};const y=calD.getFullYear(),m=calD.getMonth();$("calM").textContent=`${y}年${m+1}月`;
  const st=new Date(y,m,1-new Date(y,m,1).getDay());let h=["日","月","火","水","木","金","土"].map((w,i)=>`<div class="w ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
  for(let i=0;i<42;i++){const d=new Date(st.getFullYear(),st.getMonth(),st.getDate()+i),k=ymd(d),rs=T.filter(r=>r.d===k),ps=[...new Set(rs.map(r=>r.p))];
   h+=`<div class="d ${d.getMonth()!==m?"o":""} ${k===today()?"t":""} ${k===selD?"s":""} ${rs.length?"has":""}" onclick="selDay('${k}')"><span class="n">${d.getDate()}</span><div class="ic">${ps.map(p=>`<i class="dot" style="background:${PCOL[p]}"></i>`).join("")}</div></div>`;}
@@ -611,21 +619,30 @@ renderPicker();renderT();renderB();renderCal();
 let R=ld("gym_r"),favSel=null,FED=null,favEditIdx=null,PLAN=[];
 const exInfo=n=>EX.find(e=>e[0]===n)||[n,"胸",""];
 const setsTxt=it=>exInfo(it.ex)[1]==="有酸素"?`${it.min||20}分`:it.sets.map(x=>`${x.w||"-"}kg×${x.r||"-"}`).join(" / ");
+const isPast=()=>typeof favSel==="string";
+const md=d=>{const x=d.split("-");return `${+x[1]}/${+x[2]}`},WD="日月火水木金土";
+function pastDays(){return [...new Set(T.filter(r=>r.d<today()).map(r=>r.d))].sort().reverse().slice(0,20)}
+function planName(){if(isPast()){const ps=[...new Set(T.filter(r=>r.d===favSel).map(r=>r.p))];return `${md(favSel)}（${ps.join("・")}）のメニュー`}return R[favSel].name}
+window.pickPast=d=>{favSel=favSel===d?null:d;if(favSel)PLAN=T.filter(r=>r.d===d).map(r=>({ex:r.ex,sets:r.p==="有酸素"?[]:getSets(r).map(x=>({w:x.w,r:x.r})),min:r.min||20}));renderFav()};
+window.pastToFav=()=>{favEditIdx=null;FED={name:"",items:JSON.parse(JSON.stringify(PLAN))};$("favName").value="";$("favTitle").textContent="このメニューをお気に入りに保存";renderFED();$("favSheet").classList.remove("hidden")};
 function renderFav(){
+ const pd=pastDays();
+ $("pastList").innerHTML=pd.length?pd.map(d=>{const rs=T.filter(r=>r.d===d),ps=[...new Set(rs.map(r=>r.p))];
+  return `<button class="past ${favSel===d?"on":""}" onclick="pickPast('${d}')"><b>${md(d)}<small>(${WD[new Date(d).getDay()]})</small></b><span>${ps.map(p=>`<i class="dot" style="background:${PCOL[p]}"></i>${p}`).join(" ")}</span><small>${rs.length}種目</small></button>`}).join(""):'<div class="sub">まだ過去の記録がありません</div>';
  $("favList").innerHTML=R.map((r,i)=>`<button class="fav ${favSel===i?"on":""}" onclick="pickFav(${i})">${r.name}<small>${r.items.length}種目</small></button>`).join("")+
   `<button class="fav add" onclick="editFav(null)">＋ 新しいセット</button>`;
- if(favSel==null||!R[favSel]){$("favPlan").innerHTML=R.length?"":'<div class="sub" style="margin-top:8px">よくやるメニューをセットにして名前をつけておくと、ボタン1つで今日のプランになります。</div>';return}
- const r=R[favSel];
- $("favPlan").innerHTML=`<div class="plan"><div class="planh"><b>今日のセット：${r.name}</b><button class="sm" onclick="editFav(${favSel})">編集</button><button class="sm" onclick="delFav(${favSel})">削除</button></div>`+
+ if(favSel==null||(!isPast()&&!R[favSel])){$("favPlan").innerHTML=R.length?"":'<div class="sub" style="margin-top:8px">よくやるメニューをセットにして名前をつけておくと、ボタン1つで今日のプランになります。</div>';return}
+ const r=isPast()?{items:PLAN}:R[favSel];
+ $("favPlan").innerHTML=`<div class="plan"><div class="planh"><b>今日のセット：${planName()}</b>${isPast()?`<button class="sm" onclick="pastToFav()">お気に入りに保存</button>`:`<button class="sm" onclick="editFav(${favSel})">編集</button><button class="sm" onclick="delFav(${favSel})">削除</button>`}</div>`+
   PLAN.map((it,k)=>`<div class="log" data-k="${k}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(exInfo(it.ex)[1])}</div><div class="t"><b>${k+1}. ${it.ex}</b><span>${setsTxt(it)}</span></div><button class="sm" onclick="favUse(${k})">記録へ</button></div>`).join("")+(JSON.stringify(PLAN.map(x=>x.ex))!==JSON.stringify(r.items.map(x=>x.ex))?`<button class="btn gray" onclick="savePlanOrder()">この順番をセットに保存</button> `:"")+
   `<button class="btn" onclick="favLogAll()">全部この内容で今日に記録</button></div>`}
-window.pickFav=i=>{favSel=favSel===i?null:i;if(favSel!=null)PLAN=JSON.parse(JSON.stringify(R[favSel].items));renderFav()};
+window.pickFav=i=>{if(isPast())favSel=null;favSel=favSel===i?null:i;if(favSel!=null)PLAN=JSON.parse(JSON.stringify(R[favSel].items));renderFav()};
 window.mvPlan=(k,d)=>{const j=k+d;if(j<0||j>=PLAN.length)return;[PLAN[k],PLAN[j]]=[PLAN[j],PLAN[k]];renderFav()};
 window.savePlanOrder=()=>{R[favSel].items=JSON.parse(JSON.stringify(PLAN));sv("gym_r",R);renderFav();alert("この順番をセットに保存しました")};
 window.favUse=k=>{const it=PLAN[k],e=exInfo(it.ex);resetT();cur=it.ex;part=e[1];eq="すべて";
  if(e[1]==="有酸素")$("tMin").value=it.min||20;else{SETS=it.sets.map(x=>({w:x.w,r:x.r,m:""}));renderSets()}
  renderPicker();tab("train")};
-window.favLogAll=()=>{const r=R[favSel];ask(`「${r.name}」の内容で今日の記録として保存しますか？（後から修正できます）`,()=>{
+window.favLogAll=()=>{const r={name:planName()};ask(`「${r.name}」の内容で今日の記録として保存しますか？（後から修正できます）`,()=>{
  PLAN.forEach(it=>{const e=exInfo(it.ex);if(e[1]==="有酸素")T.push({d:today(),p:e[1],eq:e[2],ex:it.ex,min:it.min||20,km:0,w:0,r:0,s:1,m:r.name});
   else{const ss=it.sets.filter(x=>+x.r).map(x=>({w:+x.w||0,r:+x.r,m:""}));if(!ss.length)return;const top=ss.reduce((a,x)=>x.w>a.w?x:a,ss[0]);
    T.push({d:today(),p:e[1],eq:e[2],ex:it.ex,sets:ss,w:top.w,r:top.r,s:ss.length,m:r.name})}});
