@@ -8,7 +8,6 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);padding-bottom:84px}
 header{background:linear-gradient(135deg,#9c7410,#d4a017 55%,#ffd23f);color:#fff;padding:22px 16px 56px;position:relative;overflow:hidden}
-header::after{content:"🏋️";position:absolute;right:-10px;top:-10px;font-size:120px;opacity:.15}
 header h1{margin:0;font-size:22px;letter-spacing:.05em}
 header p{margin:4px 0 0;opacity:.9;font-size:13px}
 main{max-width:920px;margin:-40px auto 0;padding:0 16px;position:relative}
@@ -88,6 +87,17 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.tabbar button i svg{width:24px;height:24px;display:block;margin:0 auto 3px}
+.tabbar button i{font-size:0}
+.homebtn{display:inline-flex;align-items:center;gap:6px;font-family:var(--disp);font-size:16px!important;letter-spacing:.08em}.homebtn svg{width:16px;height:16px}
+.pbadge{display:grid;place-items:center;width:100%;height:100%;border-radius:10px;background:color-mix(in srgb,var(--pc) 22%,transparent);color:var(--pc);border:1px solid color-mix(in srgb,var(--pc) 55%,transparent);font-weight:900;font-size:16px}
+.ico{background:none!important;padding:0}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin:1px;vertical-align:middle}
+.chip .dot{margin-right:6px}
+.lg{display:inline-flex;align-items:center;gap:4px;margin-right:10px;white-space:nowrap}
+.cal .ic{display:flex;flex-wrap:wrap;gap:1px;margin-top:4px}
+.coach .tag,.adv li::before{display:inline-block;font-family:var(--disp);letter-spacing:.1em;background:var(--ac);color:#111;padding:1px 8px;border-radius:3px;margin-right:8px;font-size:14px}
+.adv li{border-left:3px solid var(--ac)}
 #hello{cursor:pointer;margin-top:14px;max-width:calc(100% - 120px)!important;position:relative;padding:12px 14px 12px 16px;border-left:5px solid var(--qc,var(--ac2));
  background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,.15));border-radius:4px 12px 12px 4px;transform:skewX(-4deg);animation:qin .5s ease-out}
 #hello>*{transform:skewX(4deg)}
@@ -143,7 +153,7 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
 .ico{background:#1f242c}
 .foot-art{display:block;margin:8px auto 0;width:100%;max-width:520px;opacity:.5}
 </style>
-<header><button class="homebtn" onclick="goHome()">🏠 ホーム</button><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 0 170 150" aria-hidden="true">
+<header><button class="homebtn" onclick="goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>HOME</button><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 0 170 150" aria-hidden="true">
  <g fill="none" stroke="#f3f3f3" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
   <line x1="12" y1="28" x2="158" y2="28" stroke="#e8eef8" stroke-width="5"/>
   <path d="M60 28 L68 58 L85 66 L102 58 L110 28"/>
@@ -162,8 +172,8 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
 </div>
 
 <section id="home">
- <div class="card sync" id="syncCard"><div class="sub" id="syncMsg">☁️ 読み込み中…</div><button class="sm" id="syncBtn" hidden></button></div>
- <button class="bigbtn" onclick="goMenu()"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><rect x="4" y="22" width="8" height="20" rx="2"/><rect x="13" y="16" width="8" height="32" rx="2"/><rect x="43" y="16" width="8" height="32" rx="2"/><rect x="52" y="22" width="8" height="20" rx="2"/><rect x="21" y="29" width="22" height="6" rx="2"/></g></svg>🎲 今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
+ <div class="card sync" id="syncCard"><div class="sub" id="syncMsg">読み込み中…</div><button class="sm" id="syncBtn" hidden></button></div>
+ <button class="bigbtn" onclick="goMenu()"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><rect x="4" y="22" width="8" height="20" rx="2"/><rect x="13" y="16" width="8" height="32" rx="2"/><rect x="43" y="16" width="8" height="32" rx="2"/><rect x="52" y="22" width="8" height="20" rx="2"/><rect x="21" y="29" width="22" height="6" rx="2"/></g></svg>今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
  <div class="card">
   <div class="calh"><button class="sm" onclick="mv(-1)">◀</button><b id="calM"></b><button class="sm" onclick="mv(1)">▶</button></div>
   <div class="cal" id="cal"></div>
@@ -178,7 +188,7 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
   <h3 id="tTitle">トレーニングを記録</h3>
   <label>部位</label><div class="chips" id="parts"></div>
   <label>器具</label><div class="chips" id="eqs"></div>
-  <input id="q" placeholder="🔍 種目を検索" style="margin-top:10px">
+  <input id="q" placeholder="種目を検索" style="margin-top:10px">
   <div class="exgrid" id="exs"></div>
   <div class="sel" id="selEx">種目を選んでください</div>
   <div class="row">
@@ -187,13 +197,13 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
    <div class="cd hidden"><label>距離(km)</label><input type="number" id="tKm" step="0.1"></div>
   </div>
   <div class="st">
-   <div class="timer"><span>⏱ インターバル</span><input type="number" id="tmSec" value="60" min="5" step="5"><span>秒</span><b id="tmLeft"></b><button class="sm" id="tmBtn">START</button></div>
+   <div class="timer"><span>REST</span><input type="number" id="tmSec" value="60" min="5" step="5"><span>秒</span><b id="tmLeft"></b><button class="sm" id="tmBtn">START</button></div>
    <div class="sethead"><span>セット</span><span>重さ(kg)</span><span>回数</span><span>RM</span><span></span></div>
    <div id="sets"></div>
-   <div class="setbtns"><button class="sm" id="addSet">＋ セットを追加</button><button class="sm" id="copyLast">📋 前回の記録をコピー</button></div>
+   <div class="setbtns"><button class="sm" id="addSet">＋ セットを追加</button><button class="sm" id="copyLast">前回の記録をコピー</button></div>
   </div>
   <label>種目のメモ（マシン番号・シート位置など）</label><input id="tMemo">
-  <button class="btn" id="tSave">💾 保存する</button> <button class="btn gray hidden" id="tCancel">キャンセル</button>
+  <button class="btn" id="tSave">保存する</button> <button class="btn gray hidden" id="tCancel">キャンセル</button>
  </div>
  <div class="card"><h3>履歴</h3><div id="tList"></div></div>
 </section>
@@ -210,7 +220,7 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
    <div><label>腕周囲 右(cm)</label><input type="number" id="bAR" step="0.1"></div>
    <div><label>腕周囲 左(cm)</label><input type="number" id="bAL" step="0.1"></div>
   </div>
-  <button class="btn" id="bSave">💾 保存する</button> <button class="btn gray hidden" id="bCancel">キャンセル</button>
+  <button class="btn" id="bSave">保存する</button> <button class="btn gray hidden" id="bCancel">キャンセル</button>
  </div>
  <div class="card"><h3>履歴</h3><div id="bList"></div></div>
 </section>
@@ -235,18 +245,18 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
  <div class="card"><h3>今日のおすすめメニュー</h3>
   <div class="chips" id="mMode"><button class="chip on" data-m="auto">おまかせ</button><button class="chip" data-m="full">全身</button><button class="chip" data-m="short">時短30分</button></div>
   <div id="menu" style="margin-top:10px"></div>
-  <button class="btn" id="mGen">🎲 メニューを組む</button>
+  <button class="btn" id="mGen">メニューを組む</button>
  </div>
  <div class="card"><h3>コーチからのアドバイス</h3><ul class="adv" id="adv"></ul></div>
 </section>
 </main>
 
 <nav class="tabbar">
- <button data-t="home" class="on"><i>🏠</i>ホーム</button>
- <button data-t="train"><i>🏋️</i>記録</button>
- <button data-t="body"><i>📏</i>体</button>
- <button data-t="graph"><i>📊</i>グラフ</button>
- <button data-t="advice"><i>💡</i>アドバイス</button>
+ <button data-t="home" class="on"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></i>ホーム</button>
+ <button data-t="train"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9v6M5 7v10M19 7v10M22 9v6M5 12h14"/></svg></i>記録</button>
+ <button data-t="body"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l14-14 4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg></i>体</button>
+ <button data-t="graph"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i>グラフ</button>
+ <button data-t="advice"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></i>アドバイス</button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -256,7 +266,9 @@ function alert(m){const t=document.getElementById("toast");t.textContent=m;t.cla
 function ask(m,fn){const md=document.getElementById("modal");document.getElementById("mMsg").textContent=m;md.classList.remove("hidden");
  document.getElementById("mYes").onclick=()=>{md.classList.add("hidden");fn()};document.getElementById("mNo").onclick=()=>md.classList.add("hidden")}
 // [名前, 部位, 器具]
-const PI={"胸":"🫁","背中":"🦅","脚":"🦵","肩":"🎯","腕":"💪","腹":"🔥","有酸素":"🏃"};
+const PI={"胸":"胸","背中":"背","脚":"脚","肩":"肩","腕":"腕","腹":"腹","有酸素":"走"};
+const PCOL={"胸":"#e4572e","背中":"#3a86ff","脚":"#2ec4b6","肩":"#9b5de5","腕":"#f4a261","腹":"#e9c46a","有酸素":"#8d99ae"};
+const pb=p=>`<span class="pbadge" style="--pc:${PCOL[p]||"#d4a017"}">${PI[p]||"他"}</span>`;
 const EX=[
 ["ベンチプレス","胸","バーベル"],["インクラインベンチプレス","胸","バーベル"],["デクラインベンチプレス","胸","バーベル"],
 ["ダンベルプレス","胸","ダンベル"],["インクラインダンベルプレス","胸","ダンベル"],["ダンベルフライ","胸","ダンベル"],["ダンベルプルオーバー","胸","ダンベル"],
@@ -293,7 +305,7 @@ $("tDate").value=$("bDate").value=today();
 const isCardio=n=>(EX.find(e=>e[0]===n)||[])[1]==="有酸素";
 
 function renderPicker(){
- $("parts").innerHTML=PARTS.map(p=>`<button class="chip ${p===part?"on":""}" data-p="${p}">${PI[p]} ${p}</button>`).join("");
+ $("parts").innerHTML=PARTS.map(p=>`<button class="chip ${p===part?"on":""}" data-p="${p}"><i class="dot" style="background:${PCOL[p]}"></i>${p}</button>`).join("");
  $("eqs").innerHTML=EQS.map(e=>`<button class="chip ${e===eq?"on":""}" data-e="${e}">${e}</button>`).join("");
  const q=$("q").value.trim();
  const list=EX.filter(e=>q?e[0].includes(q):e[1]===part&&(eq==="すべて"||e[2]===eq));
@@ -321,11 +333,11 @@ const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${Str
 function renderCal(){const y=calD.getFullYear(),m=calD.getMonth();$("calM").textContent=`${y}年${m+1}月`;
  const st=new Date(y,m,1-new Date(y,m,1).getDay());let h=["日","月","火","水","木","金","土"].map((w,i)=>`<div class="w ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
  for(let i=0;i<42;i++){const d=new Date(st.getFullYear(),st.getMonth(),st.getDate()+i),k=ymd(d),rs=T.filter(r=>r.d===k),ps=[...new Set(rs.map(r=>r.p))];
-  h+=`<div class="d ${d.getMonth()!==m?"o":""} ${k===today()?"t":""} ${k===selD?"s":""} ${rs.length?"has":""}" onclick="selDay('${k}')"><span class="n">${d.getDate()}</span><div class="ic">${ps.map(p=>PI[p]).join("")}</div></div>`;}
- $("cal").innerHTML=h;$("legend").textContent=Object.entries(PI).map(([p,i])=>i+p).join("　");
+  h+=`<div class="d ${d.getMonth()!==m?"o":""} ${k===today()?"t":""} ${k===selD?"s":""} ${rs.length?"has":""}" onclick="selDay('${k}')"><span class="n">${d.getDate()}</span><div class="ic">${ps.map(p=>`<i class="dot" style="background:${PCOL[p]}"></i>`).join("")}</div></div>`;}
+ $("cal").innerHTML=h;$("legend").innerHTML=Object.keys(PI).map(p=>`<span class="lg"><i class="dot" style="background:${PCOL[p]}"></i>${p}</span>`).join("");
  const rs=T.map((r,i)=>[r,i]).filter(([r])=>r.d===selD),v=rs.reduce((s,[r])=>s+vol(r),0);
- renderEval();$("dayT").textContent=`📅 ${selD} の記録`+(rs.length?`（${rs.length}種目・${v}kg）`:"");
- $("dayList").innerHTML=rs.map(([r,i])=>`<div class="log"><div class="ico">${PI[r.p]||"🏋️"}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
+ renderEval();$("dayT").textContent=`${selD} の記録`+(rs.length?`（${rs.length}種目・${v}kg）`:"");
+ $("dayList").innerHTML=rs.map(([r,i])=>`<div class="log"><div class="ico">${pb(r.p)}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
   <button class="sm" onclick="editT(${i});tab('train')">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`).join("")||'<div class="empty">この日の記録はありません</div>';}
 // その日の評価（トレーナーコメント）
 function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="有酸素"),cardio=rs.filter(r=>r.p==="有酸素");
@@ -346,7 +358,7 @@ function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="
  // 4 自己ベスト (15)
  const pb=lift.filter(r=>{const prev=Math.max(0,...before.filter(x=>x.ex===r.ex).map(rm));return prev&&rm(r)>prev}).map(r=>r.ex);
  const p4=pb.length?15:Math.round(p3/20*8);score+=p4;
- items.push([p4,15,"自己ベスト",pb.length?`🏆 ${pb.join("、")} で自己ベスト更新！素晴らしいです。`:"今日は自己ベスト更新なし。ベストは毎回出るものではないので、焦らずいきましょう。"]);
+ items.push([p4,15,"自己ベスト",pb.length?`${pb.join("、")} で自己ベスト更新！素晴らしいです。`:"今日は自己ベスト更新なし。ベストは毎回出るものではないので、焦らずいきましょう。"]);
  // 5 回復 (15)
  const parts=[...new Set(lift.map(r=>r.p))],tired=parts.filter(p=>before.some(x=>x.p===p&&dAgo(x.d)-dAgo(selD)<2&&x.d!==selD));
  const p5=tired.length?Math.max(0,15-tired.length*6):15;score+=p5;
@@ -357,7 +369,7 @@ function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="
  const rank=score>=90?["S","#ffd23f","最高の1日です！この調子で続けましょう。"]:score>=75?["A","#c0c6cf","とても良いトレーニングでした。細かい点を詰めればSランクです。"]:score>=55?["B","#10b981","合格点です。下のアドバイスを1つ取り入れてみましょう。"]:["C","#f59e0b","ジムに来たこと自体が大事な一歩。次は量を少し増やしましょう。"];
  const tv=lift.reduce((a,r)=>a+vol(r),0);
  box.innerHTML=head+`<div class="evtop"><div class="rank" style="background:${rank[1]}">${rank[0]}</div><div><div class="score">${score}<small> / 100点</small></div><div class="sub">${nEx}種目・${nSet}セット・総ボリューム ${tv.toLocaleString()}kg</div></div></div>
- <div class="coach">🧑‍🏫 ${rank[2]}</div>
+ <div class="coach"><span class="tag">COACH</span>${rank[2]}</div>
  ${items.map(([v,m,t,c])=>`<div class="evrow"><div class="evh"><b>${t}</b><span>${v} / ${m}</span></div><div class="pbar"><i style="width:${v/m*100}%"></i></div><div class="sub">${c}</div></div>`).join("")}`;}
 window.selDay=k=>{selD=k;renderCal()};
 window.addOn=()=>{resetT();tab("train");$("tDate").value=selD;};
@@ -397,8 +409,8 @@ function stats(){
 
 // training
 function renderT(){T.sort((a,b)=>a.d<b.d?1:-1);let h="",pd="";
- T.forEach((r,i)=>{if(r.d!==pd){h+=`<div class="dh">📅 ${r.d}</div>`;pd=r.d}
-  h+=`<div class="log"><div class="ico">${PI[r.p]||"🏋️"}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
+ T.forEach((r,i)=>{if(r.d!==pd){h+=`<div class="dh">${r.d}</div>`;pd=r.d}
+  h+=`<div class="log"><div class="ico">${pb(r.p)}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
   <button class="sm" onclick="editT(${i})">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`});
  $("tList").innerHTML=h||'<div class="empty">まだ記録がありません</div>';stats();}
 $("tSave").onclick=()=>{if(!cur)return alert("種目を選んでください");
@@ -407,9 +419,9 @@ $("tSave").onclick=()=>{if(!cur)return alert("種目を選んでください");
  const top=ss.reduce((a,x)=>x.w>a.w?x:a,ss[0]||{w:0,r:0});
  const r={d:$("tDate").value,p:e[1],eq:e[2],ex:cur,sets:c?[]:ss,w:top.w,r:top.r,s:ss.length||1,min:+$("tMin").value||0,km:+$("tKm").value||0,m:$("tMemo").value};
  if(!c&&!ss.length)return alert("回数を入力してください");if(c&&!r.min)return alert("時間を入力してください");
- tEdit!==null?T[tEdit]=r:T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();renderCal();alert(okStore?"保存しました ✅":"⚠️ この画面では端末に保存できません");};
+ tEdit!==null?T[tEdit]=r:T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();renderCal();alert(okStore?"保存しました ":"この画面では端末に保存できません");};
 window.editT=i=>{const r=T[i];tEdit=i;cur=r.ex;part=r.p;eq="すべて";$("tDate").value=r.d;SETS=getSets(r).map(x=>({w:x.w,r:x.r,m:x.m||""}));renderSets();$("tMin").value=r.min||"";$("tKm").value=r.km||"";$("tMemo").value=r.m||"";
- $("tTitle").textContent="✏️ 記録を修正";$("tCancel").classList.remove("hidden");renderPicker();scrollTo(0,0)};
+ $("tTitle").textContent="記録を修正";$("tCancel").classList.remove("hidden");renderPicker();scrollTo(0,0)};
 window.delT=i=>ask("この記録を削除しますか？",()=>{T.splice(i,1);sv("gym_t",T);renderT();renderCal()});
 function resetT(){tEdit=null;SETS=[{w:"",r:"",m:""}];renderSets();["tMin","tKm","tMemo"].forEach(k=>$(k).value="");$("tTitle").textContent="トレーニングを記録";$("tCancel").classList.add("hidden")}
 $("tCancel").onclick=()=>{resetT();renderPicker()};
@@ -422,12 +434,12 @@ function renderB(){B.sort((a,b)=>a.d<b.d?-1:1);
  $("bmi").textContent=v?v.toFixed(1):"-";
  if(v){const[j,c]=bmiJ(v);$("bmiJ").textContent=j;$("bmiJ").style.background=c}else $("bmiJ").textContent="";
  $("bList").innerHTML=B.map((r,i)=>[r,i]).reverse().map(([r,i])=>{const b=bmiOf({h:r.h||lastH(),w:r.w});
-  return `<div class="log"><div class="ico">📏</div><div class="t"><b>${r.d}${b?"　BMI "+b.toFixed(1):""}</b><span>${BF.filter(f=>r[f[0]]).map(f=>f[2]+" "+r[f[0]]+f[3]).join(" ・ ")}</span></div>
+  return `<div class="log"><div class="ico"><span class="pbadge" style="--pc:#8d99ae">体</span></div><div class="t"><b>${r.d}${b?"　BMI "+b.toFixed(1):""}</b><span>${BF.filter(f=>r[f[0]]).map(f=>f[2]+" "+r[f[0]]+f[3]).join(" ・ ")}</span></div>
   <button class="sm" onclick="editB(${i})">修正</button><button class="sm" onclick="delB(${i})">削除</button></div>`}).join("")||'<div class="empty">まだ記録がありません</div>';stats();}
 $("bSave").onclick=()=>{const r={d:$("bDate").value};BF.forEach(f=>r[f[0]]=+$(f[1]).value||null);
- bEdit!==null?B[bEdit]=r:B.push(r);sv("gym_b",B);resetB();renderB();alert(okStore?"保存しました ✅":"⚠️ この画面では端末に保存できません");};
+ bEdit!==null?B[bEdit]=r:B.push(r);sv("gym_b",B);resetB();renderB();alert(okStore?"保存しました ":"この画面では端末に保存できません");};
 window.editB=i=>{const r=B[i];bEdit=i;$("bDate").value=r.d;BF.forEach(f=>$(f[1]).value=r[f[0]]||"");
- $("bTitle").textContent="✏️ 記録を修正";$("bCancel").classList.remove("hidden");scrollTo(0,0)};
+ $("bTitle").textContent="記録を修正";$("bCancel").classList.remove("hidden");scrollTo(0,0)};
 window.delB=i=>ask("この記録を削除しますか？",()=>{B.splice(i,1);sv("gym_b",B);renderB()});
 function resetB(){bEdit=null;BF.slice(1).forEach(f=>$(f[1]).value="");$("bTitle").textContent="体の記録";$("bCancel").classList.add("hidden")}
 $("bCancel").onclick=resetB;
@@ -454,32 +466,32 @@ $("gEx").onchange=drawAll;
 
 // advice
 function advise(){const a=[];
- if(!T.length)a.push("🔰 まだ記録がありません。まずはマシン（チェストプレス・ラットプルダウン・レッグプレス）で全身を週2回から始めましょう。");
+ if(!T.length)a.push("まだ記録がありません。まずはマシン（チェストプレス・ラットプルダウン・レッグプレス）で全身を週2回から始めましょう。");
  else{
   const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.d});
   const days=new Set(T.filter(r=>dAgo(r.d)<7).map(r=>r.d)).size;
-  a.push(`📅 直近7日のトレーニング：<b>${days}日</b>。`+(days<2?"週2〜3回を目標にしましょう。":days>5?"休養日も成長に必要。週1〜2日は休みましょう。":"良いペースです！"));
+  a.push(`直近7日のトレーニング：<b>${days}日</b>。`+(days<2?"週2〜3回を目標にしましょう。":days>5?"休養日も成長に必要。週1〜2日は休みましょう。":"良いペースです！"));
   const todo=["胸","背中","脚","肩","腕"].map(p=>[p,lp[p]?dAgo(lp[p]):999]).sort((x,y)=>y[1]-x[1]);
   const [p,g]=todo[0],sug=EX.filter(e=>e[1]===p);
-  a.push(`🎯 <b>次のおすすめ：${PI[p]} ${p}</b>（${g>=999?"まだ未実施":Math.floor(g)+"日空いています"}）<br>例：${[sug[0],sug.find(e=>e[2]==="マシン"),sug.find(e=>e[2]==="ケーブル"||e[2]==="ダンベル")].filter(Boolean).map(e=>e[0]).join(" → ")}`);
-  todo.filter(([,g])=>g<2).forEach(([p])=>a.push(`😴 ${p}は48時間以内に鍛えています。回復のため今日は避けましょう。`));
+  a.push(`<b>次のおすすめ：${p}</b>（${g>=999?"まだ未実施":Math.floor(g)+"日空いています"}）<br>例：${[sug[0],sug.find(e=>e[2]==="マシン"),sug.find(e=>e[2]==="ケーブル"||e[2]==="ダンベル")].filter(Boolean).map(e=>e[0]).join(" → ")}`);
+  todo.filter(([,g])=>g<2).forEach(([p])=>a.push(`${p}は48時間以内に鍛えています。回復のため今日は避けましょう。`));
   const sets={};T.filter(r=>dAgo(r.d)<14).forEach(r=>sets[r.p]=(sets[r.p]||0)+r.s);
   const up=(sets["胸"]||0)+(sets["肩"]||0)+(sets["腕"]||0),lo=sets["脚"]||0;
-  if(up>lo*2&&up>6)a.push("⚖️ 上半身に偏っています。レッグプレスやスクワットで脚も鍛えると代謝が上がります。");
-  if((sets["胸"]||0)>(sets["背中"]||0)*1.5&&sets["胸"]>4)a.push("⚖️ 胸に比べて背中が少なめ。ラットプルダウン・シーテッドロウで姿勢改善を。");
-  if(!T.some(r=>r.p==="有酸素"&&dAgo(r.d)<14))a.push("🏃 2週間有酸素運動がありません。トレ後にトレッドミルやバイク15〜20分がおすすめ。");
+  if(up>lo*2&&up>6)a.push("上半身に偏っています。レッグプレスやスクワットで脚も鍛えると代謝が上がります。");
+  if((sets["胸"]||0)>(sets["背中"]||0)*1.5&&sets["胸"]>4)a.push("胸に比べて背中が少なめ。ラットプルダウン・シーテッドロウで姿勢改善を。");
+  if(!T.some(r=>r.p==="有酸素"&&dAgo(r.d)<14))a.push("2週間有酸素運動がありません。トレ後にトレッドミルやバイク15〜20分がおすすめ。");
   [...new Set(T.filter(r=>r.p!=="有酸素").map(r=>r.ex))].forEach(ex=>{const rs=T.filter(r=>r.ex===ex).sort((x,y)=>x.d<y.d?-1:1),l=rs[rs.length-1];
-   if(l.w&&l.r>=12)a.push(`📈 ${ex}：${l.w}kgで${l.r}回達成！次回は<b>${l.w+2.5}kg</b>で8〜10回を目指しましょう。`);
-   else if(rs.length>=3&&rs.slice(-3).every(r=>r.w===l.w&&r.r<=l.r)&&l.w)a.push(`🧱 ${ex}：3回連続停滞中。重量を10%下げてフォーム確認、または器具を変えて刺激を変えましょう。`);
-   const best=Math.max(...rs.map(rm));if(best)a.push(`🏆 ${ex}：推定1RM <b>${best}kg</b>。筋肥大なら${Math.round(best*.75)}kg×8〜10回、筋力アップなら${Math.round(best*.85)}kg×5回が目安。`);});
+   if(l.w&&l.r>=12)a.push(`${ex}：${l.w}kgで${l.r}回達成！次回は<b>${l.w+2.5}kg</b>で8〜10回を目指しましょう。`);
+   else if(rs.length>=3&&rs.slice(-3).every(r=>r.w===l.w&&r.r<=l.r)&&l.w)a.push(`${ex}：3回連続停滞中。重量を10%下げてフォーム確認、または器具を変えて刺激を変えましょう。`);
+   const best=Math.max(...rs.map(rm));if(best)a.push(`${ex}：推定1RM <b>${best}kg</b>。筋肥大なら${Math.round(best*.75)}kg×8〜10回、筋力アップなら${Math.round(best*.85)}kg×5回が目安。`);});
  }
  const l=B[B.length-1];
  if(l){const b=bmiOf({h:l.h||lastH(),w:l.w});
-  if(b>=25)a.push(`🔥 BMI ${b.toFixed(1)}：脚・背中の大筋群＋有酸素20〜30分で脂肪燃焼を狙いましょう。`);
-  if(b&&b<18.5)a.push(`🍚 BMI ${b.toFixed(1)}：たんぱく質（体重×1.6〜2g/日）と総カロリーを増やしましょう。`);
-  if(l.ar&&l.al&&Math.abs(l.ar-l.al)>=1)a.push("💪 左右の腕周囲に1cm以上の差。ダンベル種目で弱い側から始めましょう。");
-  if(B.length>=2){const p=B[B.length-2];if(l.f&&p.f)a.push(`📉 体脂肪率は前回比 <b>${(l.f-p.f>=0?"+":"")+(l.f-p.f).toFixed(1)}%</b>。`);}
- }else a.push("📏 「体」タブで身長・体重を入れると、より具体的なアドバイスが出ます。");
+  if(b>=25)a.push(`BMI ${b.toFixed(1)}：脚・背中の大筋群＋有酸素20〜30分で脂肪燃焼を狙いましょう。`);
+  if(b&&b<18.5)a.push(`BMI ${b.toFixed(1)}：たんぱく質（体重×1.6〜2g/日）と総カロリーを増やしましょう。`);
+  if(l.ar&&l.al&&Math.abs(l.ar-l.al)>=1)a.push("左右の腕周囲に1cm以上の差。ダンベル種目で弱い側から始めましょう。");
+  if(B.length>=2){const p=B[B.length-2];if(l.f&&p.f)a.push(`体脂肪率は前回比 <b>${(l.f-p.f>=0?"+":"")+(l.f-p.f).toFixed(1)}%</b>。`);}
+ }else a.push("「体」タブで身長・体重を入れると、より具体的なアドバイスが出ます。");
  $("adv").innerHTML=a.map(x=>`<li>${x}</li>`).join("");}
 
 // daily menu generator
@@ -501,9 +513,9 @@ function genMenu(){const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.
   const first=pick(fb.length?fb:pool,1);const rest2=pick(pool.filter(e=>!first.includes(e)),n-1);
   [...first,...rest2].forEach(e=>{if(!used.has(e[0])){used.add(e[0]);MENU.push({e,...suggest(e[0])})}})});
  if(mode!=="short")MENU.push({e:pick(EX.filter(e=>e[1]==="有酸素"),1)[0],cardio:true});
- $("menu").innerHTML=MENU.map((m,i)=>`<div class="log"><div class="ico">${PI[m.e[1]]}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
+ $("menu").innerHTML=MENU.map((m,i)=>`<div class="log"><div class="ico">${pb(m.e[1])}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
   <span>${m.cardio?"20分（会話できる強度で）":`${m.w?m.w+"kg":"重量は様子見"} × ${m.r}回 × ${m.s}セット ・ ${m.note}`}</span></div>
-  <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn" onclick="logAll()">✅ 全部この内容で記録</button>`;}
+  <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn" onclick="logAll()">全部この内容で記録</button>`;}
 window.useMenu=i=>{const m=MENU[i];resetT();cur=m.e[0];part=m.e[1];eq="すべて";
  if(m.cardio)$("tMin").value=20;else{SETS=Array.from({length:m.s},()=>({w:m.w||"",r:m.r,m:""}));renderSets()}
  renderPicker();document.querySelector('.tabbar [data-t="train"]').click();};
@@ -538,27 +550,27 @@ function showQuote(){const [q,c,w]=allQ()[qi],col=WC[w]||["#d4a017","#111"],h=$(
  h.style.animation="none";void h.offsetWidth;h.style.animation=""}
 function renderMyQ(){$("qCount").textContent=allQ().length;$("qMine").innerHTML=myQ.map((x,i)=>`<div class="log"><div class="t"><b>「${x[0]}」</b><span>${x[1]}（${x[2]}）</span></div><button class="sm" onclick="delQ(${i})">削除</button></div>`).join("")}
 $("qAdd").onclick=()=>{const q=[$("qText").value.trim(),$("qChar").value.trim(),$("qWork").value.trim()];if(!q[0])return alert("名言を入力してください");
- myQ.push(q);try{localStorage.setItem("gym_q",JSON.stringify(myQ))}catch{};["qText","qChar","qWork"].forEach(k=>$(k).value="");QO=qOrder();renderMyQ();alert("名言を追加しました ✅")};
+ myQ.push(q);try{localStorage.setItem("gym_q",JSON.stringify(myQ))}catch{};["qText","qChar","qWork"].forEach(k=>$(k).value="");QO=qOrder();renderMyQ();alert("名言を追加しました ")};
 window.delQ=i=>ask("この名言を削除しますか？",()=>{myQ.splice(i,1);try{localStorage.setItem("gym_q",JSON.stringify(myQ))}catch{};QO=qOrder();qp%=QO.length;qi=QO[qp];renderMyQ();showQuote()});
 renderMyQ();
 $("hello").onclick=e=>{const b=e.target.closest("[data-q]");if(!b)return qMove(1);e.stopPropagation();const v=b.dataset.q;v==="t"?(qp=qToday,qi=QO[qp],showQuote()):qMove(+v)};showQuote();
 renderPicker();renderT();renderB();renderCal();
-if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="⚠️ <b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://yuji2069807165433243-tech.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
+if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="<b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://yuji2069807165433243-tech.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
 // ---- Googleアカウント同期（Firebase） ----
 // Firebaseコンソールの「ウェブアプリの設定」の値をここに入れる
 const FIREBASE_CONFIG=null;
 let fbUser=null,fdb=null,saveT=null;
 function syncUI(msg,btn,fn){$("syncMsg").innerHTML=msg;const b=$("syncBtn");b.hidden=!btn;if(btn){b.textContent=btn;b.onclick=fn}}
 function cloudSave(){if(!fbUser||!fdb)return;clearTimeout(saveT);saveT=setTimeout(()=>{
- fdb.collection("users").doc(fbUser.uid).set({t:T,b:B,updated:Date.now()}).then(()=>syncUI(`☁️ <b>${fbUser.displayName||"Google"}</b> で同期中・保存しました`,"ログアウト",logout)).catch(e=>syncUI("⚠️ 保存に失敗："+e.code,"再試行",cloudSave))},800)}
+ fdb.collection("users").doc(fbUser.uid).set({t:T,b:B,updated:Date.now()}).then(()=>syncUI(`<b>${fbUser.displayName||"Google"}</b> で同期中・保存しました`,"ログアウト",logout)).catch(e=>syncUI("保存に失敗："+e.code,"再試行",cloudSave))},800)}
 function mergeArr(a,b){const m=new Map();[...a,...b].forEach(r=>m.set(JSON.stringify(r),r));return[...m.values()]}
-async function onLogin(u){fbUser=u;syncUI("☁️ クラウドから読み込み中…");
+async function onLogin(u){fbUser=u;syncUI("クラウドから読み込み中…");
  try{const d=await fdb.collection("users").doc(u.uid).get();
   if(d.exists){const c=d.data();T=mergeArr(c.t||[],T);B=mergeArr(c.b||[],B);
    try{localStorage.setItem("gym_t",JSON.stringify(T));localStorage.setItem("gym_b",JSON.stringify(B))}catch{}}
   renderT();renderB();renderCal();cloudSave();
-  syncUI(`☁️ <b>${u.displayName||"Google"}</b> で同期中`,"ログアウト",logout);
- }catch(e){syncUI("⚠️ 読み込みに失敗："+e.code,"再試行",()=>onLogin(u))}}
+  syncUI(`<b>${u.displayName||"Google"}</b> で同期中`,"ログアウト",logout);
+ }catch(e){syncUI("読み込みに失敗："+e.code,"再試行",()=>onLogin(u))}}
 function login(){const pr=new firebase.auth.GoogleAuthProvider();firebase.auth().signInWithPopup(pr).catch(e=>{
  if(e.code==="auth/popup-blocked"||e.code==="auth/operation-not-supported-in-this-environment")firebase.auth().signInWithRedirect(pr);else alert("ログインできませんでした："+e.code)})}
 function logout(){firebase.auth().signOut()}
@@ -567,7 +579,7 @@ function loadJs(u){return new Promise((ok,ng)=>{const x=document.createElement("
  try{const v="https://www.gstatic.com/firebasejs/10.12.2/";
   await loadJs(v+"firebase-app-compat.js");await Promise.all([loadJs(v+"firebase-auth-compat.js"),loadJs(v+"firebase-firestore-compat.js")]);
   firebase.initializeApp(FIREBASE_CONFIG);fdb=firebase.firestore();
-  firebase.auth().onAuthStateChanged(u=>{if(u)onLogin(u);else{fbUser=null;syncUI("☁️ Googleでログインすると、記録を別の端末に引き継げます","Googleでログイン",login)}});
- }catch(e){syncUI("☁️ この画面では同期を使えません（GitHub版で利用できます）")}})();
+  firebase.auth().onAuthStateChanged(u=>{if(u)onLogin(u);else{fbUser=null;syncUI("Googleでログインすると、記録を別の端末に引き継げます","Googleでログイン",login)}});
+ }catch(e){syncUI("この画面では同期を使えません（GitHub版で利用できます）")}})();
 renderSets();
 </script>
