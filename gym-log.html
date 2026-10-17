@@ -88,6 +88,8 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+#hello{cursor:pointer;margin-top:10px}#hello .q{display:block;font-size:16px;font-weight:900;line-height:1.5;text-wrap:balance}
+#hello .qs{display:block;margin-top:4px;font-size:12px;font-weight:700;color:var(--ac2);letter-spacing:.04em}
 .btn,.bigbtn,.chip.on{color:#111!important}
 .bigbtn small{color:#2b2200}
 .bigbtn svg g{fill:#111}
@@ -132,7 +134,7 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
 .ico{background:#1f242c}
 .foot-art{display:block;margin:8px auto 0;width:100%;max-width:520px;opacity:.5}
 </style>
-<header><button class="homebtn" onclick="goHome()">🏠 ホーム</button><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello">今日もナイスバルク！💪</p><svg class="hero-art" viewBox="0 0 170 150" aria-hidden="true">
+<header><button class="homebtn" onclick="goHome()">🏠 ホーム</button><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 0 170 150" aria-hidden="true">
  <g fill="none" stroke="#f3f3f3" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
   <line x1="12" y1="28" x2="158" y2="28" stroke="#e8eef8" stroke-width="5"/>
   <path d="M60 28 L68 58 L85 66 L102 58 L110 28"/>
@@ -494,7 +496,15 @@ window.logAll=()=>ask("メニュー通りに今日の記録として保存しま
  sv("gym_t",T);renderT();alert("保存しました！");});
 $("mGen").onclick=genMenu;
 
-const h=new Date().getHours();$("hello").textContent=(h<11?"おはようございます":h<18?"こんにちは":"こんばんは")+"！今日もナイスバルク💪";
+// 今日の名言（日替わり）
+const QUOTES=[["諦めたらそこで試合終了ですよ","安西先生","SLAM DUNK"],["心を燃やせ","煉獄杏寿郎","鬼滅の刃"],["海賊王に、おれはなる！","モンキー・D・ルフィ","ONE PIECE"],
+["立て、立つんだジョー！","丹下段平","あしたのジョー"],["努力した者が全て報われるとは限らん。しかし！成功した者は皆すべからく努力しておる!!","鴨川源二","はじめの一歩"],
+["強くなりたくば喰らえ!!!","範馬勇次郎","グラップラー刃牙"],["腕立て伏せ100回、上体起こし100回、スクワット100回、そしてランニング10km。これを毎日やる!!","サイタマ","ワンパンマン"],
+["更に向こうへ！Plus Ultra!!","オールマイト","僕のヒーローアカデミア"],["戦わなければ勝てない","エレン・イェーガー","進撃の巨人"],["逃げちゃダメだ","碇シンジ","新世紀エヴァンゲリオン"],
+["天才ですから","桜木花道","SLAM DUNK"],["頑張れ炭治郎頑張れ!!","竈門炭治郎","鬼滅の刃"],["まっすぐ自分の言葉は曲げねェ、それがオレの忍道だ","うずまきナルト","NARUTO"]];
+let qi=Math.floor((new Date(today())-new Date("2026-01-01"))/864e5)%QUOTES.length;
+function showQuote(){const [q,c,w]=QUOTES[qi];$("hello").innerHTML=`<span class="q">「${q}」</span><span class="qs">— ${c}（${w}）</span>`}
+$("hello").onclick=()=>{qi=(qi+1)%QUOTES.length;showQuote()};showQuote();
 renderPicker();renderT();renderB();renderCal();
 if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="⚠️ <b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://yuji2069807165433243-tech.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
 // ---- Googleアカウント同期（Firebase） ----
