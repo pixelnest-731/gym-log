@@ -85,6 +85,7 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.stat .wr{font-size:10px;color:var(--ac);font-weight:700;margin-top:2px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mact{display:flex;align-items:center;gap:4px;flex:none}
 #menu .log{flex-wrap:wrap}#menu .log .t{flex:1 1 calc(100% - 90px)}#menu .mact{width:100%;justify-content:flex-end;padding-left:30px}
 .medit{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 12px 30px;border-bottom:1px solid var(--bd)}.medit select{flex:1 1 180px;min-width:0}
@@ -299,8 +300,8 @@ header{padding-bottom:150px!important}
 <main>
 <div class="stats">
  <div class="stat"><div class="v" id="sDays">0</div><div class="l">総トレ日数</div></div>
- <div class="stat"><div class="v" id="sWeek">0</div><div class="l">今週の日数</div></div>
- <div class="stat"><div class="v" id="sVol">0</div><div class="l">今週ボリューム(t)</div></div>
+ <div class="stat"><div class="v" id="sWeek">0</div><div class="l">今週の日数</div><div class="wr" id="sWeekR"></div></div>
+ <div class="stat"><div class="v" id="sVol">0</div><div class="l">今週ボリューム(t)</div><div class="wr" id="sVolR"></div></div>
  <div class="stat"><div class="v" id="sBmi">-</div><div class="l">最新BMI</div></div>
 </div>
 
@@ -569,9 +570,13 @@ let tmI=null;$("tmBtn").onclick=()=>{audioOn();if(tmI){clearInterval(tmI);tmI=nu
  const g=$("goFx");g.classList.remove("hidden");clearTimeout(g._t);g._t=setTimeout(()=>g.classList.add("hidden"),2500);try{navigator.vibrate&&navigator.vibrate([300,100,300])}catch{}}},1000)};
 const dAgo=d=>(new Date(today())-new Date(d))/864e5;
 
+// 今週（月曜〜日曜）の範囲 [開始日, 終了日, "10/12(月)〜10/18(日)"]
+function thisWeek(){const d=new Date(today()),k=(d.getDay()+6)%7,s=new Date(d),e=new Date(d);s.setDate(d.getDate()-k);e.setDate(s.getDate()+6);
+ const f=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`,l=x=>`${x.getMonth()+1}/${x.getDate()}(${"日月火水木金土"[x.getDay()]})`;
+ return [f(s),f(e),`${l(s)}〜${l(e)}`]}
 function stats(){
  const days=new Set(T.map(r=>r.d));$("sDays").textContent=days.size;
- const wk=T.filter(r=>dAgo(r.d)<7);$("sWeek").textContent=new Set(wk.map(r=>r.d)).size;
+ const [ws,we,lab]=thisWeek(),wk=T.filter(r=>r.d>=ws&&r.d<=we);$("sWeek").textContent=new Set(wk.map(r=>r.d)).size;$("sWeekR").textContent=$("sVolR").textContent=lab;
  $("sVol").textContent=(wk.reduce((s,r)=>s+vol(r),0)/1000).toFixed(1);
  const l=B[B.length-1],b=l&&bmiOf({h:l.h||lastH(),w:l.w});$("sBmi").textContent=b?b.toFixed(1):"-";
 }
@@ -815,7 +820,7 @@ function renderWeek(){const a=weekStart(0),b=weekStart(-1),pa=weekStart(1);
  const days=new Set(wk.map(r=>r.d)).size,ldays=new Set(lw.map(r=>r.d)).size,v=wk.reduce((x,r)=>x+vol(r),0),lv=lw.reduce((x,r)=>x+vol(r),0);
  const sets={};wk.filter(r=>r.p!=="有酸素").forEach(r=>sets[r.p]=(sets[r.p]||0)+getSets(r).length);const mx=Math.max(10,...Object.values(sets));
  const cardio=wk.filter(r=>r.p==="有酸素").reduce((x,r)=>x+(r.min||0),0),diff=lv?Math.round((v-lv)/lv*100):null;
- $("weekCard").innerHTML=`<h3>今週のまとめ<small class="wkr">${md(a)}〜</small></h3>
+ $("weekCard").innerHTML=`<h3>今週のまとめ<small class="wkr">${thisWeek()[2]}</small></h3>
  <div class="wsum"><div><b>${days}</b><span>日</span><small>先週 ${ldays}日</small></div><div><b>${(v/1000).toFixed(1)}</b><span>t</span><small>${diff==null?"先週の記録なし":`先週比 ${diff>=0?"+":""}${diff}%`}</small></div><div><b>${cardio}</b><span>分</span><small>有酸素</small></div></div>
  <div class="wbars">${["胸","背中","脚","肩","腕","腹"].map(p=>`<div class="wb"><span>${p}</span><i><em style="width:${(sets[p]||0)/mx*100}%;background:${PCOL[p]}"></em></i><b>${sets[p]||0}</b></div>`).join("")}</div>
  <div class="sub">部位ごとのセット数。1部位あたり週10セット前後が筋肥大の目安です</div>`}
