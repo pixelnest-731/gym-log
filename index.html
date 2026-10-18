@@ -312,7 +312,7 @@ header{padding-bottom:150px!important}
 <div class="stats">
  <div class="stat"><div class="v" id="sDays">0</div><div class="l">総トレ日数</div></div>
  <div class="stat"><div class="v" id="sWeek">0</div><div class="l">今週の日数</div><div class="wr" id="sWeekR"></div></div>
- <div class="stat"><div class="v" id="sVol">0</div><div class="l">今週ボリューム(t)</div><div class="wr" id="sVolR"></div></div>
+ <div class="stat"><div class="v" id="sVol">0</div><div class="l">今週ボリューム(t)</div></div>
  <div class="stat"><div class="v" id="sBmi">-</div><div class="l">最新BMI</div></div>
 </div>
 
@@ -587,7 +587,7 @@ function thisWeek(){const d=new Date(today()),k=(d.getDay()+6)%7,s=new Date(d),e
  return [f(s),f(e),`${l(s)}〜${l(e)}`]}
 function stats(){
  const days=new Set(T.map(r=>r.d));$("sDays").textContent=days.size;
- const [ws,we,lab]=thisWeek(),wk=T.filter(r=>r.d>=ws&&r.d<=we);$("sWeek").textContent=new Set(wk.map(r=>r.d)).size;$("sWeekR").textContent=$("sVolR").textContent=lab;
+ const [ws,we,lab]=thisWeek(),wk=T.filter(r=>r.d>=ws&&r.d<=we);$("sWeek").textContent=new Set(wk.map(r=>r.d)).size;$("sWeekR").textContent=lab;
  $("sVol").textContent=(wk.reduce((s,r)=>s+vol(r),0)/1000).toFixed(1);
  const l=B[B.length-1],b=l&&bmiOf({h:l.h||lastH(),w:l.w});$("sBmi").textContent=b?b.toFixed(1):"-";
 }
