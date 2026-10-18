@@ -875,7 +875,7 @@ if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostnam
  const BANANA=g=>{mk("path",{d:"M-12 -2 q12 14 24 -4 q-12 8 -24 4z",fill:"#ffd60a",stroke:"#c9a400","stroke-width":1},g);mk("path",{d:"M12 -6 l3 -3",stroke:"#5a3e2b","stroke-width":2.5,"stroke-linecap":"round"},g);mk("path",{d:"M-12 -2 l-2 1",stroke:"#5a3e2b","stroke-width":2},g)};
  let items=[],next=1.2,act=null,ph=0,last=0;
  const spawn=()=>{const g=mk("g",{},obs),ban=Math.random()<.18;(ban?BANANA:KINDS[Math.floor(Math.random()*KINDS.length)])(g);items.push({g,x:178,vx:-55,fly:false,done:false,rot:0,ban})};
- const say=(txt,x,y)=>{bt.textContent=txt;bub.setAttribute("transform",`translate(${x} ${y})`);bub.setAttribute("opacity",1)};
+ const say=()=>{}; // 吹き出しは表示しない
  const boom=(txt,x,y)=>{pt.textContent=txt;pow.setAttribute("transform",`translate(${x} ${y})`);pow.setAttribute("opacity",1)};
  function choose(o){const r=Math.random();const k=o.ban?(r<.75?"slip":"jump"):r<.33?"jump":r<.56?"kick":r<.78?"punch":"ouch";act={k,t:0,o};o.done=true;
   if(k==="kick"||k==="punch"){o.fly=true;o.vx=70+Math.random()*40;o.vy=-90-Math.random()*40;o.spin=(Math.random()<.5?-1:1)*720;boom(k==="kick"?"KICK!":"POW!",o.x,groundY(o.x)-14)}}
