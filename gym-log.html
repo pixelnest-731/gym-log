@@ -158,7 +158,7 @@ header h1{max-width:calc(100% - 130px)}
 #hello .q.long{font-size:15px}
 #hello .qs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12px;font-weight:700;color:#e9e9e9}
 #hello .wk{background:var(--qc,var(--ac2));color:var(--qt,#111);padding:2px 8px;border-radius:3px;font-size:11px;font-weight:900;letter-spacing:.06em}
-#hello .qnav{margin-left:auto;display:flex;gap:6px}#hello .qnav button{border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer}
+#hello .qnav{display:flex;gap:6px;margin-top:10px}#hello .qnav button{border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer}
 @keyframes qin{from{opacity:0;transform:skewX(-4deg) translateX(-12px)}to{opacity:1;transform:skewX(-4deg)}}
 @media(prefers-reduced-motion:reduce){#hello{animation:none}}
 .btn,.bigbtn,.chip.on{color:#111!important}
@@ -727,7 +727,7 @@ const WC={"クレヨンしんちゃん":["#ffd400","#d7261e"],"SLAM DUNK":["#e40
 "鋼の錬金術師":["#b8860b","#fff"],"呪術廻戦":["#3b0a8f","#fff"],"東京リベンジャーズ":["#111","#fff"],"キングダム":["#a0522d","#fff"]};
 function showQuote(){const [q,c,w]=allQ()[qi],col=WC[w]||["#d4a017","#111"],h=$("hello");
  h.style.setProperty("--qc",col[0]);h.style.setProperty("--qt",col[1]);
- h.innerHTML=`<span class="q ${q.length>28?"long":""}">${q}</span><span class="qs"><span class="wk">${w||"MY QUOTE"}</span>${c||""}<span class="qnav"><button data-q="-1" aria-label="前の名言">◀ 戻る</button>${qp!==qToday?`<button data-q="t">今日</button>`:""}<button data-q="1" aria-label="次の名言">次へ ▶</button></span></span>`;
+ h.innerHTML=`<span class="q ${q.length>28?"long":""}">${q}</span><span class="qs"><span class="wk">${w||"MY QUOTE"}</span>${c||""}</span><span class="qnav"><button data-q="-1" aria-label="前の名言">◀ 戻る</button>${qp!==qToday?`<button data-q="t">今日</button>`:""}<button data-q="1" aria-label="次の名言">次へ ▶</button></span>`;
  h.style.animation="none";void h.offsetWidth;h.style.animation=""}
 $("hello").onclick=e=>{const b=e.target.closest("[data-q]");if(!b)return qMove(1);e.stopPropagation();const v=b.dataset.q;v==="t"?(qp=qToday,qi=QO[qp],showQuote()):qMove(+v)};showQuote();
 renderPicker();renderT();renderB();renderCal();
