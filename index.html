@@ -288,38 +288,14 @@ input:focus,select:focus{outline:2px solid var(--ac);outline-offset:0}
 .tabbar button.on{color:var(--ac)}
 .tabbar button.on::before{content:"";position:absolute;left:22%;right:22%;top:0;height:3px;background:var(--ac)}
 
-/* おもりの上を走る棒人間 */
-.hero-art{animation:none!important;height:272px!important;top:70px!important}
-@media(max-width:420px){.hero-art{width:150px!important;height:204px!important;top:80px!important}}
-.hero-art *{transform-box:view-box}
-.hero-art .plate{transform-origin:100px 100px;animation:spin 5s linear infinite reverse}
-.hero-art .runner{animation:bob .32s ease-in-out infinite alternate}
-.hero-art .lean{transform-origin:100px 8px;transform:rotate(10deg)}
-.hero-art .legA{transform-origin:100px -12px;animation:swing .32s ease-in-out infinite alternate}
-.hero-art .legB{transform-origin:100px -12px;animation:swing .32s ease-in-out infinite alternate-reverse}
-.hero-art .armA{transform-origin:100px -36px;animation:swing .32s ease-in-out infinite alternate-reverse}
-.hero-art .armB{transform-origin:100px -36px;animation:swing .32s ease-in-out infinite alternate}
-.hero-art .tail{transform-origin:91px -55px;animation:flap .16s ease-in-out infinite alternate}
-.hero-art .spd{animation:dash .32s linear infinite}
-.hero-art .sweat{animation:drip .64s ease-out infinite}
-@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
-@keyframes swing{from{transform:rotate(38deg)}to{transform:rotate(-38deg)}}
-@keyframes flap{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}
-@keyframes dash{from{transform:translateX(6px);opacity:.9}to{transform:translateX(-10px);opacity:0}}
-@keyframes drip{from{transform:translate(0,0);opacity:1}to{transform:translate(-14px,10px);opacity:0}}
-@media(prefers-reduced-motion:reduce){.hero-art *{animation:none!important}}
+/* おもりの上を走る棒人間（動きは JS で描く） */
+.hero-art{animation:none!important;height:272px!important;top:70px!important;right:-6px!important;overflow:visible}
+@media(max-width:420px){.hero-art{width:160px!important;height:218px!important;top:84px!important;right:-14px!important}}
+.hero-art .plate{transform-box:view-box;transform-origin:100px 100px;animation:spin 5s linear infinite reverse}
+.hero-art .bub{font:900 15px var(--body);fill:#000}
+@media(prefers-reduced-motion:reduce){.hero-art .plate{animation:none}}
 </style>
-<header><button class="acct" id="acctBtn" aria-label="アカウント"><svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>ログイン</span></button><div class="eyebrow">HARDCORE TRAINING LOG · <b>EST. 2026</b></div><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 -72 200 272" aria-hidden="true"><g class="plate"><g fill="none" stroke-width="3"><circle cx="100" cy="100" r="94" fill="#141412" stroke="#f2b705"/><circle cx="100" cy="100" r="80" stroke="#3a3730"/><circle cx="100" cy="100" r="40" stroke="#3a3730"/><circle cx="100" cy="100" r="20" fill="#000" stroke="#f2b705"/></g><g fill="#f2b705" font-family="Anton,Impact,sans-serif" text-anchor="middle"><text x="100" y="52" font-size="22" letter-spacing="2">20KG</text><text x="100" y="164" font-size="13" letter-spacing="4" fill="#9b968c">MUSCULARS</text></g><g fill="#2b2a26"><rect x="22" y="96" width="14" height="8"/><rect x="164" y="96" width="14" height="8"/></g></g><g class="runner"><g class="lean">
-  <g class="spd" stroke="#9b968c" stroke-width="3" stroke-linecap="round"><line x1="58" y1="-40" x2="74" y2="-40"/><line x1="52" y1="-28" x2="72" y2="-28"/><line x1="60" y1="-16" x2="74" y2="-16"/></g>
-  <g stroke="#f3f1ec" stroke-width="6" stroke-linecap="round" fill="none">
-   <line class="armB" x1="100" y1="-36" x2="100" y2="-16"/><line class="legB" x1="100" y1="-12" x2="100" y2="8"/>
-   <line x1="100" y1="-40" x2="100" y2="-12"/>
-   <line class="legA" x1="100" y1="-12" x2="100" y2="8"/><line class="armA" x1="100" y1="-36" x2="100" y2="-16"/>
-  </g>
-  <circle cx="100" cy="-52" r="9" fill="#f3f1ec"/>
-  <path class="band" d="M91 -55 h18" stroke="#f2b705" stroke-width="4" stroke-linecap="round"/><path class="tail" d="M91 -55 l-9 -3 M91 -55 l-8 3" stroke="#f2b705" stroke-width="3" stroke-linecap="round"/>
-  <g class="sweat" fill="#7cc6ff"><circle cx="86" cy="-62" r="2.6"/><circle cx="80" cy="-54" r="2"/></g>
- </g></g></svg></header>
+<header><button class="acct" id="acctBtn" aria-label="アカウント"><svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>ログイン</span></button><div class="eyebrow">HARDCORE TRAINING LOG · <b>EST. 2026</b></div><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 -72 200 272" aria-hidden="true"><g class="plate"><g fill="none" stroke-width="3"><circle cx="100" cy="100" r="94" fill="#141412" stroke="#f2b705"/><circle cx="100" cy="100" r="80" stroke="#3a3730"/><circle cx="100" cy="100" r="40" stroke="#3a3730"/><circle cx="100" cy="100" r="20" fill="#000" stroke="#f2b705"/></g><g fill="#f2b705" font-family="Anton,Impact,sans-serif" text-anchor="middle"><text x="100" y="52" font-size="22" letter-spacing="2">20KG</text><text x="100" y="164" font-size="13" letter-spacing="4" fill="#9b968c">MUSCULARS</text></g><g fill="#2b2a26"><rect x="22" y="96" width="14" height="8"/><rect x="164" y="96" width="14" height="8"/></g></g><g id="obs"></g><g id="rn"></g><g id="fx"></g></svg></header>
 <main>
 <div class="stats">
  <div class="stat"><div class="v" id="sDays">0</div><div class="l">総トレ日数</div></div>
@@ -833,6 +809,73 @@ function renderWeek(){const a=weekStart(0),b=weekStart(-1),pa=weekStart(1);
 renderWeek();
 // 電波がなくても開けるように（GitHub版のみ）
 if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostname))navigator.serviceWorker.register("sw.js").catch(()=>{});
+
+
+// ---- ホーム画面のミニアニメ：おもりの上を走る棒人間 ----
+(()=>{const NS="http://www.w3.org/2000/svg",rn=document.getElementById("rn"),obs=document.getElementById("obs"),fx=document.getElementById("fx");if(!rn)return;
+ const mk=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||rn).appendChild(e);return e};
+ const W="#f3f1ec",G="#f2b705",R=94,CX=100,CY=100,groundY=x=>CY-Math.sqrt(Math.max(0,R*R-(x-CX)**2));
+ // 体のパーツ
+ const body=mk("g",{}),st={stroke:W,"stroke-width":5,"stroke-linecap":"round","stroke-linejoin":"round",fill:"none"};
+ const spd=mk("g",{stroke:"#9b968c","stroke-width":2.5,"stroke-linecap":"round"},body);[[-30,14],[-20,18],[-10,12]].forEach(([y,l])=>mk("line",{x1:70,y1:y,x2:70+l,y2:y},spd));
+ const legB=mk("polyline",{...st,opacity:.75},body),armB=mk("polyline",{...st,opacity:.75},body),torso=mk("line",st,body),legA=mk("polyline",st,body),armA=mk("polyline",st,body);
+ const head=mk("circle",{r:8.5,fill:W},body),band=mk("line",{stroke:G,"stroke-width":4,"stroke-linecap":"round"},body),tail=mk("polyline",{stroke:G,"stroke-width":3,fill:"none","stroke-linecap":"round"},body);
+ const sweat=mk("circle",{r:2.4,fill:"#7cc6ff"},body),stars=mk("g",{opacity:0},body);[0,1,2].forEach(i=>mk("text",{"font-size":11,fill:G,"text-anchor":"middle"},stars).textContent="★");
+ const bub=mk("g",{opacity:0},fx);mk("rect",{x:-4,y:-22,width:76,height:24,rx:12,fill:"#fff"},bub);mk("path",{d:"M14 2 l-6 9 l12 -9z",fill:"#fff"},bub);const bt=mk("text",{x:34,y:-5,"text-anchor":"middle",class:"bub"},bub);
+ const pow=mk("g",{opacity:0},fx);mk("path",{d:"M0 -14 L4 -4 L14 -6 L6 2 L12 12 L1 6 L-6 14 L-5 3 L-14 0 L-5 -5z",fill:G,stroke:"#000","stroke-width":1.5},pow);const pt=mk("text",{y:4,"text-anchor":"middle","font-size":8,"font-weight":900,fill:"#000"},pow);
+ const P=(x,y)=>x.toFixed(1)+","+y.toFixed(1),lim=(hx,hy,a1,l1,a2,l2)=>{const kx=hx+Math.sin(a1)*l1,ky=hy+Math.cos(a1)*l1;return P(hx,hy)+" "+P(kx,ky)+" "+P(kx+Math.sin(a2)*l2,ky+Math.cos(a2)*l2)};
+ // 障害物（筋トレ器具）
+ const KINDS=[
+  g=>{mk("rect",{x:-9,y:-2,width:18,height:4,fill:"#9b968c"},g);[-11,7].forEach(x=>mk("rect",{x,y:-7,width:4,height:14,rx:1,fill:G},g))},          // ダンベル
+  g=>{mk("circle",{cy:-2,r:8,fill:"#3a3730",stroke:G,"stroke-width":2},g);mk("path",{d:"M-5 -9 q5 -9 10 0",stroke:G,"stroke-width":3,fill:"none"},g)}, // ケトルベル
+  g=>{mk("circle",{r:9,fill:"#151513",stroke:G,"stroke-width":2.5},g);mk("circle",{r:2.5,fill:G},g)},                                             // プレート
+  g=>{mk("rect",{x:-12,y:-6,width:24,height:5,rx:2,fill:"#c0392b"},g);[-9,7].forEach(x=>mk("rect",{x,y:-1,width:2.5,height:8,fill:"#9b968c"},g))}, // ベンチ
+  g=>{mk("circle",{r:8,fill:"#5a3e2b",stroke:"#000","stroke-width":1.5},g);mk("path",{d:"M-8 0 h16 M0 -8 v16",stroke:"#000","stroke-width":1},g)}     // メディシンボール
+ ];
+ let items=[],next=1.2,act=null,ph=0,last=0;
+ const spawn=()=>{const g=mk("g",{},obs);KINDS[Math.floor(Math.random()*KINDS.length)](g);items.push({g,x:178,vx:-55,fly:false,done:false,rot:0})};
+ const say=(txt,x,y)=>{bt.textContent=txt;bub.setAttribute("transform",`translate(${x} ${y})`);bub.setAttribute("opacity",1)};
+ const boom=(txt,x,y)=>{pt.textContent=txt;pow.setAttribute("transform",`translate(${x} ${y})`);pow.setAttribute("opacity",1)};
+ function choose(o){const r=Math.random();const k=r<.33?"jump":r<.56?"kick":r<.78?"punch":"ouch";act={k,t:0,o};o.done=true;
+  if(k==="kick"||k==="punch"){o.fly=true;o.vx=70+Math.random()*40;o.vy=-90-Math.random()*40;o.spin=(Math.random()<.5?-1:1)*720;boom(k==="kick"?"KICK!":"POW!",o.x,groundY(o.x)-14)}}
+ function frame(ts){const dt=Math.min(.05,(ts-(last||ts))/1000);last=ts;
+  if(!document.hidden&&rn.isConnected){
+   // 障害物
+   if((next-=dt)<=0&&items.filter(o=>!o.fly).length<2){spawn();next=1.4+Math.random()*1.4}
+   items.forEach(o=>{if(o.fly){o.x+=o.vx*dt;o.vy+=260*dt;o.y+=o.vy*dt;o.rot+=o.spin*dt}else{if(!(act&&act.k==="ouch"&&act.o===o&&act.t<.9))o.x+=o.vx*dt;o.y=groundY(o.x)-8;o.rot=(o.x-100)*2}
+    if(!o.done&&o.x<=124&&!act)choose(o);
+    o.g.setAttribute("transform",`translate(${o.x.toFixed(1)} ${o.y.toFixed(1)}) rotate(${o.rot.toFixed(0)})`)});
+   items=items.filter(o=>{const out=o.x<20||o.x>230||o.y>140;if(out)o.g.remove();return!out});
+   // 体の動き
+   let hy=-10,lean=12,jump=0,tA=0,sA=0,tB=0,sB=0,uA=0,fA=0,uB=0,fB=0,ouch=0;
+   const run=()=>{ph+=dt*Math.PI*2*2.8;const s=Math.sin(ph);tA=s*.75;tB=-tA;sA=tA-.2-1.1*Math.max(0,Math.cos(ph));sB=tB-.2-1.1*Math.max(0,-Math.cos(ph));
+    uA=-tA*.9;fA=uA+1.6;uB=-tB*.9;fB=uB+1.6;hy=-10-2.5*Math.abs(Math.cos(ph))};
+   run();
+   if(act){act.t+=dt;const t=act.t;
+    if(act.k==="jump"){const d=.62;jump=-30*Math.sin(Math.PI*Math.min(1,t/d));tA=.9;sA=-1.3;tB=.5;sB=-1.5;uA=-2.4;fA=-2.6;uB=-2.2;fB=-2.4;if(t>d)act=null}
+    else if(act.k==="kick"){tA=1.5;sA=1.6;tB=-.3;sB=-.4;lean=-6;if(t>.32)act=null}
+    else if(act.k==="punch"){uA=1.65;fA=1.65;uB=-.6;fB=.6;lean=18;if(t>.32)act=null}
+    else if(act.k==="ouch"){const d=1.6;
+     if(t<.9){ouch=Math.min(1,t/.15);lean=-38*ouch;jump=-6*Math.sin(Math.PI*Math.min(1,t/.3));tA=-.6;sA=-.2;tB=.4;sB=.6;uA=-2.6;fA=-3.2;uB=2.6;fB=3.2;say(t<.45?"イタタタ…":"いってぇ！",100,-78);
+      if(t>.08&&!act.o.fly){act.o.fly=true;act.o.vx=-40;act.o.vy=-60;act.o.spin=-300}}
+     else{bub.setAttribute("opacity",0)}
+     if(t>d)act=null}}
+   if(!act||act.k!=="ouch")bub.setAttribute("opacity",0);
+   const po=+pow.getAttribute("opacity");if(po>0)pow.setAttribute("opacity",Math.max(0,po-dt*2.5));
+   // 描画
+   const hx=100,hipY=hy+jump,sx=100+Math.sin(lean*Math.PI/180)*26,sy=hipY-26*Math.cos(lean*Math.PI/180);
+   legA.setAttribute("points",lim(hx,hipY,tA,10,sA,9));legB.setAttribute("points",lim(hx,hipY,tB,10,sB,9));
+   armA.setAttribute("points",lim(sx,sy+3,uA,8,fA,7));armB.setAttribute("points",lim(sx,sy+3,uB,8,fB,7));
+   torso.setAttribute("x1",hx);torso.setAttribute("y1",hipY);torso.setAttribute("x2",sx);torso.setAttribute("y2",sy);
+   const ax=sx+Math.sin(lean*Math.PI/180)*10,ay=sy-10*Math.cos(lean*Math.PI/180);head.setAttribute("cx",ax);head.setAttribute("cy",ay);
+   band.setAttribute("x1",ax-8);band.setAttribute("y1",ay-3);band.setAttribute("x2",ax+8);band.setAttribute("y2",ay-3);
+   const fl=Math.sin(ts/60)*3;tail.setAttribute("points",P(ax-8,ay-3)+" "+P(ax-17,ay-6+fl)+" "+P(ax-8,ay-3)+" "+P(ax-16,ay+1-fl));
+   const sw=(ts/600)%1;sweat.setAttribute("cx",ax-6-sw*14);sweat.setAttribute("cy",ay-8+sw*10);sweat.setAttribute("opacity",ouch?0:1-sw);
+   spd.setAttribute("opacity",act&&act.k==="ouch"?0:.5+.5*Math.sin(ts/90));spd.setAttribute("transform",`translate(${(-(ts/20)%8).toFixed(1)} ${jump.toFixed(1)})`);
+   stars.setAttribute("opacity",ouch);[...stars.children].forEach((c,i)=>{const a=ts/250+i*2.1;c.setAttribute("x",ax+Math.cos(a)*12);c.setAttribute("y",ay-12+Math.sin(a)*4)})}
+  requestAnimationFrame(frame)}
+ if(!matchMedia("(prefers-reduced-motion: reduce)").matches)requestAnimationFrame(frame);else{last=0;ph=0;frame(0)}
+})();
 
 // ---- ドラッグで並べ替え（つまみを長押しせずにそのまま上下にドラッグ） ----
 function sortable(box,sel,done){box.addEventListener("pointerdown",e=>{const g=e.target.closest(".grip");if(!g||!box.contains(g))return;
