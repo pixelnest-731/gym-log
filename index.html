@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a09">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
 <title>MUSCULARS</title>
 <meta name="apple-mobile-web-app-title" content="MUSCULARS">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -60,7 +65,6 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .modal>div{background:var(--card);color:var(--fg);border-radius:16px;padding:20px;max-width:340px;width:100%;text-align:center}
 .modal .btn{margin:14px 4px 0}
 .modal.hidden{display:none}
-.homebtn{position:absolute;right:14px;top:16px;z-index:2;border:0;background:rgba(255,255,255,.22);color:#fff;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer}
 .bigbtn{width:100%;border:0;border-radius:16px;padding:18px;margin-bottom:16px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#9c7410,#d4a017,#ffd23f);box-shadow:0 6px 18px rgba(212,160,23,.35)}
 .bigbtn small{display:block;font-weight:400;font-size:12px;opacity:.9;margin-top:4px}
 .calh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:17px}
@@ -75,7 +79,6 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .chr .nm{font-size:20px;font-weight:800}.sub{font-size:12px;color:var(--mut)}
 .pbar{height:10px;border-radius:5px;background:var(--chip);overflow:hidden;margin:8px 0 4px}.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2))}
 .win{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.win span{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12px}
-.sync{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}.sync .sub{margin:0}
 .timer{display:flex;align-items:center;gap:8px;margin:14px 0 6px;padding:10px 12px;border:2px solid var(--ac);border-radius:999px;font-size:13px}
 .timer input{width:64px;padding:6px;text-align:center}.timer b{margin-left:auto;font-size:18px;color:var(--ac);font-variant-numeric:tabular-nums}
 .sethead,.setrow{display:grid;grid-template-columns:34px 1fr 1fr 64px 30px;gap:8px;align-items:center}
@@ -105,8 +108,6 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .dragging{position:fixed;z-index:60;pointer-events:none;background:var(--card);border:1px solid var(--ac)!important;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.6);transform:scale(1.03);padding-left:6px;padding-right:6px}
 .ghost{opacity:.25;border:1px dashed var(--ac)!important;border-radius:12px}
 
-.mv{display:flex;flex-direction:column;gap:2px}.mv button{border:1px solid var(--bd);background:var(--chip);color:var(--fg);width:30px;height:20px;border-radius:6px;font-size:9px;line-height:1;cursor:pointer;padding:0}
-.mv button:active{background:var(--ac);color:#111}
 .favs{display:flex;flex-wrap:wrap;gap:8px}
 .fav{border:1px solid var(--ac);background:linear-gradient(180deg,#1d1a12,#14130f);color:var(--fg);border-radius:12px;padding:10px 14px;font-weight:900;font-size:14px;cursor:pointer;text-align:left}
 .fav small{display:block;font-weight:400;color:var(--mut);font-size:11px;margin-top:2px}
@@ -132,7 +133,6 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 header h1{max-width:calc(100% - 130px)}
 .tabbar button i svg{width:24px;height:24px;display:block;margin:0 auto 3px}
 .tabbar button i{font-size:0}
-.homebtn{display:inline-flex;align-items:center;gap:6px;font-family:var(--disp);font-size:16px!important;letter-spacing:.08em}.homebtn svg{width:16px;height:16px}
 .pbadge{display:grid;place-items:center;width:100%;height:100%;border-radius:10px;background:color-mix(in srgb,var(--pc) 22%,transparent);color:var(--pc);border:1px solid color-mix(in srgb,var(--pc) 55%,transparent);font-weight:900;font-size:16px}
 .ico{background:none!important;padding:0}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin:1px;vertical-align:middle}
@@ -164,13 +164,11 @@ header h1 span{color:inherit}
 body{background:radial-gradient(1200px 500px at 80% -10%,rgba(212,160,23,.18),transparent 60%),var(--bg)}
 header{box-shadow:inset 0 -40px 60px rgba(0,0,0,.35);background:linear-gradient(160deg,#000 0%,#14100a 45%,#3a2c08 80%,#6b5210 100%);padding:26px 16px 110px;border-bottom:3px solid var(--ac2)}
 header::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(255,255,255,.04) 0 10px,transparent 10px 20px);pointer-events:none}
-header::after{content:none}
 header h1{font-family:var(--disp);font-size:50px;font-style:italic;font-weight:400;letter-spacing:.06em;line-height:1;position:relative;text-shadow:0 3px 0 rgba(0,0,0,.35)}
 header h1 span{color:var(--ac2)}
 header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(100% - 130px)}
 .hero-art{position:absolute;right:10px;top:62px;width:170px;height:150px;opacity:.95;pointer-events:none}
 @media(max-width:420px){.hero-art{width:120px;height:106px;top:70px}}
-.homebtn{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.25)}
 .stat{background:linear-gradient(180deg,#1a1f27,#13161b);border:1px solid var(--bd);text-align:left;padding:12px 14px}
 .stat .v{font-family:var(--disp);font-size:34px;font-weight:400;color:var(--ac2);line-height:1}
 .stat .l{letter-spacing:.06em;font-weight:700}
@@ -194,7 +192,6 @@ header p{position:relative;font-weight:700;letter-spacing:.04em;max-width:calc(1
 .pbar i{background:linear-gradient(90deg,#9c7410,var(--ac2))}
 .coach{border-left:4px solid var(--ac2)}
 .ico{background:#1f242c}
-.foot-art{display:block;margin:8px auto 0;width:100%;max-width:520px;opacity:.5}
 
 /* ===== IRON GOLD theme (single dark look, by choice) =====
    layout: black iron-room ground, one hazard-striped header band, square "plate" cards, yellow only where you act */
@@ -269,14 +266,12 @@ input:focus,select:focus{outline:2px solid var(--ac);outline-offset:0}
 .rank{border-radius:0}
 .badge{border-radius:0}
 .modal>div,.sheet{border-radius:2px;border:1px solid var(--bd)}
-.homebtn{border-radius:0}
 .toast{background:var(--ac);color:#000;border-radius:0;font-weight:900;box-shadow:4px 4px 0 #000}
 
 .tabbar{background:#000;border-top:1px solid var(--bd);box-shadow:none}
 .tabbar button{position:relative;font-weight:700;letter-spacing:.04em}
 .tabbar button.on{color:var(--ac)}
 .tabbar button.on::before{content:"";position:absolute;left:22%;right:22%;top:0;height:3px;background:var(--ac)}
-.foot-art{opacity:.35}
 </style>
 <header><button class="acct" id="acctBtn" aria-label="アカウント"><svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>ログイン</span></button><div class="eyebrow">HARDCORE TRAINING LOG · <b>EST. 2026</b></div><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 0 200 200" aria-hidden="true"><g fill="none" stroke-width="3"><circle cx="100" cy="100" r="94" fill="#141412" stroke="#f2b705"/><circle cx="100" cy="100" r="80" stroke="#3a3730"/><circle cx="100" cy="100" r="40" stroke="#3a3730"/><circle cx="100" cy="100" r="20" fill="#000" stroke="#f2b705"/></g><g fill="#f2b705" font-family="Anton,Impact,sans-serif" text-anchor="middle"><text x="100" y="52" font-size="22" letter-spacing="2">20KG</text><text x="100" y="164" font-size="13" letter-spacing="4" fill="#9b968c">MUSCULARS</text></g><g fill="#2b2a26"><rect x="22" y="96" width="14" height="8"/><rect x="164" y="96" width="14" height="8"/></g></svg></header>
 <main>
@@ -429,7 +424,12 @@ const PARTS=Object.keys(PI),EQS=["すべて","バーベル","ダンベル","マ�
 const $=id=>document.getElementById(id);
 const okStore=(()=>{try{localStorage.setItem("_t","1");return localStorage.getItem("_t")==="1"}catch{return false}})();
 const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}};
-const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{};cloudSave()};
+// 記録には id と更新時刻 u をつける。削除した id は DEL に残して、同期で復活しないようにする
+const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const stamp=a=>{a.forEach(x=>{if(!x.id)x.id=newId();if(!x.u)x.u=Date.now()});return a};
+let DEL=new Set(ld("gym_del"));
+const forget=x=>{if(x&&x.id){DEL.add(x.id);try{localStorage.setItem("gym_del",JSON.stringify([...DEL]))}catch{}}};
+const sv=(k,v)=>{if(Array.isArray(v))stamp(v);try{localStorage.setItem(k,JSON.stringify(v))}catch{};cloudSave()};
 let T=ld("gym_t"),B=ld("gym_b"),tEdit=null,bEdit=null,charts=[],part="胸",eq="すべて",cur=null;
 const today=()=>new Date().toISOString().slice(0,10);
 $("tDate").value=$("bDate").value=today();
@@ -504,8 +504,6 @@ function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="
  <div class="coach"><span class="tag">COACH</span>${rank[2]}</div>
  ${items.map(([v,m,t,c])=>`<div class="evrow"><div class="evh"><b>${t}</b><span>${v} / ${m}</span></div><div class="pbar"><i style="width:${v/m*100}%"></i></div><div class="sub">${c}</div></div>`).join("")}`;}
 window.selDay=k=>{selD=k;renderCal()};
-window.mvRec=(i,d)=>{const idx=T.map((r,k)=>[r,k]).filter(([r])=>r.d===T[i].d).map(x=>x[1]),p=idx.indexOf(i),j=idx[p+d];if(j==null)return;
- [T[i],T[j]]=[T[j],T[i]];sv("gym_t",T);renderT();renderCal()};
 window.copyDay=()=>{const rs=T.filter(r=>r.d===selD);ask(`${selD} のメニュー（${rs.length}種目）を今日の記録にコピーしますか？（重さ・回数もそのままコピーされます。あとから修正できます）`,()=>{
  rs.forEach(r=>T.push({...JSON.parse(JSON.stringify(r)),d:today()}));sv("gym_t",T);renderT();selD=today();calD=new Date();renderCal();alert("今日にコピーしました")})};
 window.addOn=()=>{resetT();tab("train");$("tDate").value=selD;};
@@ -555,10 +553,10 @@ $("tSave").onclick=()=>{if(!cur)return alert("種目を選んでください");
  const top=ss.reduce((a,x)=>x.w>a.w?x:a,ss[0]||{w:0,r:0});
  const r={d:$("tDate").value,p:e[1],eq:e[2],ex:cur,sets:c?[]:ss,w:top.w,r:top.r,s:ss.length||1,min:+$("tMin").value||0,km:+$("tKm").value||0,m:$("tMemo").value};
  if(!c&&!ss.length)return alert("回数を入力してください");if(c&&!r.min)return alert("時間を入力してください");
- tEdit!==null?T[tEdit]=r:T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();renderCal();alert(okStore?"保存しました ":"この画面では端末に保存できません");};
+ tEdit!==null?(r.id=T[tEdit].id,T[tEdit]=r):T.push(r);sv("gym_t",T);resetT();renderT();renderPicker();renderCal();alert(okStore?"保存しました ":"この画面では端末に保存できません");};
 window.editT=i=>{const r=T[i];tEdit=i;cur=r.ex;part=r.p;eq="すべて";$("tDate").value=r.d;SETS=getSets(r).map(x=>({w:x.w,r:x.r,m:x.m||""}));renderSets();$("tMin").value=r.min||"";$("tKm").value=r.km||"";$("tMemo").value=r.m||"";
  $("tTitle").textContent="記録を修正";$("tCancel").classList.remove("hidden");renderPicker();scrollTo(0,0)};
-window.delT=i=>ask("この記録を削除しますか？",()=>{T.splice(i,1);sv("gym_t",T);renderT();renderCal()});
+window.delT=i=>ask("この記録を削除しますか？",()=>{forget(T[i]);T.splice(i,1);sv("gym_t",T);renderT();renderCal()});
 function resetT(){tEdit=null;SETS=[{w:"",r:"",m:""}];renderSets();["tMin","tKm","tMemo"].forEach(k=>$(k).value="");$("tTitle").textContent="トレーニングを記録";$("tCancel").classList.add("hidden")}
 $("tCancel").onclick=()=>{resetT();renderPicker()};
 
@@ -573,10 +571,10 @@ function renderB(){B.sort((a,b)=>a.d<b.d?-1:1);
   return `<div class="log"><div class="ico"><span class="pbadge" style="--pc:#8d99ae">体</span></div><div class="t"><b>${r.d}${b?"　BMI "+b.toFixed(1):""}</b><span>${BF.filter(f=>r[f[0]]).map(f=>f[2]+" "+r[f[0]]+f[3]).join(" ・ ")}</span></div>
   <button class="sm" onclick="editB(${i})">修正</button><button class="sm" onclick="delB(${i})">削除</button></div>`}).join("")||'<div class="empty">まだ記録がありません</div>';stats();}
 $("bSave").onclick=()=>{const r={d:$("bDate").value};BF.forEach(f=>r[f[0]]=+$(f[1]).value||null);
- bEdit!==null?B[bEdit]=r:B.push(r);sv("gym_b",B);resetB();renderB();alert(okStore?"保存しました ":"この画面では端末に保存できません");};
+ bEdit!==null?(r.id=B[bEdit].id,B[bEdit]=r):B.push(r);sv("gym_b",B);resetB();renderB();alert(okStore?"保存しました ":"この画面では端末に保存できません");};
 window.editB=i=>{const r=B[i];bEdit=i;$("bDate").value=r.d;BF.forEach(f=>$(f[1]).value=r[f[0]]||"");
  $("bTitle").textContent="記録を修正";$("bCancel").classList.remove("hidden");scrollTo(0,0)};
-window.delB=i=>ask("この記録を削除しますか？",()=>{B.splice(i,1);sv("gym_b",B);renderB()});
+window.delB=i=>ask("この記録を削除しますか？",()=>{forget(B[i]);B.splice(i,1);sv("gym_b",B);renderB()});
 function resetB(){bEdit=null;BF.slice(1).forEach(f=>$(f[1]).value="");$("bTitle").textContent="体の記録";$("bCancel").classList.add("hidden")}
 $("bCancel").onclick=resetB;
 
@@ -653,7 +651,6 @@ function genMenu(){const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.
 function renderMenu(){ $("menu").innerHTML=MENU.map((m,i)=>`<div class="log" data-k="${i}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(m.e[1])}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
   <span>${m.cardio?"20分（会話できる強度で）":`${m.w?m.w+"kg":"重量は様子見"} × ${m.r}回 × ${m.s}セット ・ ${m.note}`}</span></div>
   <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn gray" onclick="saveMenuAsFav()">このメニューをお気に入りに保存</button> <button class="btn" onclick="logAll()">全部この内容で記録</button>`;}
-window.mvMenu=(i,d)=>{const j=i+d;if(j<0||j>=MENU.length)return;[MENU[i],MENU[j]]=[MENU[j],MENU[i]];renderMenu()};
 window.useMenu=i=>{const m=MENU[i];resetT();cur=m.e[0];part=m.e[1];eq="すべて";
  if(m.cardio)$("tMin").value=20;else{SETS=Array.from({length:m.s},()=>({w:m.w||"",r:m.r,m:""}));renderSets()}
  renderPicker();document.querySelector('.tabbar [data-t="train"]').click();};
@@ -716,8 +713,7 @@ function renderFav(){
   PLAN.map((it,k)=>`<div class="log" data-k="${k}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(exInfo(it.ex)[1])}</div><div class="t"><b>${k+1}. ${it.ex}</b><span>${setsTxt(it)}</span></div><button class="sm" onclick="favUse(${k})">記録へ</button></div>`).join("")+(JSON.stringify(PLAN.map(x=>x.ex))!==JSON.stringify(r.items.map(x=>x.ex))?`<button class="btn gray" onclick="savePlanOrder()">この順番をセットに保存</button> `:"")+
   `<button class="btn" onclick="favLogAll()">全部この内容で今日に記録</button></div>`}
 window.pickFav=i=>{if(isPast())favSel=null;favSel=favSel===i?null:i;if(favSel!=null)PLAN=JSON.parse(JSON.stringify(R[favSel].items));renderFav()};
-window.mvPlan=(k,d)=>{const j=k+d;if(j<0||j>=PLAN.length)return;[PLAN[k],PLAN[j]]=[PLAN[j],PLAN[k]];renderFav()};
-window.savePlanOrder=()=>{R[favSel].items=JSON.parse(JSON.stringify(PLAN));sv("gym_r",R);renderFav();alert("この順番をセットに保存しました")};
+window.savePlanOrder=()=>{R[favSel].u=Date.now();R[favSel].items=JSON.parse(JSON.stringify(PLAN));sv("gym_r",R);renderFav();alert("この順番をセットに保存しました")};
 window.favUse=k=>{const it=PLAN[k],e=exInfo(it.ex);resetT();cur=it.ex;part=e[1];eq="すべて";
  if(e[1]==="有酸素")$("tMin").value=it.min||20;else{SETS=it.sets.map(x=>({w:x.w,r:x.r,m:""}));renderSets()}
  renderPicker();tab("train")};
@@ -726,7 +722,7 @@ window.favLogAll=()=>{const r={name:planName()};ask(`「${r.name}」の内容で
   else{const ss=it.sets.filter(x=>+x.r).map(x=>({w:+x.w||0,r:+x.r,m:""}));if(!ss.length)return;const top=ss.reduce((a,x)=>x.w>a.w?x:a,ss[0]);
    T.push({d:today(),p:e[1],eq:e[2],ex:it.ex,sets:ss,w:top.w,r:top.r,s:ss.length,m:r.name})}});
  sv("gym_t",T);renderT();selD=today();renderCal();alert("保存しました")})};
-window.delFav=i=>ask(`「${R[i].name}」を削除しますか？`,()=>{R.splice(i,1);favSel=null;sv("gym_r",R);renderFav()});
+window.delFav=i=>ask(`「${R[i].name}」を削除しますか？`,()=>{forget(R[i]);R.splice(i,1);favSel=null;sv("gym_r",R);renderFav()});
 // 編集
 $("favAddEx").innerHTML='<option value="">＋ 種目を選んで追加</option>'+PARTS.map(p=>`<optgroup label="${p}">${EX.filter(e=>e[1]===p).map(e=>`<option>${e[0]}</option>`).join("")}</optgroup>`).join("");
 function renderFED(){$("favItems").innerHTML=FED.items.map((it,k)=>{const c=exInfo(it.ex)[1]==="有酸素";
@@ -738,7 +734,6 @@ $("favItems").oninput=e=>{const t=e.target,k=t.dataset.k;if(k==null)return;const
 window.fedAddSet=k=>{const ss=FED.items[k].sets,l=ss[ss.length-1]||{w:"",r:10};ss.push({w:l.w,r:l.r});renderFED()};
 window.fedDelSet=(k,j)=>{FED.items[k].sets.splice(j,1);if(!FED.items[k].sets.length)FED.items[k].sets.push({w:"",r:10});renderFED()};
 window.fedDel=k=>{FED.items.splice(k,1);renderFED()};
-window.fedMove=(k,d)=>{const a=FED.items,j=k+d;if(j<0||j>=a.length)return;[a[k],a[j]]=[a[j],a[k]];renderFED()};
 $("favAddEx").onchange=e=>{const n=e.target.value;if(!n)return;const last=T.filter(x=>x.ex===n).sort((a,b)=>a.d<b.d?1:-1)[0];
  FED.items.push({ex:n,sets:last?getSets(last).map(x=>({w:x.w,r:x.r})):[{w:"",r:10},{w:"",r:10},{w:"",r:10}],min:20});e.target.value="";renderFED()};
 $("favFromDay").onclick=()=>{const rs=T.filter(r=>r.d===selD);if(!rs.length)return alert(`${selD} の記録はありません（ホームのカレンダーで日付を選べます）`);
@@ -749,7 +744,7 @@ window.saveMenuAsFav=()=>{favEditIdx=null;FED={name:"",items:MENU.map(m=>({ex:m.
  $("favName").value="";$("favTitle").textContent="このメニューをセットに保存";renderFED();$("favSheet").classList.remove("hidden")};
 $("favCancel").onclick=()=>$("favSheet").classList.add("hidden");
 $("favSave").onclick=()=>{const name=$("favName").value.trim();if(!name)return alert("セットの名前を入力してください");if(!FED.items.length)return alert("種目を1つ以上追加してください");
- FED.name=name;if(favEditIdx==null){R.push(FED);favSel=R.length-1}else{R[favEditIdx]=FED;favSel=favEditIdx}
+ FED.name=name;FED.u=Date.now();if(favEditIdx==null){delete FED.id;R.push(FED);favSel=R.length-1}else{FED.id=R[favEditIdx].id;R[favEditIdx]=FED;favSel=favEditIdx}
  PLAN=JSON.parse(JSON.stringify(R[favSel].items));sv("gym_r",R);$("favSheet").classList.add("hidden");renderFav();tab("home");alert("セットを保存しました")};
 renderFav();
 
@@ -788,11 +783,15 @@ $("acctClose").onclick=()=>$("acctSheet").classList.add("hidden");
 $("acctSheet").onclick=e=>{if(e.target.id==="acctSheet")$("acctSheet").classList.add("hidden")};
 syncUI("ログインすると、記録がGoogleのクラウドに保存され、機種変更しても引き継げます。<br>※この画面ではログインを利用できません。GitHub版で利用できます。");
 function cloudSave(){if(!fbUser||!fdb)return;clearTimeout(saveT);saveT=setTimeout(()=>{
- fdb.collection("users").doc(fbUser.uid).set({t:T,b:B,r:R,updated:Date.now()}).then(()=>syncUI(`<b>${fbUser.displayName||"Google"}</b> で同期中・保存しました`,"ログアウト",logout)).catch(e=>syncUI("保存に失敗："+e.code,"再試行",cloudSave))},800)}
-function mergeArr(a,b){const m=new Map();[...a,...b].forEach(r=>m.set(JSON.stringify(r),r));return[...m.values()]}
+ fdb.collection("users").doc(fbUser.uid).set({t:T,b:B,r:R,del:[...DEL],updated:Date.now()}).then(()=>syncUI(`<b>${fbUser.displayName||"Google"}</b> で同期中・保存しました`,"ログアウト",logout)).catch(e=>syncUI("保存に失敗："+e.code,"再試行",cloudSave))},800)}
+const body=x=>{const {id,u,...r}=x;return JSON.stringify(r)};
+function mergeArr(cloud,local){const byBody=new Map(local.map(x=>[body(x),x]));
+ cloud.forEach(x=>{if(!x.id){const l=byBody.get(body(x));x.id=l?l.id:newId();x.u=l?l.u:1}});
+ const m=new Map();[...cloud,...local].forEach(x=>{const o=m.get(x.id);if(!o||(x.u||0)>(o.u||0))m.set(x.id,x)});
+ return [...m.values()].filter(x=>!DEL.has(x.id))}
 async function onLogin(u){fbUser=u;syncUI("クラウドから読み込み中…");
  try{const d=await fdb.collection("users").doc(u.uid).get();
-  if(d.exists){const c=d.data();T=mergeArr(c.t||[],T);B=mergeArr(c.b||[],B);R=mergeArr(c.r||[],R);try{localStorage.setItem("gym_r",JSON.stringify(R))}catch{};renderFav();
+  if(d.exists){const c=d.data();(c.del||[]).forEach(id=>DEL.add(id));try{localStorage.setItem("gym_del",JSON.stringify([...DEL]))}catch{};stamp(T);stamp(B);stamp(R);T=mergeArr(c.t||[],T);B=mergeArr(c.b||[],B);R=mergeArr(c.r||[],R);try{localStorage.setItem("gym_r",JSON.stringify(R))}catch{};renderFav();
    try{localStorage.setItem("gym_t",JSON.stringify(T));localStorage.setItem("gym_b",JSON.stringify(B))}catch{}}
   renderT();renderB();renderCal();cloudSave();
   syncUI(`<b>${u.displayName||"Google"}</b> で同期中`,"ログアウト",logout);
@@ -810,7 +809,4 @@ function loadJs(u){return new Promise((ok,ng)=>{const x=document.createElement("
 renderSets();
 </script>
 
-
-
-</body></html>
 </html>
