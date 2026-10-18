@@ -96,6 +96,12 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.bud{display:flex;gap:14px;align-items:center}.blv{width:62px;height:62px;flex:none;border:3px solid var(--bc);display:grid;place-items:center;text-align:center;line-height:1}
+.blv small{font-size:10px;color:var(--mut);letter-spacing:.2em}.blv b{font-family:var(--disp);font-size:34px;font-weight:400;color:var(--bc)}
+.bt{flex:1;min-width:0}.bt>b{font-size:18px;font-weight:900}
+.mmap{background:#0d0d0c;border:1px solid var(--bd);padding:8px}.mmap svg{display:block;width:100%;max-width:360px;margin:0 auto;height:auto}
+.mleg{display:flex;flex-wrap:wrap;gap:6px 12px;margin:10px 0 6px;font-size:12px}.mleg span{display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+
 .stat .wr{font-size:10px;color:var(--ac);font-weight:700;margin-top:2px;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mact{display:flex;align-items:center;gap:4px;flex:none}
 #menu .log{flex-wrap:wrap}#menu .log .t{flex:1 1 calc(100% - 90px)}#menu .mact{width:100%;justify-content:flex-end;padding-left:30px}
@@ -319,6 +325,8 @@ header{padding-bottom:150px!important}
 <section id="home">
  <button class="bigbtn" onclick="goMenu()"><svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#fff"><rect x="4" y="22" width="8" height="20" rx="2"/><rect x="13" y="16" width="8" height="32" rx="2"/><rect x="43" y="16" width="8" height="32" rx="2"/><rect x="52" y="22" width="8" height="20" rx="2"/><rect x="21" y="29" width="22" height="6" rx="2"/></g></svg>今日のメニューをおまかせで組む<small>休んでいる部位から自動でメニューを作ります</small></button>
  <div class="card" id="weekCard"></div>
+ <div class="card" id="buddyCard"></div>
+ <div class="card" id="mapCard"></div>
  <div class="card" id="favCard"><h3>お気に入りセット</h3>
   <div class="favs" id="favList"></div>
   <div class="subh">過去にやったセット</div>
@@ -502,7 +510,7 @@ window.goMenu=()=>{tab("advice");genMenu();};
 let calD=new Date(),selD=today();
 window.mv=n=>{calD=new Date(calD.getFullYear(),calD.getMonth()+n,1);renderCal()};
 const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-function renderCal(){try{renderFav();renderWeek()}catch{};const y=calD.getFullYear(),m=calD.getMonth();$("calM").textContent=`${y}年${m+1}月`;
+function renderCal(){try{renderFav();renderWeek();renderBuddy();renderMap()}catch{};const y=calD.getFullYear(),m=calD.getMonth();$("calM").textContent=`${y}年${m+1}月`;
  const st=new Date(y,m,1-new Date(y,m,1).getDay());let h=["日","月","火","水","木","金","土"].map((w,i)=>`<div class="w ${i==0?"sun":i==6?"sat":""}">${w}</div>`).join("");
  for(let i=0;i<42;i++){const d=new Date(st.getFullYear(),st.getMonth(),st.getDate()+i),k=ymd(d),rs=T.filter(r=>r.d===k),ps=[...new Set(rs.map(r=>r.p))];
   h+=`<div class="d ${d.getMonth()!==m?"o":""} ${k===today()?"t":""} ${k===selD?"s":""} ${rs.length?"has":""}" onclick="selDay('${k}')"><span class="n">${d.getDate()}</span><div class="ic">${ps.map(p=>`<i class="dot" style="background:${PCOL[p]}"></i>`).join("")}</div></div>`;}
@@ -824,6 +832,50 @@ $("myExSave").onclick=()=>{const n=$("myExName").value.trim();if(!n)return alert
 window.delMyEx=i=>ask(`「${X[i].n}」を種目リストから削除しますか？（これまでの記録は残ります）`,()=>{const n=X[i].n;forget(X[i]);X.splice(i,1);sv("gym_x",X);
  const k=EX.findIndex(e=>e[0]===n&&e[3]);if(k>=0)EX.splice(k,1);refreshExLists();renderMyEx()});
 
+// ---- 棒人間の成長（マッチョ度）----
+// 直近のセット数を「2週間で半分になる」ように重みづけして合計。続ければ育ち、サボるとしぼむ
+const LV=[[0,"ガリガリ","#f3f1ec"],[10,"ふつう","#f3f1ec"],[30,"細マッチョ","#f2b705"],[60,"マッチョ","#f2b705"],[100,"ゴリマッチョ","#e4572e"],[150,"伝説のボディビルダー","#e4002b"]];
+function muscleScore(){const now=new Date(today());return T.filter(r=>r.p!=="有酸素").reduce((a,r)=>{const age=(now-new Date(r.d))/864e5;return age<0||age>120?a:a+getSets(r).length*Math.pow(.5,age/14)},0)}
+function muscleLv(){const sc=muscleScore();let i=0;LV.forEach((l,k)=>{if(sc>=l[0])i=k});const nx=LV[i+1];
+ return {sc,i,name:LV[i][1],color:LV[i][2],next:nx,pct:nx?Math.min(100,(sc-LV[i][0])/(nx[0]-LV[i][0])*100):100,grow:i+(nx?Math.min(1,(sc-LV[i][0])/(nx[0]-LV[i][0])):0)}}
+function renderBuddy(){const m=muscleLv();window.MUSCLE=m;
+ const last=T.filter(r=>r.p!=="有酸素").map(r=>r.d).sort().pop(),gap=last?Math.floor((new Date(today())-new Date(last))/864e5):null;
+ $("buddyCard").innerHTML=`<h3>あなたの棒人間</h3>
+ <div class="bud"><div class="blv" style="--bc:${m.color}"><small>LV</small><b>${m.i}</b></div><div class="bt"><b>${m.name}</b>
+ <div class="pbar"><i style="width:${m.pct}%"></i></div>
+ <div class="sub">${m.next?`次の「${m.next[1]}」まで あと ${Math.ceil(m.next[0]-m.sc)} ポイント`:"最高レベルに到達！"}</div></div></div>
+ <div class="sub" style="margin-top:8px">${gap==null?"トレーニングを記録すると、ホーム画面の棒人間が育ちます。":gap>=7?`最後のトレーニングから${gap}日。棒人間が少ししぼんできています…`:"セットを積むほど棒人間がムキムキに。2週間サボると半分しぼみます。"}</div>`}
+
+// ---- 筋肉マップ（今週鍛えた部位が光る）----
+function renderMap(){const [ws,we]=thisWeek(),sets={};T.filter(r=>r.d>=ws&&r.d<=we&&r.p!=="有酸素").forEach(r=>sets[r.p]=(sets[r.p]||0)+getSets(r).length);
+ const f=p=>{const n=sets[p]||0;return n?`fill="${PCOL[p]}" fill-opacity="${(.3+.7*Math.min(1,n/10)).toFixed(2)}"`:'fill="#26241f"'};
+ const S='stroke="#0a0a09" stroke-width="1.5"';
+ const front=`<g transform="translate(10 0)"><circle cx="50" cy="14" r="10" fill="#3a3730"/>
+  <ellipse cx="30" cy="36" rx="9" ry="7" ${f("肩")} ${S}/><ellipse cx="70" cy="36" rx="9" ry="7" ${f("肩")} ${S}/>
+  <rect x="35" y="30" width="14" height="18" rx="4" ${f("胸")} ${S}/><rect x="51" y="30" width="14" height="18" rx="4" ${f("胸")} ${S}/>
+  <rect x="39" y="50" width="22" height="30" rx="5" ${f("腹")} ${S}/>
+  <rect x="18" y="44" width="10" height="22" rx="5" ${f("腕")} ${S}/><rect x="72" y="44" width="10" height="22" rx="5" ${f("腕")} ${S}/>
+  <rect x="16" y="68" width="9" height="22" rx="4" ${f("腕")} ${S}/><rect x="75" y="68" width="9" height="22" rx="4" ${f("腕")} ${S}/>
+  <rect x="36" y="82" width="13" height="36" rx="6" ${f("脚")} ${S}/><rect x="51" y="82" width="13" height="36" rx="6" ${f("脚")} ${S}/>
+  <rect x="37" y="120" width="11" height="28" rx="5" ${f("脚")} ${S}/><rect x="52" y="120" width="11" height="28" rx="5" ${f("脚")} ${S}/>
+  <text x="50" y="164" text-anchor="middle" font-size="10" fill="#9b968c">前</text></g>`;
+ const back=`<g transform="translate(130 0)"><circle cx="50" cy="14" r="10" fill="#3a3730"/>
+  <path d="M38 26 L62 26 L58 34 L42 34z" ${f("背中")} ${S}/>
+  <ellipse cx="30" cy="36" rx="9" ry="7" ${f("肩")} ${S}/><ellipse cx="70" cy="36" rx="9" ry="7" ${f("肩")} ${S}/>
+  <path d="M35 34 L65 34 L60 70 L40 70z" ${f("背中")} ${S}/>
+  <rect x="40" y="70" width="20" height="10" rx="3" ${f("腹")} ${S}/>
+  <rect x="18" y="44" width="10" height="22" rx="5" ${f("腕")} ${S}/><rect x="72" y="44" width="10" height="22" rx="5" ${f("腕")} ${S}/>
+  <rect x="16" y="68" width="9" height="22" rx="4" ${f("腕")} ${S}/><rect x="75" y="68" width="9" height="22" rx="4" ${f("腕")} ${S}/>
+  <ellipse cx="43" cy="88" rx="8" ry="8" ${f("脚")} ${S}/><ellipse cx="57" cy="88" rx="8" ry="8" ${f("脚")} ${S}/>
+  <rect x="36" y="96" width="13" height="24" rx="6" ${f("脚")} ${S}/><rect x="51" y="96" width="13" height="24" rx="6" ${f("脚")} ${S}/>
+  <rect x="37" y="122" width="11" height="26" rx="5" ${f("脚")} ${S}/><rect x="52" y="122" width="11" height="26" rx="5" ${f("脚")} ${S}/>
+  <text x="50" y="164" text-anchor="middle" font-size="10" fill="#9b968c">後ろ</text></g>`;
+ const parts=["胸","背中","肩","腕","腹","脚"],todo=parts.filter(p=>!sets[p]);
+ $("mapCard").innerHTML=`<h3>筋肉マップ<small class="wkr">今週</small></h3>
+ <div class="mmap"><svg viewBox="0 0 240 170" role="img" aria-label="今週鍛えた部位の図">${front}${back}</svg></div>
+ <div class="mleg">${parts.map(p=>`<span><i class="dot" style="background:${sets[p]?PCOL[p]:"#26241f"}"></i>${p} ${sets[p]||0}</span>`).join("")}</div>
+ <div class="sub">${todo.length?`今週まだの部位：<b style="color:var(--ac)">${todo.join("・")}</b>`:"今週は全部位を鍛えました！"}　色が濃いほどたくさん鍛えています（10セットで最大）</div>`}
+
 // ---- 今週のまとめ（月曜はじまり） ----
 function weekStart(off){const d=new Date(today());const k=(d.getDay()+6)%7;d.setDate(d.getDate()-k-7*off);return ymd(d)}
 function renderWeek(){const a=weekStart(0),b=weekStart(-1),pa=weekStart(1);
@@ -835,7 +887,7 @@ function renderWeek(){const a=weekStart(0),b=weekStart(-1),pa=weekStart(1);
  <div class="wsum"><div><b>${days}</b><span>日</span><small>先週 ${ldays}日</small></div><div><b>${(v/1000).toFixed(1)}</b><span>t</span><small>${diff==null?"先週の記録なし":`先週比 ${diff>=0?"+":""}${diff}%`}</small></div><div><b>${cardio}</b><span>分</span><small>有酸素</small></div></div>
  <div class="wbars">${["胸","背中","脚","肩","腕","腹"].map(p=>`<div class="wb"><span>${p}</span><i><em style="width:${(sets[p]||0)/mx*100}%;background:${PCOL[p]}"></em></i><b>${sets[p]||0}</b></div>`).join("")}</div>
  <div class="sub">部位ごとのセット数。1部位あたり週10セット前後が筋肥大の目安です</div>`}
-renderWeek();
+renderWeek();renderBuddy();renderMap();
 // 電波がなくても開けるように（GitHub版のみ）
 if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostname))navigator.serviceWorker.register("sw.js").catch(()=>{});
 
@@ -849,6 +901,7 @@ if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostnam
  const spd=mk("g",{stroke:"#9b968c","stroke-width":2.5,"stroke-linecap":"round"},body);[[-30,14],[-20,18],[-10,12]].forEach(([y,l])=>mk("line",{x1:70,y1:y,x2:70+l,y2:y},spd));
  const legB=mk("polyline",{...st,opacity:.75},body),armB=mk("polyline",{...st,opacity:.75},body),torso=mk("line",st,body),legA=mk("polyline",st,body),armA=mk("polyline",st,body);
  const head=mk("circle",{r:8.5,fill:W},body),band=mk("line",{stroke:G,"stroke-width":4,"stroke-linecap":"round"},body),tail=mk("polyline",{stroke:G,"stroke-width":3,fill:"none","stroke-linecap":"round"},body);
+ const chest=mk("ellipse",{fill:W,opacity:0},body),bicA=mk("ellipse",{fill:W,opacity:0},body),bicB=mk("ellipse",{fill:W,opacity:.75},body),aura=mk("circle",{r:0,fill:"none",stroke:"#e4002b","stroke-width":2,opacity:0},body);
  const sweat=mk("circle",{r:2.4,fill:"#7cc6ff"},body),stars=mk("g",{opacity:0},body);[0,1,2].forEach(i=>mk("text",{"font-size":11,fill:G,"text-anchor":"middle"},stars).textContent="★");
  const bub=mk("g",{opacity:0},fx);mk("rect",{x:-4,y:-22,width:76,height:24,rx:12,fill:"#fff"},bub);mk("path",{d:"M14 2 l-6 9 l12 -9z",fill:"#fff"},bub);const bt=mk("text",{x:34,y:-5,"text-anchor":"middle",class:"bub"},bub);
  const pow=mk("g",{opacity:0},fx);mk("path",{d:"M0 -14 L4 -4 L14 -6 L6 2 L12 12 L1 6 L-6 14 L-5 3 L-14 0 L-5 -5z",fill:G,stroke:"#000","stroke-width":1.5},pow);const pt=mk("text",{y:4,"text-anchor":"middle","font-size":8,"font-weight":900,fill:"#000"},pow);
@@ -917,6 +970,12 @@ if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostnam
    const ax=sx+Math.sin(lean*Math.PI/180)*10,ay=sy-10*Math.cos(lean*Math.PI/180);head.setAttribute("cx",ax);head.setAttribute("cy",ay);
    band.setAttribute("x1",ax-8);band.setAttribute("y1",ay-3);band.setAttribute("x2",ax+8);band.setAttribute("y2",ay-3);
    const fl=Math.sin(ts/60)*3;tail.setAttribute("points",P(ax-8,ay-3)+" "+P(ax-17,ay-6+fl)+" "+P(ax-8,ay-3)+" "+P(ax-16,ay+1-fl));
+   const M=window.MUSCLE||{grow:0,color:W,i:0},gw=Math.max(0,Math.min(5,M.grow)),lw=5+gw*.9;
+   [legA,legB,armA,armB].forEach(e=>e.setAttribute("stroke-width",lw.toFixed(1)));torso.setAttribute("stroke-width",(5+gw*2.2).toFixed(1));
+   band.setAttribute("stroke",M.color);tail.setAttribute("stroke",M.color);
+   const cx=(hx+sx)/2+Math.sin(lean*Math.PI/180)*6,cy=(hipY+sy)/2-5;chest.setAttribute("cx",cx+1.5);chest.setAttribute("cy",cy);chest.setAttribute("rx",(gw*1.3).toFixed(1));chest.setAttribute("ry",(gw*1.6).toFixed(1));chest.setAttribute("opacity",gw>1?1:0);
+   [[bicA,uA],[bicB,uB]].forEach(([b,u])=>{b.setAttribute("cx",sx+Math.sin(u)*4.5);b.setAttribute("cy",sy+3+Math.cos(u)*4.5);b.setAttribute("rx",(1+gw*.75).toFixed(1));b.setAttribute("ry",(1+gw*.75).toFixed(1));b.setAttribute("opacity",gw>1.5?(b===bicB?.75:1):0)});
+   aura.setAttribute("cx",(hx+sx)/2);aura.setAttribute("cy",(hipY+sy)/2-6);aura.setAttribute("r",M.i>=5?30+Math.sin(ts/200)*3:0);aura.setAttribute("opacity",M.i>=5?.35+.25*Math.sin(ts/200):0);
    const sw=(ts/600)%1;sweat.setAttribute("cx",ax-6-sw*14);sweat.setAttribute("cy",ay-8+sw*10);sweat.setAttribute("opacity",ouch?0:1-sw);
    spd.setAttribute("opacity",act&&(act.k==="ouch"||act.k==="slip")?0:.5+.5*Math.sin(ts/90));spd.setAttribute("transform",`translate(${(-(ts/20)%8).toFixed(1)} ${jump.toFixed(1)})`);
    stars.setAttribute("opacity",ouch);[...stars.children].forEach((c,i)=>{const a=ts/250+i*2.1;c.setAttribute("x",ax+Math.cos(a)*12);c.setAttribute("y",ay-12+Math.sin(a)*4)})}
