@@ -96,6 +96,11 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.mact{display:flex;align-items:center;gap:4px;flex:none}
+#menu .log{flex-wrap:wrap}#menu .log .t{flex:1 1 calc(100% - 90px)}#menu .mact{width:100%;justify-content:flex-end;padding-left:30px}
+.medit{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 12px 30px;border-bottom:1px solid var(--bd)}.medit select{flex:1 1 180px;min-width:0}
+.medit.add{padding-left:0;border:0;margin-top:10px}
+
 .qrow{display:flex;gap:8px;margin-top:10px}.qrow input{flex:1;min-width:0}.qrow .sm{flex:none}
 .prfx,.gofx{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(0,0,0,.82);padding:16px;cursor:pointer;animation:pop .35s ease-out}
 .prfx.hidden,.gofx.hidden{display:none}
@@ -686,10 +691,23 @@ function genMenu(){const lp={};T.forEach(r=>{if(!lp[r.p]||r.d>lp[r.p])lp[r.p]=r.
   const first=pick(fb.length?fb:pool,1);const rest2=pick(pool.filter(e=>!first.includes(e)),n-1);
   [...first,...rest2].forEach(e=>{if(!used.has(e[0])){used.add(e[0]);MENU.push({e,...suggest(e[0])})}})});
  if(mode!=="short")MENU.push({e:pick(EX.filter(e=>e[1]==="有酸素"),1)[0],cardio:true});
- renderMenu();}
+menuEd=null;renderMenu();}
+let menuEd=null;
+const mkMenuItem=n=>{const e=exInfo(n);return e[1]==="有酸素"?{e,cardio:true}:{e,...suggest(n)}};
+const exOptions=(first)=>[first,...PARTS.filter(p=>p!==first)].map(p=>`<optgroup label="${p}">${EX.filter(e=>e[1]===p).map(e=>`<option>${e[0]}</option>`).join("")}</optgroup>`).join("");
 function renderMenu(){ $("menu").innerHTML=MENU.map((m,i)=>`<div class="log" data-k="${i}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(m.e[1])}</div><div class="t"><b>${i+1}. ${m.e[0]}</b>
   <span>${m.cardio?"20分（会話できる強度で）":`${m.w?m.w+"kg":"重量は様子見"} × ${m.r}回 × ${m.s}セット ・ ${m.note}`}</span></div>
-  <button class="sm" onclick="useMenu(${i})">記録へ</button></div>`).join("")+`<button class="btn gray" onclick="saveMenuAsFav()">このメニューをお気に入りに保存</button> <button class="btn" onclick="logAll()">全部この内容で記録</button>`;}
+  <div class="mact"><button class="sm" onclick="useMenu(${i})">記録へ</button><button class="sm" onclick="menuEdit(${i})">変更</button><button class="x" onclick="menuDel(${i})" aria-label="この種目を削除">×</button></div></div>`+
+  (menuEd===i?`<div class="medit"><select onchange="menuSet(${i},this.value)"><option value="">別の種目を選ぶ…</option>${exOptions(m.e[1])}</select><button class="sm" onclick="menuShuffle(${i})">おまかせで入れ替え</button><button class="sm" onclick="menuEdit(null)">やめる</button></div>`:"")).join("")+
+  (MENU.length?"":'<div class="empty">種目がありません。下から追加してください</div>')+
+  `<div class="medit add"><select onchange="menuAdd(this.value)"><option value="">＋ 種目を追加</option>${exOptions("胸")}</select></div>`+
+  `<button class="btn gray" onclick="saveMenuAsFav()">このメニューをお気に入りに保存</button> <button class="btn" onclick="logAll()">全部この内容で記録</button>`;}
+window.menuEdit=i=>{menuEd=i;renderMenu()};
+window.menuDel=i=>{MENU.splice(i,1);menuEd=null;renderMenu()};
+window.menuSet=(i,n)=>{if(!n)return;MENU[i]=mkMenuItem(n);menuEd=null;renderMenu()};
+window.menuAdd=n=>{if(!n)return;MENU.push(mkMenuItem(n));renderMenu()};
+window.menuShuffle=i=>{const p=MENU[i].e[1],used=new Set(MENU.map(m=>m.e[0])),pool=EX.filter(e=>e[1]===p&&!used.has(e[0]));
+ if(!pool.length)return alert("同じ部位で入れ替えられる種目がありません");MENU[i]=mkMenuItem(pool[Math.floor(Math.random()*pool.length)][0]);menuEd=null;renderMenu()};
 window.useMenu=i=>{const m=MENU[i];resetT();cur=m.e[0];part=m.e[1];eq="すべて";
  if(m.cardio)$("tMin").value=20;else{SETS=Array.from({length:m.s},()=>({w:m.w||"",r:m.r,m:""}));renderSets()}
  renderPicker();document.querySelector('.tabbar [data-t="train"]').click();};
