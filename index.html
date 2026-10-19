@@ -96,6 +96,7 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.ver{margin-top:10px;font-size:11px;opacity:.7}
 .bud{display:flex;gap:14px;align-items:center}.blv{width:62px;height:62px;flex:none;border:3px solid var(--bc);display:grid;place-items:center;text-align:center;line-height:1}
 .blv small{font-size:10px;color:var(--mut);letter-spacing:.2em}.blv b{font-family:var(--disp);font-size:34px;font-weight:400;color:var(--bc)}
 .bt{flex:1;min-width:0}.bt>b{font-size:18px;font-weight:900}
@@ -432,7 +433,7 @@ header{padding-bottom:150px!important}
  <button class="btn" id="favSave">セットを保存</button><button class="btn gray" id="favCancel">キャンセル</button>
 </div></div>
 <div class="modal hidden" id="acctSheet"><div class="sheet"><div class="avbig" id="acctAv"></div><h3 id="acctName">アカウント</h3>
- <div class="sub" id="syncMsg">読み込み中…</div><button class="gbtn" id="syncBtn" hidden></button><button class="btn gray" id="acctClose">閉じる</button></div></div>
+ <div class="sub" id="syncMsg">読み込み中…</div><div class="sub ver" id="appVer"></div><button class="gbtn" id="syncBtn" hidden></button><button class="btn gray" id="acctClose">閉じる</button></div></div>
 <div class="modal hidden" id="modal"><div><div id="mMsg"></div><button class="btn gray" id="mNo">キャンセル</button><button class="btn" id="mYes">OK</button></div></div>
 <script>
 function alert(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2200)}
@@ -889,7 +890,15 @@ function renderWeek(){const a=weekStart(0),b=weekStart(-1),pa=weekStart(1);
  <div class="sub">部位ごとのセット数。1部位あたり週10セット前後が筋肥大の目安です</div>`}
 renderWeek();renderBuddy();renderMap();
 // 電波がなくても開けるように（GitHub版のみ）
-if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostname))navigator.serviceWorker.register("sw.js").catch(()=>{});
+const APP_VER="2026.10.19";
+if("serviceWorker" in navigator&&/github\.io$|^localhost$/.test(location.hostname)){
+ // 新しい版が出たら自動で入れ替えて1回だけ読み込み直す（ホーム画面から開いている人にも最新版が届くように）
+ const hadCtl=!!navigator.serviceWorker.controller;let reloaded=false;
+ navigator.serviceWorker.addEventListener("controllerchange",()=>{if(hadCtl&&!reloaded){reloaded=true;location.reload()}});
+ navigator.serviceWorker.register("sw.js").then(r=>{r.update();document.addEventListener("visibilitychange",()=>{if(!document.hidden)r.update()})}).catch(()=>{});
+}
+// 記録やログイン状態をブラウザに消されにくくする（Safari は7日開かないと消すことがあるため）
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch{}
 
 
 // ---- ホーム画面のミニアニメ：おもりの上を走る棒人間 ----
@@ -1032,7 +1041,7 @@ function syncUI(msg,btn,fn){$("syncMsg").innerHTML=msg;const b=$("syncBtn");b.hi
   ab.innerHTML=u.photoURL?`<img src="${u.photoURL}" alt="" referrerpolicy="no-referrer">`:`<b>${ini}</b>`;
   $("acctAv").innerHTML=ab.innerHTML;$("acctName").textContent=u.displayName||"Googleアカウント"}
  else{ab.classList.remove("in");ab.innerHTML=GICON+"<span>ログイン</span>";$("acctAv").innerHTML=GICON;$("acctName").textContent="Googleでログイン"}}
-$("acctBtn").onclick=()=>$("acctSheet").classList.remove("hidden");
+$("acctBtn").onclick=()=>{$("appVer").textContent=`アプリのバージョン ${APP_VER}　${location.host}`;$("acctSheet").classList.remove("hidden")};
 $("acctClose").onclick=()=>$("acctSheet").classList.add("hidden");
 $("acctSheet").onclick=e=>{if(e.target.id==="acctSheet")$("acctSheet").classList.add("hidden")};
 syncUI("ログインすると、記録がGoogleのクラウドに保存され、機種変更しても引き継げます。<br>※この画面ではログインを利用できません。GitHub版で利用できます。");
