@@ -425,6 +425,9 @@ header{padding-bottom:150px!important}
  <div class="sub" id="syncMsg">読み込み中…</div><div class="sub ver" id="appVer"></div><button class="gbtn" id="syncBtn" hidden></button><button class="btn gray" id="acctClose">閉じる</button></div></div>
 <div class="modal hidden" id="modal"><div><div id="mMsg"></div><button class="btn gray" id="mNo">キャンセル</button><button class="btn" id="mYes">OK</button></div></div>
 <script>
+// 予期しないエラーが起きたら画面下に小さく表示する（原因を調べるため）
+window.addEventListener("error",e=>{try{let b=document.getElementById("errBar");if(!b){b=document.createElement("div");b.id="errBar";b.style.cssText="position:fixed;left:8px;right:8px;bottom:84px;z-index:99;background:#7a0010;color:#fff;font:12px/1.5 sans-serif;padding:8px 10px;border:1px solid #fff3";b.onclick=()=>b.remove();document.body.appendChild(b)}
+ b.textContent="表示エラー（タップで閉じる）："+(e.message||"")+" @"+(e.lineno||"")+":"+(e.colno||"")}catch{}});
 function alert(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("on"),2200)}
 function ask(m,fn){const md=document.getElementById("modal");document.getElementById("mMsg").textContent=m;md.classList.remove("hidden");
  document.getElementById("mYes").onclick=()=>{md.classList.add("hidden");fn()};document.getElementById("mNo").onclick=()=>md.classList.add("hidden")}
@@ -460,16 +463,16 @@ const EX=[
 const PARTS=Object.keys(PI),EQS=["すべて","バーベル","ダンベル","マシン","スミスマシン","ケーブル","自重","有酸素"];
 const $=id=>document.getElementById(id);
 const okStore=(()=>{try{localStorage.setItem("_t","1");return localStorage.getItem("_t")==="1"}catch{return false}})();
-const ld=k=>{try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}};
+const ld=k=>{try{const v=JSON.parse(localStorage.getItem(k));return Array.isArray(v)?v.filter(x=>x!=null):[]}catch{return[]}};
 // 自分で追加した種目 {id,n:名前,p:部位,e:器具}
-let X=ld("gym_x");const addXtoEX=()=>X.forEach(x=>{if(!EX.some(e=>e[0]===x.n))EX.push([x.n,x.p,x.e,1])});addXtoEX();
+let X=ld("gym_x").filter(x=>x&&x.n&&x.p);const addXtoEX=()=>X.forEach(x=>{if(!EX.some(e=>e[0]===x.n))EX.push([x.n,x.p,x.e,1])});addXtoEX();
 // 記録には id と更新時刻 u をつける。削除した id は DEL に残して、同期で復活しないようにする
 const newId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const stamp=a=>{a.forEach(x=>{if(!x.id)x.id=newId();if(!x.u)x.u=Date.now()});return a};
 let DEL=new Set(ld("gym_del"));
 const forget=x=>{if(x&&x.id){DEL.add(x.id);try{localStorage.setItem("gym_del",JSON.stringify([...DEL]))}catch{}}};
 const sv=(k,v)=>{if(Array.isArray(v))stamp(v);try{localStorage.setItem(k,JSON.stringify(v))}catch{};cloudSave()};
-let T=ld("gym_t"),B=ld("gym_b"),tEdit=null,bEdit=null,charts=[],part="胸",eq="すべて",cur=null;
+let T=ld("gym_t").filter(r=>r&&typeof r==="object"&&typeof r.d==="string"&&r.ex),B=ld("gym_b").filter(r=>r&&typeof r==="object"&&typeof r.d==="string"),tEdit=null,bEdit=null,charts=[],part="胸",eq="すべて",cur=null;
 const today=()=>new Date().toISOString().slice(0,10);
 $("tDate").value=$("bDate").value=today();
 const isCardio=n=>(EX.find(e=>e[0]===n)||[])[1]==="有酸素";
@@ -753,7 +756,7 @@ $("hello").onclick=e=>{const b=e.target.closest("[data-q]");if(!b)return qMove(1
 renderPicker();renderT();renderB();renderCal();
 
 // ---- お気に入りセット ----
-let R=ld("gym_r"),favSel=null,FED=null,favEditIdx=null,PLAN=[];
+let R=ld("gym_r").filter(r=>r&&r.name&&Array.isArray(r.items)),favSel=null,FED=null,favEditIdx=null,PLAN=[];
 const exInfo=n=>EX.find(e=>e[0]===n)||[n,"胸",""];
 const setsTxt=it=>exInfo(it.ex)[1]==="有酸素"?`${it.min||20}分`:it.sets.map(x=>`${+x.w?x.w+"kg":"自重"}×${x.r||"-"}`).join(" / ");
 const isPast=()=>typeof favSel==="string";
