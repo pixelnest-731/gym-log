@@ -1260,7 +1260,7 @@ function renderSettings(){const T_=THEMES;
  $("setBox").innerHTML=`
  <div class="card"><h3>プロフィール</h3>
   <div class="srow"><div class="sprev"><div class="big" style="background:${SET.avc}">${avHTML(SET.av,SET.avc,SET.nick)}</div><div><b>${SET.nick?esc(SET.nick):"ニックネーム未設定"}</b><small>ホーム画面のいちばん上に表示されます</small></div></div></div>
-  <div class="srow"><div><b>ニックネーム</b></div><input type="text" id="s_nick" data-set="nick" maxlength="12" placeholder="例：ゆうじ" value="${esc(SET.nick)}"></div>
+  <div class="srow"><div><b>ニックネーム</b></div><input type="text" id="s_nick" data-set="nick" maxlength="12" placeholder="例：マイケル" value="${esc(SET.nick)}"></div>
   <div class="srow col"><div><b>アバター</b></div><div class="avs">${Object.entries(AV).map(([k,[n]])=>`<button class="avb ${SET.av===k?"on":""}" data-set="av" data-val="${k}" aria-label="${n}" title="${n}">${avHTML(k,"",SET.nick)}</button>`).join("")}</div></div>
   <div class="srow col"><div><b>アバターの色</b></div>${sw("avc",AVC.map(c=>[c,c]))}</div>
  </div>
