@@ -364,6 +364,10 @@ header{padding-bottom:150px!important}
 #sWeek small.goal{font-family:var(--body);font-size:14px;color:var(--mut);margin-left:2px}
 #sWeek.hit{color:var(--ac)}
 .eyebrow{max-width:calc(100% - 200px)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 背景色（設定で切り替え） */
+:root{--hd:#000;--in:#0d0d0c}
+header{background-color:var(--hd)!important}.tabbar{background:var(--hd)!important}
+input,select,.avb,.ex,.mmap,.past,.wb i,.wsum div,.cal .d{background-color:var(--in)!important}
 body.noanim .hero-art{display:none}body.noanim #hello{max-width:100%!important}
 body.noanim header{padding-bottom:60px!important}
 </style>
@@ -529,7 +533,7 @@ const EX=[
 const PARTS=Object.keys(PI),EQS=["すべて","バーベル","ダンベル","マシン","スミスマシン","ケーブル","自重","有酸素"];
 const $=id=>document.getElementById(id);
 const okStore=(()=>{try{localStorage.setItem("_t","1");return localStorage.getItem("_t")==="1"}catch{return false}})();
-const SET_DEF={nick:"",av:"dumbbell",avc:"#f2b705",theme:"gold",body:"#f3f1ec",band:"auto",spd:1,anim:true,season:true,inc:2.5,rest:60,autoRest:false,sound:true,vib:true,goal:3,wkMon:false,wake:true};
+const SET_DEF={bg:"black",nick:"",av:"dumbbell",avc:"#f2b705",theme:"gold",body:"#f3f1ec",band:"auto",spd:1,anim:true,season:true,inc:2.5,rest:60,autoRest:false,sound:true,vib:true,goal:3,wkMon:false,wake:true};
 const SET=(()=>{try{return Object.assign({},SET_DEF,JSON.parse(localStorage.getItem("gym_s"))||{})}catch{return Object.assign({},SET_DEF)}})();
 const ld=k=>{try{const v=JSON.parse(localStorage.getItem(k));return Array.isArray(v)?v.filter(x=>x!=null):[]}catch{return[]}};
 // 自分で追加した種目 {id,n:名前,p:部位,e:器具}
@@ -1208,6 +1212,11 @@ function loadJs(u){return new Promise((ok,ng)=>{const x=document.createElement("
 renderSets();
 
 // ===== 設定画面 =====
+// 背景色 [名前, 背景, カード, カード2, 枠線, ヘッダー, 入力欄]
+const BGS={black:["ブラック","#0a0a09","#151513","#1d1c19","#2b2a26","#000000","#0d0d0c"],charcoal:["チャコール","#17181b","#22242a","#2b2e35","#3a3d46","#0e0f11","#1b1c20"],
+ navy:["ネイビー","#0a1020","#121a30","#1a2440","#2a3658","#050912","#0d1426"],wine:["ワイン","#170a0e","#241217","#2f1a20","#45262f","#0c0507","#1c0d12"],
+ forest:["フォレスト","#0a140f","#122019","#1a2b22","#2a4034","#050b08","#0d1912"],brown:["ブラウン","#15100b","#211a13","#2b221a","#41352a","#0b0805","#1a140e"],
+ slate:["スレート","#1e2530","#28313e","#323d4c","#46536a","#141a22","#222a35"]};
 const THEMES={gold:["ゴールド","#f2b705","#ffcf3a"],red:["レッド","#e4002b","#ff5263"],blue:["ブルー","#2f8cff","#74b4ff"],green:["グリーン","#22c55e","#7be3a3"],purple:["パープル","#9b5de5","#c39bff"],orange:["オレンジ","#ff7a00","#ffa94d"],pink:["ピンク","#ff4fa3","#ff8cc6"],silver:["シルバー","#c9d1dc","#eef2f6"]};
 const BODYC=[["ホワイト","#f3f1ec"],["ゴールド","#ffd23f"],["スキン","#f1c27d"],["ブロンズ","#c68642"],["レッド","#ff5263"],["ブルー","#74b4ff"],["グリーン","#7be3a3"],["パープル","#c39bff"]];
 const BANDC=[["筋肉レベルの色","auto"],["ゴールド","#f2b705"],["レッド","#e4002b"],["ブルー","#2f8cff"],["グリーン","#22c55e"],["ピンク","#ff4fa3"],["ホワイト","#f3f1ec"],["ブラック","#2b2a26"]];
@@ -1224,6 +1233,8 @@ const avHTML=(k,c,nick)=>k==="init"||!AV[k]?`<b>${esc((nick||"M").slice(0,1))}</
 function esc(t){return String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 let curAc="#f2b705";
 function applySettings(){const t=THEMES[SET.theme]||THEMES.gold,r=document.documentElement.style;r.setProperty("--ac",t[1]);r.setProperty("--ac2",t[2]);
+ const bg=BGS[SET.bg]||BGS.black;["--bg","--card","--card2","--bd","--hd","--in"].forEach((v,i)=>r.setProperty(v,bg[i+1]));r.setProperty("--chip",bg[3]);
+ {const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",bg[5])}
  document.querySelectorAll(".hero-art .plate [stroke],.hero-art .plate [fill]").forEach(e=>["fill","stroke"].forEach(a=>{if(e.getAttribute(a)===curAc)e.setAttribute(a,t[1])}));curAc=t[1];
  const mt=document.querySelector('meta[name="theme-color"]');
  window.setRunnerColor&&setRunnerColor(SET.body);
@@ -1245,6 +1256,10 @@ function renderSettings(){const T_=THEMES;
  </div>
  <div class="card"><h3>イメージカラー</h3>
   <div class="srow col"><div><small>ボタン・ランク・グラフなど、アプリ全体の色が変わります</small></div><div class="sws">${Object.entries(T_).map(([k,[n,c]])=>`<button class="sw ${SET.theme===k?"on":""}" data-set="theme" data-val="${k}" aria-label="${n}" title="${n}" style="background:${c}"></button>`).join("")}</div></div>
+ </div>
+ <div class="card"><h3>背景色</h3>
+  <div class="srow col"><div><small>画面の背景・カード・ヘッダーの色が変わります</small></div><div class="sws">${Object.entries(BGS).map(([k,[n,b,c,,,h]])=>`<button class="sw ${SET.bg===k?"on":""}" data-set="bg" data-val="${k}" aria-label="${n}" title="${n}" style="background:linear-gradient(135deg,${h} 0 34%,${b} 34% 67%,${c} 67%)"></button>`).join("")}</div>
+  <div class="sbtns" style="font-size:12px;color:var(--mut)">${Object.entries(BGS).map(([k,[n]])=>SET.bg===k?`選択中：${n}`:"").join("")}</div></div>
  </div>
  <div class="card"><h3>棒人間</h3>
   <div class="srow"><div><b>ホームのアニメを表示</b><small>オフにすると評価の欄が横いっぱいに広がります</small></div>${tgl("anim")}</div>
