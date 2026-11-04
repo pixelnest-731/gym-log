@@ -1,5 +1,5 @@
 // MUSCULARS: 電波がなくても開けるようにするためのキャッシュ
-const CACHE = "musculars-2026-10-19b";
+const CACHE = "musculars-2026-11-04a";
 const CORE = ["./", "index.html", "manifest.json", "apple-touch-icon.png", "icon-192.png", "icon-512.png"];
 const CDN = /^https:\/\/(cdnjs\.cloudflare\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|www\.gstatic\.com\/firebasejs)\//;
 

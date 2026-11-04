@@ -134,6 +134,7 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .grip i{display:block;height:2px;border-radius:2px;background:var(--mut)}
 .fitem .grip{height:30px}
 .dragging{position:fixed;z-index:60;pointer-events:none;background:var(--card);border:1px solid var(--ac)!important;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.6);transform:scale(1.03);padding-left:6px;padding-right:6px}
+.log.cur{background:rgba(242,183,5,.1);box-shadow:inset 3px 0 0 var(--ac)}
 .ghost{opacity:.25;border:1px dashed var(--ac)!important;border-radius:12px}
 
 .favs{display:flex;flex-wrap:wrap;gap:8px}
@@ -344,6 +345,7 @@ header{padding-bottom:150px!important}
 </section>
 
 <section id="train" class="hidden">
+ <div class="card" id="tPlanCard" hidden><h3 id="tPlanT">今日のセット</h3><div class="sub">左のつまみをドラッグすると、記録しながら順番を入れ替えられます。</div><div id="tPlan"></div></div>
  <div class="card">
   <h3 id="tTitle">トレーニングを記録</h3>
   <label>部位</label><div class="chips" id="parts"></div>
@@ -606,10 +608,10 @@ function stats(){
 
 // training
 function renderT(){T.sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:0);let h="",pd="";
- T.forEach((r,i)=>{if(r.d!==pd){h+=`<div class="dh">${r.d}</div>`;pd=r.d}
-  h+=`<div class="log"><div class="ico">${pb(r.p)}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
+ T.forEach((r,i)=>{if(r.d!==pd){h+=(pd?`</div>`:"")+`<div class="dh">${r.d}</div><div class="tday">`;pd=r.d}
+  h+=`<div class="log" data-k="${i}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(r.p)}</div><div class="t"><b>${r.ex}</b><span>${fmt(r)}${r.m?" ・"+r.m:""}</span></div>
   <button class="sm" onclick="editT(${i})">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`});
- $("tList").innerHTML=h||'<div class="empty">まだ記録がありません</div>';stats();}
+ if(pd)h+=`</div>`;$("tList").innerHTML=h||'<div class="empty">まだ記録がありません</div>';stats();}
 $("tSave").onclick=()=>{if(!cur)return alert("種目を選んでください");
  const e=EX.find(x=>x[0]===cur)||[cur,part,""],c=e[1]==="有酸素";
  const ss=SETS.filter(x=>+x.r).map(x=>({w:+x.w||0,r:+x.r,m:x.m||""}));
@@ -945,7 +947,86 @@ try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}ca
  ];
  const BANANA=g=>{mk("path",{d:"M-12 -2 q12 14 24 -4 q-12 8 -24 4z",fill:"#ffd60a",stroke:"#c9a400","stroke-width":1},g);mk("path",{d:"M12 -6 l3 -3",stroke:"#5a3e2b","stroke-width":2.5,"stroke-linecap":"round"},g);mk("path",{d:"M-12 -2 l-2 1",stroke:"#5a3e2b","stroke-width":2},g)};
  let items=[],next=1.2,act=null,ph=0,last=0;
- const spawn=()=>{const g=mk("g",{},obs),ban=Math.random()<.18;(ban?BANANA:KINDS[Math.floor(Math.random()*KINDS.length)])(g);items.push({g,x:178,vx:-55,fly:false,done:false,rot:0,ban})};
+  // 季節の障害物（月ごと4つ、端末の日付で切り替え）
+ const C=(cx,cy,r,f,g,s)=>mk("circle",Object.assign({cx,cy,r,fill:f},s?{stroke:s,"stroke-width":1.2}:{}),g),Rc=(x,y,w,h,f,g,rx)=>mk("rect",{x,y,width:w,height:h,fill:f,rx:rx||0},g),Pa=(d,f,g,s,sw)=>mk("path",Object.assign({d,fill:f},s?{stroke:s,"stroke-width":sw||1.5,"stroke-linecap":"round","stroke-linejoin":"round"}:{}),g);
+ const flower=(g,col,ctr,n,r,pr)=>{for(let i=0;i<n;i++){const a=i/n*Math.PI*2;C(Math.cos(a)*r,Math.sin(a)*r,pr,col,g)}C(0,0,pr*.7,ctr,g)};
+ const SEASON=[
+  [ // 1月 門松・鏡餅・だるま・羽子板
+   g=>{Rc(-10,4,20,7,"#c49a6c",g,1);[[-6,-12],[0,-15],[6,-10]].forEach(([x,y])=>{Pa(`M${x-2.5} 4 L${x-2.5} ${y+3} L${x+2.5} ${y} L${x+2.5} 4z`,"#3a9a4a",g)});Pa("M-10 4 q-3 -6 2 -8 M10 4 q3 -6 -2 -8","none",g,"#1f6b33",2)},
+   g=>{Pa("M-12 8 h24 l-3 -4 h-18z","#c0392b",g);mk("ellipse",{cx:0,cy:1,rx:11,ry:5,fill:"#f8f4ea"},g);mk("ellipse",{cx:0,cy:-5,rx:8,ry:4,fill:"#f8f4ea"},g);C(0,-10,3.5,"#ff8c1a",g);Pa("M1 -13 l3 -2","none",g,"#2e7d32",1.5)},
+   g=>{C(0,0,10,"#d62828",g);C(0,-2,5.5,"#f8f4ea",g);C(-2,-2.5,1.6,"#000",g);C(2,-2.5,.8,"#000",g,"#000");Pa("M-6 5 q6 4 12 0","none",g,"#f2b705",1.5)},
+   g=>{Pa("M-6 -12 h12 l2 14 h-16z","#f2e6c8",g,"#8b5a2b",1);Rc(-1.5,2,3,9,"#8b5a2b",g);C(0,-6,2.5,"#e4002b",g);C(9,-10,2.5,"#111",g)}
+  ],
+  [ // 2月 鬼の面・升・チョコ・梅
+   g=>{C(0,0,10,"#e4002b",g);Pa("M-7 -8 l-3 -6 l5 3z M7 -8 l3 -6 l-5 3z","#f2b705",g);C(-3.5,-1,2,"#fff",g);C(3.5,-1,2,"#fff",g);Pa("M-5 5 h10 l-2 -2 l-2 2 l-2 -2 l-2 2z","#fff",g)},
+   g=>{Pa("M-10 -4 h20 l-2 13 h-16z","#d9b382",g,"#8b5a2b",1);[-5,0,5].forEach(x=>C(x,-5,2.6,"#f1d58a",g,"#b08a3e"))},
+   g=>{Rc(-11,-7,22,14,"#5a3220",g,1.5);[-5.5,0,5.5].forEach(x=>Pa(`M${x} -7 v14`,"none",g,"#3b2015",1));Pa("M-11 0 h22","none",g,"#3b2015",1);Pa("M-2 -9 q2 -4 4 0 q2 -4 4 0 l-4 5z","#e4002b",g)},
+   g=>{flower(g,"#e5446d","#ffd166",5,5,4.2)}
+  ],
+  [ // 3月 ひな人形・ひなあられ・桃・菱餅
+   g=>{Pa("M-11 10 l5 -14 l5 14z","#1d3557",g);C(-6,-7,3.5,"#f8f4ea",g);Pa("M1 10 l5 -14 l5 14z","#e5446d",g);C(6,-7,3.5,"#f8f4ea",g);Rc(-7.5,-12,3,3,"#111",g)},
+   g=>{[[-6,2,"#ffafcc"],[0,-3,"#fff"],[6,2,"#b5e48c"],[-2,5,"#ffd166"],[4,-6,"#ffafcc"],[-5,-5,"#b5e48c"]].forEach(([x,y,c])=>C(x,y,3,c,g))},
+   g=>{flower(g,"#ffafcc","#e5446d",5,5,4.2)},
+   g=>{Pa("M-12 4 l6 -4 h12 l6 4 l-6 4 h-12z","#3a9a4a",g);Pa("M-12 0 l6 -4 h12 l6 4 l-6 4 h-12z","#f8f4ea",g);Pa("M-12 -4 l6 -4 h12 l6 4 l-6 4 h-12z","#ff6b9a",g)}
+  ],
+  [ // 4月 桜・お花見団子・ランドセル・チューリップ
+   g=>{for(let i=0;i<5;i++){const a=i/5*Math.PI*2-Math.PI/2;mk("ellipse",{cx:Math.cos(a)*5,cy:Math.sin(a)*5,rx:3.6,ry:4.6,fill:"#ffc8dd",transform:`rotate(${a*57.3+90} ${Math.cos(a)*5} ${Math.sin(a)*5})`},g)}C(0,0,2,"#e5446d",g)},
+   g=>{Pa("M0 -14 v26","none",g,"#c49a6c",2);C(0,-8,4,"#ffafcc",g);C(0,0,4,"#f8f4ea",g);C(0,8,4,"#90be6d",g)},
+   g=>{Rc(-9,-9,18,19,"#c0392b",g,4);Pa("M-9 -3 h18 v-2 q0 -5 -5 -5 h-8 q-5 0 -5 5z","#9b2226",g);Rc(-2,1,4,3,"#f2b705",g,1)},
+   g=>{Pa("M0 12 v-12","none",g,"#3a9a4a",2);Pa("M0 8 q-7 -2 -6 -9","none",g,"#3a9a4a",2.5);Pa("M-6 -10 l3 4 l3 -5 l3 5 l3 -4 v6 q0 6 -6 6 q-6 0 -6 -6z","#e4002b",g)}
+  ],
+  [ // 5月 こいのぼり・かぶと・柏餅・カーネーション
+   g=>{Pa("M-12 -6 h22 l-4 6 l4 6 h-22 q-2 -6 0 -12z","#1e6fd9",g);C(-7,-1,2.6,"#fff",g);C(-7,-1,1.2,"#111",g);Pa("M-1 -3 q3 3 0 6 M4 -3 q3 3 0 6","none",g,"#9ecbff",1.2)},
+   g=>{Pa("M-12 8 q0 -14 12 -14 q12 0 12 14z","#2b2a26",g,"#f2b705",1);Pa("M-9 -4 l-4 -10 l7 7 M9 -4 l4 -10 l-7 7","none",g,"#f2b705",2.5);C(0,0,2.5,"#f2b705",g)},
+   g=>{Pa("M-12 6 q0 -16 12 -16 q12 0 12 16z","#3a7d44",g);Pa("M0 -10 v16 M0 -4 l-6 -3 M0 2 l6 -3","none",g,"#2a5a31",1);Pa("M-8 6 q8 -10 16 0z","#f8f4ea",g)},
+   g=>{Pa("M0 12 v-10","none",g,"#3a9a4a",2);Pa("M-8 -2 q-2 -8 3 -10 q1 -3 5 -1 q4 -2 5 1 q5 2 3 10 q-8 4 -16 0z","#e5446d",g);Pa("M-6 -5 q6 3 12 0 M-4 -9 q4 2 8 0","none",g,"#b5174a",1)}
+  ],
+  [ // 6月 てるてる坊主・傘・あじさい・カタツムリ
+   g=>{C(0,-6,6,"#fff",g,"#9b968c");Pa("M-5 -1 l-5 12 h20 l-5 -12z","#fff",g,"#9b968c",1);Pa("M-5 -1 h10","none",g,"#e4002b",2);C(-2,-7,.9,"#111",g);C(2,-7,.9,"#111",g);Pa("M-2 -4 q2 2 4 0","none",g,"#111",1)},
+   g=>{Pa("M-13 0 q13 -18 26 0 q-3 -3 -6.5 0 q-3 -3 -6.5 0 q-3.5 -3 -6.5 0 q-3.5 -3 -6.5 0z","#3fa7ff",g);Pa("M0 -10 v18 q0 4 -4 3","none",g,"#2b2a26",2)},
+   g=>{[[-5,-4],[3,-6],[6,2],[-3,4],[0,-1],[-7,2],[4,-1]].forEach(([x,y],i)=>C(x,y,3.4,["#7b6cf6","#9d8df1","#5dade2","#b39ddb"][i%4],g));Pa("M-4 9 q4 -4 8 0","#3a9a4a",g)},
+   g=>{Pa("M-13 8 h20 q4 0 4 -4 v-3","#d4a373",g,"#a47148",1);C(0,0,7.5,"#e9c46a",g,"#a47148");Pa("M0 0 m-3 0 a3 3 0 1 1 3 3","none",g,"#a47148",1.3);Pa("M10 1 l-1 -6 M11 1 l3 -5","none",g,"#a47148",1.3)}
+  ],
+  [ // 7月 笹飾り・スイカ・かき氷・風鈴
+   g=>{Pa("M0 12 v-24","none",g,"#3a9a4a",2);Pa("M0 -6 l-9 -4 M0 0 l9 -4 M0 -11 l7 -3","none",g,"#3a9a4a",2);Rc(-8,-4,3,8,"#ffd166",g);Rc(5,1,3,8,"#ff6b9a",g);Rc(-6,4,3,7,"#3fa7ff",g)},
+   g=>{Pa("M-12 -2 a12 12 0 0 0 24 0z","#3a9a4a",g);Pa("M-10 -2 a10 10 0 0 0 20 0z","#e4002b",g);[[-5,2],[0,5],[5,2],[-2,1],[3,1]].forEach(([x,y])=>C(x,y,.9,"#111",g))},
+   g=>{Pa("M-8 2 h16 l-3 9 h-10z","#9ecbff",g,"#5dade2",1);Pa("M-9 2 q9 -18 18 0z","#f8f4ea",g);Pa("M-6 -2 q6 -10 12 0z","#e4002b",g,null)},
+   g=>{Pa("M-7 2 q0 -11 7 -11 q7 0 7 11z","#cfe8ff",g,"#5dade2",1);Pa("M-4 -3 q2 2 4 0 M1 -5 q2 2 4 0","none",g,"#e4002b",1.2);Pa("M0 2 v6","none",g,"#9b968c",1);Rc(-2.5,8,5,6,"#ffd166",g)}
+  ],
+  [ // 8月 花火・うちわ・ひまわり・浮き輪
+   g=>{for(let i=0;i<10;i++){const a=i/10*Math.PI*2;Pa(`M${Math.cos(a)*3} ${Math.sin(a)*3} L${Math.cos(a)*11} ${Math.sin(a)*11}`,"none",g,i%2?"#ff6b9a":"#ffd166",2)}C(0,0,2,"#fff",g)},
+   g=>{C(0,-4,9,"#3fa7ff",g,"#1e6fd9");Pa("M-5 -6 q5 -4 10 0","none",g,"#fff",1.5);C(-3,-1,1.5,"#e4002b",g);Rc(-1.5,4,3,9,"#c49a6c",g)},
+   g=>{flower(g,"#ffd60a","#5a3e2b",10,7,3.4);C(0,0,5.5,"#5a3e2b",g)},
+   g=>{C(0,0,10,"#ff6b9a",g);C(0,0,4.5,"#151513",g);[0,1,2,3].forEach(i=>{const a=i*Math.PI/2+.4;Pa(`M${Math.cos(a)*4.5} ${Math.sin(a)*4.5} L${Math.cos(a)*10} ${Math.sin(a)*10}`,"none",g,"#fff",3)})}
+  ],
+  [ // 9月 月見団子・ススキ・うさぎ・栗
+   g=>{Pa("M-11 10 h22 l-2 -3 h-18z","#c49a6c",g);[[-6,4],[0,4],[6,4],[-3,-1],[3,-1],[0,-6]].forEach(([x,y])=>C(x,y,3.3,"#f8f4ea",g,"#d6cfbe"))},
+   g=>{[[-5,-3],[0,0],[5,-4]].forEach(([dx,a])=>{Pa(`M${dx} 12 q${a} -10 ${a*2} -22`,"none",g,"#c9b37e",1.5);Pa(`M${dx+a*2} -10 q3 4 1 9 q-3 -4 -1 -9z`,"#e9dcb4",g)})},
+   g=>{mk("ellipse",{cx:-2,cy:-11,rx:2,ry:6,fill:"#fff",transform:"rotate(-12 -2 -11)"},g);mk("ellipse",{cx:3,cy:-11,rx:2,ry:6,fill:"#fff",transform:"rotate(12 3 -11)"},g);C(0,-2,6,"#fff",g);mk("ellipse",{cx:0,cy:7,rx:8,ry:5,fill:"#fff"},g);C(-2,-3,1,"#e4002b",g);C(2,-3,1,"#e4002b",g)},
+   g=>{Pa("M-9 4 q0 -9 9 -14 q9 5 9 14 q-9 5 -18 0z","#7a4a2a",g);Pa("M-9 4 q9 5 18 0 q-9 9 -18 0z","#e9c46a",g);Pa("M-1 -9 l1 -3","none",g,"#5a3e2b",1.5)}
+  ],
+  [ // 10月 かぼちゃ・おばけ・さつまいも・紅葉
+   g=>{mk("ellipse",{cx:0,cy:1,rx:12,ry:9,fill:"#ff7a00"},g);Pa("M-4 -7 q-2 8 0 16 M4 -7 q2 8 0 16","none",g,"#c25a00",1);Pa("M0 -8 l1 -5 h2","none",g,"#3a7d44",2);Pa("M-7 -2 l3 -3 l2 3z M7 -2 l-3 -3 l-2 3z M-6 4 l2 2 l2 -2 l2 2 l2 -2 l2 2 l2 -2 q-6 5 -12 0z","#151513",g)},
+   g=>{Pa("M-9 10 v-10 q0 -10 9 -10 q9 0 9 10 v10 l-3 -3 l-3 3 l-3 -3 l-3 3 l-3 -3z","#f3f1ec",g);C(-3,-2,1.6,"#151513",g);C(3,-2,1.6,"#151513",g);mk("ellipse",{cx:0,cy:3,rx:2,ry:2.6,fill:"#151513"},g)},
+   g=>{Pa("M-13 2 q2 -8 13 -7 q11 1 13 7 q-4 6 -13 5 q-11 0 -13 -5z","#9b2b6f",g);Pa("M-4 -4 q2 3 0 6 M5 -3 q2 3 0 5","none",g,"#6d1d4f",1)},
+   g=>{Pa("M0 -12 l2 6 l6 -3 l-2 6 l7 1 l-6 3 l3 5 l-6 -2 l-1 6 l-3 -6 l-3 6 l-1 -6 l-6 2 l3 -5 l-6 -3 l7 -1 l-2 -6 l6 3z","#e4572e",g);Pa("M0 0 v12","none",g,"#8b2e16",1.5)}
+  ],
+  [ // 11月 千歳飴・どんぐり・焼き芋・柿
+   g=>{Pa("M-7 -12 h14 v22 h-14z","#f8f4ea",g,"#c9a400",1);Rc(-7,-12,14,4,"#e4002b",g);C(0,2,3,"#e4002b",g);Pa("M5 -15 q4 -4 6 2","none",g,"#ff6b9a",3);Pa("M7 -15 q4 -4 6 2","none",g,"#fff",1.5)},
+   g=>{mk("ellipse",{cx:0,cy:3,rx:6.5,ry:8,fill:"#a0632d"},g);Pa("M-7.5 -2 q7.5 -8 15 0 q-7.5 3 -15 0z","#6b4220",g);Pa("M0 -7 v-4","none",g,"#6b4220",2)},
+   g=>{Pa("M-13 2 q2 -8 13 -7 q11 1 13 7 q-4 6 -13 5 q-11 0 -13 -5z","#7a1f4f",g);Pa("M-2 -5 q4 6 13 6 q-6 6 -13 4 q-4 -4 0 -10z","#ffd166",g);Pa("M-6 -10 q1 -3 0 -5 M0 -10 q1 -3 0 -5","none",g,"#c9d1dc",1.2)},
+   g=>{mk("ellipse",{cx:0,cy:2,rx:10,ry:8.5,fill:"#ff8c1a"},g);Pa("M-6 -6 q6 -4 12 0 q-6 2 -12 0z","#3a7d44",g);Rc(-1,-9,2,4,"#5a3e2b",g)}
+  ],
+  [ // 12月 クリスマスツリー・サンタ帽・プレゼント・雪だるま
+   g=>{Pa("M0 -14 l7 9 h-3 l6 8 h-4 l6 7 h-24 l6 -7 h-4 l6 -8 h-3z","#2d8a4e",g);Rc(-2,10,4,3,"#8b5a2b",g);Pa("M0 -16 l1 2 h2 l-1.6 1.3 l.6 2 l-2 -1.2 l-2 1.2 l.6 -2 l-1.6 -1.3 h2z","#f2b705",g);[[-4,0,"#e4002b"],[3,-4,"#3fa7ff"],[5,5,"#ffd166"],[-6,7,"#ff6b9a"]].forEach(([x,y,c])=>C(x,y,1.5,c,g))},
+   g=>{Pa("M-11 6 q4 -18 16 -14 q5 2 6 10 l-4 1 q-2 -6 -6 -6 q-6 2 -8 9z","#e4002b",g);Rc(-12,4,22,5,"#fff",g,2.5);C(9,2,3,"#fff",g)},
+   g=>{Rc(-10,-4,20,15,"#3fa7ff",g,1);Rc(-11,-8,22,5,"#1e6fd9",g,1);Rc(-1.5,-8,3,19,"#ffd166",g);Pa("M0 -8 q-7 -6 -6 -1 z M0 -8 q7 -6 6 -1z","#ffd166",g,"#e0a800",1)},
+   g=>{C(0,5,7.5,"#fff",g,"#c9d1dc");C(0,-6,5,"#fff",g,"#c9d1dc");C(-1.8,-7,.8,"#111",g);C(1.8,-7,.8,"#111",g);Pa("M0 -5.5 l4 1 l-4 .8z","#ff8c1a",g);Rc(-6,-12,12,2,"#151513",g);Rc(-4,-17,8,5.5,"#151513",g);Pa("M-5 -1 h10","none",g,"#e4002b",2)}
+  ]
+ ];
+ const seasonNow=()=>SEASON[new Date().getMonth()];
+ const pick=a=>a[Math.floor(Math.random()*a.length)];
+ const spawn=()=>{const g=mk("g",{},obs),ban=Math.random()<.18;(ban?BANANA:Math.random()<.5?pick(seasonNow()):pick(KINDS))(g);items.push({g,x:178,vx:-55,fly:false,done:false,rot:0,ban})};
  const say=()=>{}; // 吹き出しは表示しない
  const boom=(txt,x,y)=>{pt.textContent=txt;pow.setAttribute("transform",`translate(${x} ${y})`);pow.setAttribute("opacity",1)};
  function choose(o){const r=Math.random();const k=o.ban?(r<.75?"slip":"jump"):r<.33?"jump":r<.56?"kick":r<.78?"punch":"ouch";act={k,t:0,o};o.done=true;
@@ -1030,6 +1111,13 @@ function sortable(box,sel,done){box.addEventListener("pointerdown",e=>{const g=e
 sortable($("dayList"),".log",o=>{const slots=[...o].sort((a,b)=>a-b),old=o.map(k=>T[k]);slots.forEach((k,n)=>T[k]=old[n]);sv("gym_t",T);renderT();renderCal()});
 sortable($("menu"),".log",o=>{MENU=o.map(k=>MENU[k]);renderMenu()});
 sortable($("favPlan"),".log",o=>{PLAN=o.map(k=>PLAN[k]);renderFav()});
+// 記録画面の「今日のセット」
+function renderTPlan(){const on=favSel!=null&&PLAN.length>0;$("tPlanCard").hidden=!on;if(!on)return;
+ $("tPlanT").textContent="今日のセット："+planName();
+ $("tPlan").innerHTML=PLAN.map((it,k)=>`<div class="log${it.ex===cur?" cur":""}" data-k="${k}"><span class="grip" aria-label="ドラッグで並べ替え"><i></i><i></i><i></i></span><div class="ico">${pb(exInfo(it.ex)[1])}</div><div class="t"><b>${k+1}. ${it.ex}</b><span>${setsTxt(it)}</span></div>${it.ex===cur?`<span class="sub">記録中</span>`:`<button class="sm" onclick="favUse(${k})">記録へ</button>`}</div>`).join("")}
+{const rf=renderFav;renderFav=function(){rf.apply(this,arguments);renderTPlan()};const fu=window.favUse;window.favUse=k=>{fu(k);renderTPlan()}}
+sortable($("tPlan"),".log",o=>{PLAN=o.map(k=>PLAN[k]);renderFav()});
+sortable($("tList"),".log",o=>{const slots=[...o].sort((a,b)=>a-b),old=o.map(k=>T[k]);slots.forEach((k,n)=>T[k]=old[n]);sv("gym_t",T);renderT();renderCal()});
 sortable($("favItems"),".fitem",o=>{FED.items=o.map(k=>FED.items[k]);renderFED()});
 if(!okStore){const w=document.createElement("div");w.className="card";w.style.border="2px solid #ef4444";w.innerHTML="<b>このブラウザでは記録が保存されません。</b><br>プライベート（シークレット）モードをやめるか、SafariやChromeで https://pixelnest-731.github.io/gym-log/ を開いてください。";document.querySelector("main").prepend(w)}
 // ---- Googleアカウント同期（Firebase） ----
@@ -1074,5 +1162,9 @@ function loadJs(u){return new Promise((ok,ng)=>{const x=document.createElement("
  }catch(e){syncUI("この画面では同期を使えません（GitHub版で利用できます）")}})();
 renderSets();
 </script>
+
+
+
+
 
 </html>
