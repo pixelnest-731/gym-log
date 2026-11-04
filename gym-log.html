@@ -303,8 +303,20 @@ header{padding-bottom:150px!important}
 @media(max-width:760px){#hello{max-width:calc(100% - 200px)!important}.hero-art{width:240px!important;height:327px!important;top:64px!important;right:-40px!important}}
 @media(max-width:420px){header{padding-bottom:140px!important}#hello{max-width:calc(100% - 158px)!important}.hero-art{width:206px!important;height:280px!important;top:70px!important;right:-44px!important}}
 @media(prefers-reduced-motion:reduce){.hero-art .plate{animation:none}}
+
+/* 直近の評価（名言の枠を置き換え） */
+#hello::before{content:none}
+#hello{display:flex;flex-direction:column;gap:4px;min-width:0}
+#hello .he-l{font-family:var(--lab),var(--body);font-weight:700;font-size:10px;letter-spacing:.16em;color:var(--mut)}
+#hello .he-top{display:flex;align-items:center;gap:10px}
+#hello .he-r{width:44px;height:44px;flex:none;display:grid;place-items:center;font-family:var(--disp);font-size:30px;color:#000;transform:skewX(-6deg)}
+#hello .he-s{font-family:var(--disp);font-size:40px;line-height:1;color:var(--fg);font-variant-numeric:tabular-nums}
+#hello .he-s small{font-family:var(--body);font-size:12px;color:var(--mut);margin-left:3px}
+#hello .he-m{font-size:12px;font-weight:700;color:#e9e9e9}
+#hello .he-c{font-size:12px;color:var(--ac2);line-height:1.5}
+#hello .he-none{font-size:16px;font-weight:900}
 </style>
-<header><button class="acct" id="acctBtn" aria-label="アカウント"><svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>ログイン</span></button><div class="eyebrow">HARDCORE TRAINING LOG · <b>EST. 2026</b></div><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで次の名言"></p><svg class="hero-art" viewBox="0 -72 200 272" aria-hidden="true"><g class="plate"><g fill="none" stroke-width="3"><circle cx="100" cy="100" r="94" fill="#141412" stroke="#f2b705"/><circle cx="100" cy="100" r="80" stroke="#3a3730"/><circle cx="100" cy="100" r="40" stroke="#3a3730"/><circle cx="100" cy="100" r="20" fill="#000" stroke="#f2b705"/></g><g fill="#f2b705" font-family="Anton,Impact,sans-serif" text-anchor="middle"><text x="100" y="52" font-size="22" letter-spacing="2">20KG</text><text x="100" y="164" font-size="13" letter-spacing="4" fill="#9b968c">MUSCULARS</text></g><g fill="#2b2a26"><rect x="22" y="96" width="14" height="8"/><rect x="164" y="96" width="14" height="8"/></g></g><g id="obs"></g><g id="rn"></g><g id="fx"></g></svg></header>
+<header><button class="acct" id="acctBtn" aria-label="アカウント"><svg class="g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg><span>ログイン</span></button><div class="eyebrow">HARDCORE TRAINING LOG · <b>EST. 2026</b></div><h1 onclick="goHome()" style="cursor:pointer">MUSCU<span>LARS</span></h1><p id="hello" title="タップで評価の詳しい内容へ"></p><svg class="hero-art" viewBox="0 -72 200 272" aria-hidden="true"><g class="plate"><g fill="none" stroke-width="3"><circle cx="100" cy="100" r="94" fill="#141412" stroke="#f2b705"/><circle cx="100" cy="100" r="80" stroke="#3a3730"/><circle cx="100" cy="100" r="40" stroke="#3a3730"/><circle cx="100" cy="100" r="20" fill="#000" stroke="#f2b705"/></g><g fill="#f2b705" font-family="Anton,Impact,sans-serif" text-anchor="middle"><text x="100" y="52" font-size="22" letter-spacing="2">20KG</text><text x="100" y="164" font-size="13" letter-spacing="4" fill="#9b968c">MUSCULARS</text></g><g fill="#2b2a26"><rect x="22" y="96" width="14" height="8"/><rect x="164" y="96" width="14" height="8"/></g></g><g id="obs"></g><g id="rn"></g><g id="fx"></g></svg></header>
 <main>
 <div class="stats">
  <div class="stat"><div class="v" id="sDays">0</div><div class="l">総トレ日数</div></div>
@@ -516,9 +528,8 @@ function renderCal(){try{renderFav();renderWeek();renderBuddy();renderMap()}catc
   <button class="sm" onclick="editT(${i});tab('train')">修正</button><button class="sm" onclick="delT(${i})">削除</button></div>`).join("")||'<div class="empty">この日の記録はありません</div>';
  $("copyDay").hidden=!(rs.length&&selD!==today());}
 // その日の評価（トレーナーコメント）
-function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="有酸素"),cardio=rs.filter(r=>r.p==="有酸素");
- const box=$("evalCard"),head=`<h3>${selD} のトレーナー評価</h3>`;
- if(!rs.length){box.innerHTML=head+'<div class="empty">この日の記録はまだありません。<br>トレーニングを記録すると、点数とコメントが表示されます。</div>';return}
+function evalOf(selD){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="有酸素"),cardio=rs.filter(r=>r.p==="有酸素");
+ if(!rs.length)return null;
  const before=T.filter(r=>r.d<selD),items=[];let score=0;
  // 1 種目数 (20)
  const nEx=lift.length,p1=Math.min(20,nEx*5);score+=p1;
@@ -544,6 +555,11 @@ function renderEval(){const rs=T.filter(r=>r.d===selD),lift=rs.filter(r=>r.p!=="
  items.push([p6,10,"有酸素",mins>=20?`${mins}分の有酸素。心肺機能と脂肪燃焼にも効いています。`:mins?`${mins}分の有酸素。できれば20分以上やりましょう。`:"有酸素はなし。筋トレの後に10〜20分歩くだけでも、体脂肪が落ちやすくなります。"]);
  const rank=score>=90?["S","#ffd23f","最高の1日です！この調子で続けましょう。"]:score>=75?["A","#c0c6cf","とても良いトレーニングでした。細かい点を詰めればSランクです。"]:score>=55?["B","#10b981","合格点です。下のアドバイスを1つ取り入れてみましょう。"]:["C","#f59e0b","ジムに来たこと自体が大事な一歩。次は量を少し増やしましょう。"];
  const tv=lift.reduce((a,r)=>a+vol(r),0);
+ const low=[...items].sort((x,y)=>x[0]/x[1]-y[0]/y[1])[0],tip=pb.length?`${pb[0]}で自己ベスト更新！`:low[0]<low[1]?`次の課題：${low[2]}`:"全項目満点です！";
+ return {score,rank,nEx,nSet,tv,items,tip}}
+function renderEval(){const box=$("evalCard"),head=`<h3>${selD} のトレーナー評価</h3>`,e=evalOf(selD);showHeroEval();
+ if(!e){box.innerHTML=head+'<div class="empty">この日の記録はまだありません。<br>トレーニングを記録すると、点数とコメントが表示されます。</div>';return}
+ const {score,rank,nEx,nSet,tv,items}=e;
  box.innerHTML=head+`<div class="evtop"><div class="rank" style="background:${rank[1]}">${rank[0]}</div><div><div class="score">${score}<small> / 100点</small></div><div class="sub">${nEx}種目・${nSet}セット・総ボリューム ${tv.toLocaleString()}kg</div></div></div>
  <div class="coach"><span class="tag">COACH</span>${rank[2]}</div>
  ${items.map(([v,m,t,c])=>`<div class="evrow"><div class="evh"><b>${t}</b><span>${v} / ${m}</span></div><div class="pbar"><i style="width:${v/m*100}%"></i></div><div class="sub">${c}</div></div>`).join("")}`;}
@@ -730,31 +746,13 @@ window.logAll=()=>ask("メニュー通りに今日の記録として保存しま
  sv("gym_t",T);renderT();alert("保存しました！");});
 $("mGen").onclick=genMenu;
 
-// 今日の名言（日替わり）
-const QUOTES=[["諦めたらそこで試合終了ですよ","安西先生","SLAM DUNK"],["天才ですから","桜木花道","SLAM DUNK"],["左手はそえるだけ","桜木花道","SLAM DUNK"],["オヤジの栄光時代はいつだよ…全日本のときか？オレは…オレは今なんだよ!!","桜木花道","SLAM DUNK"],["オレは三井。あきらめの悪い男…","三井寿","SLAM DUNK"],["安西先生…!! バスケがしたいです…","三井寿","SLAM DUNK"],["まだあわてるような時間じゃない","仙道彰","SLAM DUNK"],["ドリブルこそチビの生きる道なんだよ!!","宮城リョータ","SLAM DUNK"],["リバウンドを制する者は試合を制す","赤木剛憲","SLAM DUNK"],["心を燃やせ","煉獄杏寿郎","鬼滅の刃"],["胸を張って生きろ","煉獄杏寿郎","鬼滅の刃"],["俺は俺の責務を全うする!!","煉獄杏寿郎","鬼滅の刃"],["頑張れ炭治郎頑張れ!!","竈門炭治郎","鬼滅の刃"],["俺は長男だから我慢できたけど次男だったら我慢できなかった","竈門炭治郎","鬼滅の刃"],["生殺与奪の権を他人に握らせるな!!","冨岡義勇","鬼滅の刃"],["猪突猛進!!","嘴平伊之助","鬼滅の刃"],["派手にいくぜ","宇髄天元","鬼滅の刃"],["一つのことしかできないなら それを極め抜け","桑島慈悟郎","鬼滅の刃"],["海賊王に、おれはなる！","モンキー・D・ルフィ","ONE PIECE"],["生きたいと言えェ!!!!","モンキー・D・ルフィ","ONE PIECE"],["背中の傷は剣士の恥だ","ロロノア・ゾロ","ONE PIECE"],["おれはもう二度と負けねェから!!","ロロノア・ゾロ","ONE PIECE"],["何も!!! なかった…!!!","ロロノア・ゾロ","ONE PIECE"],["人の夢は!!! 終わらねェ!!!!","マーシャル・D・ティーチ","ONE PIECE"],["失ったものばかり数えるな!!! 無いものは無い!!! 確認しろ!!! お前にまだ残っているものは何だ!!!","ジンベエ","ONE PIECE"],["オラ、ワクワクすっぞ","孫悟空","ドラゴンボール"],["がんばれカカロット…おまえがナンバー1だ!!","ベジータ","ドラゴンボール"],["クリリンのことかーーーっ!!!!!","孫悟空","ドラゴンボール"],["戦闘力…たったの5か…ゴミめ","ラディッツ","ドラゴンボール"],["わたしの戦闘力は530000です","フリーザ","ドラゴンボール"],["強くなりたくば喰らえ!!!","範馬勇次郎","グラップラー刃牙"],["腕立て伏せ100回、上体起こし100回、スクワット100回、そしてランニング10km。これを毎日やる!!","サイタマ","ワンパンマン"],["趣味でヒーローをやっている者だ","サイタマ","ワンパンマン"],["100%中の100%","戸愚呂弟","幽☆遊☆白書"],["努力した者が全て報われるとは限らん。しかし！成功した者は皆すべからく努力しておる!!","鴨川源二","はじめの一歩"],["強いってどんな気持ちですか?","幕之内一歩","はじめの一歩"],["立て、立つんだジョー！","丹下段平","あしたのジョー"],["燃えたよ…まっ白に…燃えつきた…まっ白な灰に…","矢吹丈","あしたのジョー"],["更に向こうへ！Plus Ultra!!","オールマイト","僕のヒーローアカデミア"],["君はヒーローになれる","オールマイト","僕のヒーローアカデミア"],["私が来た!!","オールマイト","僕のヒーローアカデミア"],["君の!力じゃないか!!","緑谷出久","僕のヒーローアカデミア"],["戦わなければ勝てない","エレン・イェーガー","進撃の巨人"],["駆逐してやる!!","エレン・イェーガー","進撃の巨人"],["心臓を捧げよ!!","エルヴィン・スミス","進撃の巨人"],["何かを変えることのできる人間がいるとすれば その人はきっと…大事なものを捨てることができる人だ","アルミン・アルレルト","進撃の巨人"],["悔いが残らない方を自分で選べ","リヴァイ","進撃の巨人"],["逃げちゃダメだ","碇シンジ","新世紀エヴァンゲリオン"],["まっすぐ自分の言葉は曲げねェ、それがオレの忍道だ","うずまきナルト","NARUTO"],["自分を信じない奴なんかに努力する価値はない!!","マイト・ガイ","NARUTO"],["やれやれだぜ","空条承太郎","ジョジョの奇妙な冒険"],["てめーはオレを怒らせた","空条承太郎","ジョジョの奇妙な冒険"],["ふるえるぞハート! 燃えつきるほどヒート!!","ジョナサン・ジョースター","ジョジョの奇妙な冒険"],["覚悟とは!! 暗闇の荒野に!! 進むべき道を切り開く事だッ!","ジョルノ・ジョバァーナ","ジョジョの奇妙な冒険"],["最高に「ハイ!」ってやつだアアアアア","DIO","ジョジョの奇妙な冒険"],["人間讃歌は「勇気」の讃歌ッ!!","ウィル・A・ツェペリ","ジョジョの奇妙な冒険"],["だが断る","岸辺露伴","ジョジョの奇妙な冒険"],["お前はもう死んでいる","ケンシロウ","北斗の拳"],["わが生涯に一片の悔いなし!!","ラオウ","北斗の拳"],["美しく最後を飾りつける暇があるなら 最後まで美しく生きようじゃねーか","坂田銀時","銀魂"],["飛べ","烏養一繋","ハイキュー!!"],["下を向くんじゃねえ!!! バレーは!!! 常に上を向くスポーツだ","烏養繋心","ハイキュー!!"],["才能は開花させるもの センスは磨くもの","及川徹","ハイキュー!!"],["負けは弱さの証明ですか? 君達にとって負けは試練なんじゃないですか?","武田一鉄","ハイキュー!!"],["俺がいればお前は最強だ!","影山飛雄","ハイキュー!!"],["ボールはともだち","大空翼","キャプテン翼"],["認めたくないものだな…自分自身の若さ故の過ちというものを","シャア・アズナブル","機動戦士ガンダム"],["見せてもらおうか。連邦軍のモビルスーツの性能とやらを!","シャア・アズナブル","機動戦士ガンダム"],["アムロ、行きまーす!","アムロ・レイ","機動戦士ガンダム"],["お前を信じるお前を信じろ","カミナ","天元突破グレンラガン"],["無理を通して道理を蹴っ飛ばす","カミナ","天元突破グレンラガン"],["立って歩け 前へ進め あんたには立派な足がついてるじゃないか","エドワード・エルリック","鋼の錬金術師"],["痛みを伴わない教訓には意義がない","エドワード・エルリック","鋼の錬金術師"],["大丈夫 僕最強だから","五条悟","呪術廻戦"],["俺は不平等に人を助ける","伏黒恵","呪術廻戦"],["日和ってる奴いる?いねえよなぁ!!?","佐野万次郎","東京リベンジャーズ"],["天下の大将軍になる","信","キングダム"],["親父にもぶたれたことないのに!","アムロ・レイ","機動戦士ガンダム"],["坊やだからさ","シャア・アズナブル","機動戦士ガンダム"],["ザクとは違うのだよ、ザクとは!","ランバ・ラル","機動戦士ガンダム"],["当たらなければどうということはない","シャア・アズナブル","機動戦士ガンダム"],["笑えばいいと思うよ","碇シンジ","新世紀エヴァンゲリオン"],["あんたバカぁ?","惣流・アスカ・ラングレー","新世紀エヴァンゲリオン"],["へっ きたねえ花火だ","ベジータ","ドラゴンボール"],["おれは!!!! 助けてもらわねェと生きていけねェ自信がある!!!","モンキー・D・ルフィ","ONE PIECE"],["真実はいつもひとつ!","江戸川コナン","名探偵コナン"],["ポケモンゲットだぜ!","サトシ","ポケットモンスター"],["月にかわっておしおきよ!","セーラームーン","美少女戦士セーラームーン"],["無駄無駄無駄無駄ァ!","DIO","ジョジョの奇妙な冒険"],["オラオラオラオラ!","空条承太郎","ジョジョの奇妙な冒険"],["火事場のクソ力だ!","キン肉マン","キン肉マン"],["40秒で支度しな!","ドーラ","天空の城ラピュタ"],["人がゴミのようだ!","ムスカ","天空の城ラピュタ"],["飛ばねぇ豚はただの豚だ","ポルコ・ロッソ","紅の豚"],["黙れ小僧!","モロの君","もののけ姫"],["よもやよもやだ","煉獄杏寿郎","鬼滅の刃"],["領域展開","五条悟","呪術廻戦"],["この世界は残酷だ… そして…とても美しい","ミカサ・アッカーマン","進撃の巨人"],["戦え!! 戦え!!","エレン・イェーガー","進撃の巨人"],["兵士よ怒れ! 兵士よ叫べ! 兵士よ戦え!!","エルヴィン・スミス","進撃の巨人"],["オラの人生はつまらなくなんかない!! 家族がいる幸せを、あんたたちにも分けてあげたいぐらいだぜ!!","野原ひろし","クレヨンしんちゃん"],["オラ、大人になりたいから!","野原しんのすけ","クレヨンしんちゃん"],["アクションビーム!","アクション仮面","クレヨンしんちゃん"],["これが将軍の見る景色です","王騎","キングダム"],["火を絶やすでないぞ","麃公","キングダム"],["中華を統一する","嬴政","キングダム"]];
-let myQ=(()=>{try{return JSON.parse(localStorage.getItem("gym_q"))||[]}catch{return[]}})();
-const allQ=()=>[...QUOTES,...myQ];
-// 年ごとにシャッフルした順番で1日1つ。同じ作品が続かないように並べ、名言の数だけ日数が続くまで同じ言葉は出ない
-function qOrder(){const Q=allQ(),n=Q.length,y=new Date(today()).getFullYear(),ord=[...Array(n).keys()];let seed=y*9301+49297;
- const rnd=()=>(seed=(seed*9301+49297)%233280)/233280;
- for(let i=n-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[ord[i],ord[j]]=[ord[j],ord[i]]}
- for(let k=0;k<6;k++)for(let i=1;i<n;i++){if(Q[ord[i]][2]&&Q[ord[i]][2]===Q[ord[i-1]][2]){const pick=[...Array(n).keys()].filter(j=>j!==i&&Q[ord[j]][2]!==Q[ord[i-1]][2]&&(i+1>=n||Q[ord[j]][2]!==Q[ord[i+1]][2])&&(j===0||j-1===i||Q[ord[i]][2]!==Q[ord[j-1]][2])&&(j+1>=n||j+1===i||Q[ord[i]][2]!==Q[ord[j+1]][2]));if(pick.length){const j=pick[0];[ord[i],ord[j]]=[ord[j],ord[i]]}continue;for(let j=i+1;j<n;j++){const w=Q[ord[j]][2];
-  if(w!==Q[ord[i-1]][2]&&(i+1>=n||w!==Q[ord[i+1]][2]||j===i+1)){[ord[i],ord[j]]=[ord[j],ord[i]];break}}}}
- return ord}
-let QO=qOrder(),qp=(()=>{const d=new Date(today());return Math.floor((d-new Date(d.getFullYear(),0,1))/864e5)%QO.length})(),qi=QO[qp];
-const qToday=qp;
-function qMove(n){qp=(qp+n+QO.length)%QO.length;qi=QO[qp];showQuote()}
-// 作品ごとのテーマカラー [背景, 文字]
-const WC={"クレヨンしんちゃん":["#ffd400","#d7261e"],"SLAM DUNK":["#e4002b","#fff"],"鬼滅の刃":["#2e8b57","#fff"],"ONE PIECE":["#e8b923","#111"],"ドラゴンボール":["#ff8c00","#111"],"グラップラー刃牙":["#8b0000","#fff"],
-"ワンパンマン":["#ffd400","#111"],"幽☆遊☆白書":["#1e90ff","#fff"],"はじめの一歩":["#d62828","#fff"],"あしたのジョー":["#f5f5f5","#111"],"僕のヒーローアカデミア":["#2ecc71","#111"],
-"進撃の巨人":["#8b5a2b","#fff"],"新世紀エヴァンゲリオン":["#7b2cbf","#b6ff3b"],"NARUTO":["#ff7a00","#111"],"ジョジョの奇妙な冒険":["#c71585","#fff"],"北斗の拳":["#b22222","#fff"],
-"銀魂":["#c0c0c0","#111"],"ハイキュー!!":["#ff6a00","#111"],"キャプテン翼":["#0057b8","#fff"],"機動戦士ガンダム":["#1d4ed8","#fff"],"天元突破グレンラガン":["#ff2d55","#fff"],
-"鋼の錬金術師":["#b8860b","#fff"],"呪術廻戦":["#3b0a8f","#fff"],"東京リベンジャーズ":["#111","#fff"],"キングダム":["#a0522d","#fff"]};
-function showQuote(){const [q,c,w]=allQ()[qi],col=WC[w]||["#d4a017","#111"],h=$("hello");
- h.style.setProperty("--qc",col[0]);h.style.setProperty("--qt",col[1]);
- h.innerHTML=`<span class="q ${q.length>28?"long":""}">${q}</span><span class="qs"><span class="wk">${w||"MY QUOTE"}</span>${c||""}</span><span class="qnav"><button data-q="-1" aria-label="前の名言">◀ 戻る</button>${qp!==qToday?`<button data-q="t">今日</button>`:""}<button data-q="1" aria-label="次の名言">次へ ▶</button></span>`;
- h.style.animation="none";void h.offsetWidth;h.style.animation=""}
-$("hello").onclick=e=>{const b=e.target.closest("[data-q]");if(!b)return qMove(1);e.stopPropagation();const v=b.dataset.q;v==="t"?(qp=qToday,qi=QO[qp],showQuote()):qMove(+v)};showQuote();
+// 直近の評価（ヘッダーの左側に表示）
+function showHeroEval(){const h=$("hello");if(!h)return;const ds=[...new Set(T.map(r=>r.d))].filter(d=>d<=today()).sort();const d=ds[ds.length-1];
+ if(!d){h.style.setProperty("--qc","var(--ac)");h.innerHTML=`<span class="he-l">LATEST REVIEW</span><span class="he-none">まだ記録がありません</span><span class="he-c">トレーニングを記録すると、ここに点数とランクが出ます</span>`;h.onclick=()=>tab("train");return}
+ const e=evalOf(d),md=d.slice(5).replace("-","/"),ago=dAgo(d),when=ago===0?"今日":ago===1?"昨日":ago+"日前";
+ h.style.setProperty("--qc",e.rank[1]);
+ h.innerHTML=`<span class="he-l">LATEST REVIEW · ${md}（${when}）</span><span class="he-top"><span class="he-r" style="background:${e.rank[1]}">${e.rank[0]}</span><span class="he-s">${e.score}<small>/100</small></span></span><span class="he-m">${e.nEx}種目・${e.nSet}セット・${(e.tv/1000).toFixed(1)}t</span><span class="he-c">${e.tip}</span>`;
+ h.onclick=()=>{selD=d;calD=new Date(d);renderCal();$("evalCard").scrollIntoView({behavior:"smooth",block:"start"})}}
 renderPicker();renderT();renderB();renderCal();
 
 // ---- お気に入りセット ----
