@@ -96,6 +96,7 @@ input:focus,select:focus{outline:2px solid var(--ac2);border-color:transparent}
 .empty{text-align:center;color:var(--mut);padding:20px;font-size:14px}
 
 /* ===== MUSCULARS theme ===== */
+.setrow .cp{border:1px solid var(--ac);background:transparent;color:var(--ac);width:26px;height:26px;border-radius:0;font-weight:900;cursor:pointer;padding:0}
 .ver{margin-top:10px;font-size:11px;opacity:.7}
 .bud{display:flex;gap:14px;align-items:center}.blv{width:62px;height:62px;flex:none;border:3px solid var(--bc);display:grid;place-items:center;text-align:center;line-height:1}
 .blv small{font-size:10px;color:var(--mut);letter-spacing:.2em}.blv b{font-family:var(--disp);font-size:34px;font-weight:400;color:var(--bc)}
@@ -650,7 +651,14 @@ function renderSets(){$("sets").innerHTML=SETS.map((x,i)=>`<div class="setrow"><
  <input type="number" inputmode="numeric" value="${x.r}" data-i="${i}" data-k="r" placeholder="回数">
  <div class="rmv" id="rm${i}">${rm1(+x.w,+x.r)?rm1(+x.w,+x.r)+" kg":"-"}</div>
  <button class="x" onclick="delSet(${i})" aria-label="セット削除">×</button>
- <div></div><input class="memo" value="${(x.m||"").replace(/"/g,"&quot;")}" data-i="${i}" data-k="m" placeholder="メモ（補助ありなど）"></div>`).join("")}
+ <div></div><input class="memo" value="${(x.m||"").replace(/"/g,"&quot;")}" data-i="${i}" data-k="m" placeholder="メモ（補助ありなど）">
+ <button class="cp" onclick="copySet(${i})" aria-label="${i+2}セット目にコピー" title="${i+2}セット目にコピー">↓</button></div>`).join("")}
+// このセットの重さ・回数を次のセットにコピー（なければ追加）
+window.copySet=i=>{const x=SETS[i];if(SETS[i+1]){SETS[i+1].w=x.w;SETS[i+1].r=x.r}else SETS.push({w:x.w,r:x.r,m:""});renderSets();alert(`${i+2}セット目にコピーしました`)};
+// 数字の欄をタップしたら前の数字を消して、すぐ打ち込めるようにする（何も打たずに離れたら元に戻す）
+["sets","favItems"].forEach(id=>{const box=$(id);
+ box.addEventListener("focusin",e=>{const t=e.target;if(t.type!=="number")return;t.dataset.prev=t.value;if(t.value!==""){t.dataset.ph=t.placeholder;t.placeholder=t.value;t.value=""}});
+ box.addEventListener("focusout",e=>{const t=e.target;if(t.type!=="number"||t.dataset.prev==null)return;if(t.value===""&&t.dataset.prev!==""){t.value=t.dataset.prev}if(t.dataset.ph!=null){t.placeholder=t.dataset.ph;delete t.dataset.ph}delete t.dataset.prev})});
 $("sets").oninput=e=>{const t=e.target,i=t.dataset.i;if(i==null)return;SETS[i][t.dataset.k]=t.value;const v=rm1(+SETS[i].w,+SETS[i].r);$("rm"+i).textContent=v?v+" kg":"-"};
 window.delSet=i=>{SETS.splice(i,1);if(!SETS.length)SETS=[{w:"",r:"",m:""}];renderSets()};
 $("addSet").onclick=()=>{const l=SETS[SETS.length-1];SETS.push({w:l.w,r:l.r,m:""});renderSets();if(SET.autoRest&&!tmI)$("tmBtn").click()};
